@@ -6,12 +6,12 @@ function local_video_directory_cron() {
 
 	include_once( $CFG->dirroot . "/local/video_directory/init.php");
 
-	$ffmpeg = 				$settings -> ffmpeg;
-	$streaming_url = 		$settings -> streaming.'/';
-	$ffprobe = 				$settings -> ffprobe;
-	$ffmpeg_settings = 		$settings -> ffmpeg_settings;
+	$ffmpeg = 		$settings -> ffmpeg;
+	$streaming_url = 	$settings -> streaming.'/';
+	$ffprobe = 		$settings -> ffprobe;
+	$ffmpeg_settings = 	$settings -> ffmpeg_settings;
 	$thumbnail_seconds = 	$settings -> thumbnail_seconds;
-	$php = 					$settings -> php;
+	$php = 			$settings -> php;
 
 	$orig_dir = $uploaddir;
 	$streaming_dir = $converted;
@@ -77,9 +77,8 @@ function local_video_directory_cron() {
 	$wgets=$DB->get_records('local_video_directory_wget',array("success" => 0));
 	if ($wgets) {
 		foreach ($wgets as $wget) {
-			$record = array(	'id' => $wget->id,
-								'success' => 1);
-			$update = $DB->update_record("local_video_directory_wget",$record);			
+			$record = array('id' => $wget->id,'success' => 1);
+			$update = $DB->update_record("local_video_directory_wget",$record);
 			exec($php.' ' . $CFG->dirroot . '/local/video_directory/scripts/wget.php ' . base64_encode($wget->url) . ' &');
 		}
 	}
