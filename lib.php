@@ -87,7 +87,7 @@ function local_video_directory_cron() {
 }
 
 function local_video_directory_extend_settings_navigation($settingsnav, $context) {
-    global $CFG, $PAGE;
+    global $CFG, $PAGE, $USER;
  
     // Only add this settings item on non-site course pages.
     //if (!$PAGE->course or $PAGE->course->id == 1) {
@@ -104,6 +104,13 @@ function local_video_directory_extend_settings_navigation($settingsnav, $context
  
     if ($settingnode = $settingsnav->find('courseadmin', navigation_node::TYPE_COURSE)) {
 
+        require_once($CFG->dirroot.'/cohort/lib.php');
+        $settings=get_config('local_video_directory');
+
+	if (!cohort_is_member($settings->cohort, $USER->id) && !is_siteadmin($USER)) {
+		return ;
+	}
+        
         $strfather = get_string('pluginname', 'local_video_directory');
 //        $url = new moodle_url('/local/video_directory/list.php', array('id' => $PAGE->course->id));
         $fathernode = navigation_node::create(
