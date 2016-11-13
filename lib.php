@@ -1,8 +1,5 @@
 <?php
 
-//define('CLI_SCRIPT',1);
-//local_video_directory_cron();
-
 function local_video_directory_cron() {
  
 	global $CFG , $DB;
