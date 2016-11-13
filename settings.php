@@ -114,7 +114,7 @@ if ( $hassiteconfig ){
 		'Please Insert Here your Streaming Server URL Including Path',
  
 		// This is the default value
-		'http://streaming/moodle',
+		'http://' . $CFG->wwwroot . '/streaming',
  
 		// This is the type of Parameter this config is
 		PARAM_URL
