@@ -13,4 +13,6 @@ _Installation_
 - Install the plugin
 - Access it via http://moodle-address/local/video_directory/
 - You can allow non administrator users to access this plugin by adding them to the cohort that is set in settings.
+- Make a symlink for allowing your web server access to streaming files (i.e. ln -s /var/www/moodledata/videos/converted /var/www/html/streaming )
+-- If you have some other IP/Server for streaming make sure it has the right directory in the right place (check both streamin settings and directory location)
 
