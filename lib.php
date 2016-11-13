@@ -85,3 +85,70 @@ function local_video_directory_cron() {
 
 	
 }
+
+function local_video_directory_extend_settings_navigation($settingsnav, $context) {
+    global $CFG, $PAGE;
+ 
+    // Only add this settings item on non-site course pages.
+    //if (!$PAGE->course or $PAGE->course->id == 1) {
+    //    return;
+    //}
+ 
+    // Only let users with the appropriate capability see this settings item.
+    //if (!has_capability('moodle/backup:backupcourse', context_course::instance($PAGE->course->id))) {
+    //    return;
+    //}
+    
+    // Only if is admin is belong to the right cohort
+    
+ 
+    if ($settingnode = $settingsnav->find('courseadmin', navigation_node::TYPE_COURSE)) {
+
+        $strfather = get_string('pluginname', 'local_video_directory');
+//        $url = new moodle_url('/local/video_directory/list.php', array('id' => $PAGE->course->id));
+        $fathernode = navigation_node::create(
+            $strfather,
+            null,
+            navigation_node::NODETYPE_BRANCH,
+            'local_video_directory',
+            'local_video_directory'
+        );
+
+        $settingnode->add_node($fathernode);
+
+        
+        $strlist = get_string('list', 'local_video_directory');
+        $url = new moodle_url('/local/video_directory/list.php', array('id' => $PAGE->course->id));
+        $listnode = navigation_node::create(
+            $strlist,
+            $url,
+            navigation_node::NODETYPE_LEAF,
+            'local_video_directory',
+            'local_video_directory',
+            new pix_icon('f/avi-24', $strlist)
+        );
+        if ($PAGE->url->compare($url, URL_MATCH_BASE)) {
+            $listnode->make_active();
+        }
+        
+        
+        $strupload = get_string('upload', 'local_video_directory');
+        $urlupload = new moodle_url('/local/video_directory/upload.php', array('id' => $PAGE->course->id));
+        $uploadnode = navigation_node::create(
+            $strupload,
+            $urlupload,
+            navigation_node::NODETYPE_LEAF,
+            'local_video_directory',
+            'local_video_directory',
+            new pix_icon('t/addcontact', $strupload)
+        );
+        if ($PAGE->url->compare($urlupload, URL_MATCH_BASE)) {
+            $uploadnode->make_active();
+        }
+
+
+        $fathernode->add_node($listnode);
+        
+        $fathernode->add_node($uploadnode);
+    }
+}
