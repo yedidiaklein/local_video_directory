@@ -117,8 +117,8 @@ function local_video_directory_extend_settings_navigation($settingsnav, $context
             $strfather,
             null,
             navigation_node::NODETYPE_BRANCH,
-            'local_video_directory',
-            'local_video_directory'
+            'local_video_directory_father',
+            'local_video_directory_father'
         );
 
         $settingnode->add_node($fathernode);
@@ -130,8 +130,8 @@ function local_video_directory_extend_settings_navigation($settingsnav, $context
             $strlist,
             $url,
             navigation_node::NODETYPE_LEAF,
-            'local_video_directory',
-            'local_video_directory',
+            'local_video_directory_list',
+            'local_video_directory_list',
             new pix_icon('f/avi-24', $strlist)
         );
         if ($PAGE->url->compare($url, URL_MATCH_BASE)) {
@@ -145,8 +145,8 @@ function local_video_directory_extend_settings_navigation($settingsnav, $context
             $strupload,
             $urlupload,
             navigation_node::NODETYPE_LEAF,
-            'local_video_directory',
-            'local_video_directory',
+            'local_video_directory_upload',
+            'local_video_directory_upload',
             new pix_icon('t/addcontact', $strupload)
         );
         if ($PAGE->url->compare($urlupload, URL_MATCH_BASE)) {
