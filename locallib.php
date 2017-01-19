@@ -12,7 +12,7 @@ function human_filesize($bytes, $decimals = 2, $red = 0) {
 
 function local_video_directory_get_tagged_pages($tag, $exclusivemode = false, $fromctx = 0, $ctx = 0, $rec = 1, $page = 0) {
 	global $CFG;
-	file_put_contents( $CFG->dataroot . "/tags.log", $tag, FILE_APPEND);
+	//file_put_contents( $CFG->dataroot . "/tags.log", $tag, FILE_APPEND);
     // Find items.
     // Please refer to existing callbacks in core for examples.
  
