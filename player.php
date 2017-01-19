@@ -28,15 +28,16 @@ include('menu.php');
 if ((isset ($SESSION->video_tags)) && (is_array($SESSION->video_tags))) {
 	$list=implode('","',$SESSION->video_tags);
 	$list='"'.$list.'"';
-	$videos = $DB->get_records_sql('SELECT v.*, CONCAT(firstname," ",lastname) as name 
-												FROM mdl_local_video_directory v 
-												LEFT JOIN mdl_user u on v.owner_id = u.id 
-												LEFT JOIN mdl_tag_instance ti on v.id=ti.itemid 
-												LEFT JOIN mdl_tag t on ti.tagid=t.id 
+	
+	$videos = $DB->get_records_sql('SELECT v.*, ' . $DB->sql_concat_join("' '", array("firstname", "lastname")) . ' AS name 
+												FROM {local_video_directory} v 
+												LEFT JOIN {user} u on v.owner_id = u.id 
+												LEFT JOIN {tag_instance} ti on v.id=ti.itemid 
+												LEFT JOIN {tag} t on ti.tagid=t.id 
 												WHERE ti.itemtype="local_video_directory" and t.name in (' . $list . ') 
 												GROUP by id ORDER BY id');
 } else {
-	$videos = $DB->get_records_sql('SELECT v.*, CONCAT(firstname," ",lastname) as name FROM {local_video_directory} v LEFT JOIN {user} u on v.owner_id = u.id ORDER BY v.id');
+	$videos = $DB->get_records_sql('SELECT v.*, ' . $DB->sql_concat_join("' '", array("firstname", "lastname")) . ' AS name FROM {local_video_directory} v LEFT JOIN {user} u on v.owner_id = u.id ORDER BY v.id');
 }
 
 
@@ -89,6 +90,7 @@ if (is_array($SESSION->video_tags)) {
 			$tagshtml .= '<li><a href="' . $CFG->wwwroot . '/local/video_directory/tag.php?from=player&action=add&tag=' . $key . '" class="label label-info ">' . $key . '</a></li>	'; 
 		}
 		$tagshtml .= '</ul>';
+		$video->thumb = str_replace(".png","-mini.png",$video->thumb);
 		echo '<div onclick="playVideoByID(' . $video->id . ',\'' . $video->orig_filename . '\')" class="single_in_player">' .
 			'<span class="image_container"><img src="' . $video -> thumb . '" class="thumb"><div class="length">'.
 			$video->length . '</div></span>' .
