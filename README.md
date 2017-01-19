@@ -2,7 +2,7 @@ This local plugin is for managing a video directory inside moodle.
 
 The idea of this plugin is that every allowed user can upload any kind of video to the system. The system convert it to mp4 and generate thumbnails.
 
-There's another reposiroty plugin, that works w/ this directory - and allow adding easilly video to everywhere using atto and media button.
+There's another repository plugin, that works w/ this directory - and allow adding easilly video to everywhere using atto and media button.
 
 _Installation_
 
