@@ -4,13 +4,11 @@ require_once('init.php');
 
 $PAGE->set_context(context_system::instance());
 
-
-
 if ((isset ($SESSION->video_tags)) && (is_array($SESSION->video_tags))) {
 	$list=implode('","',$SESSION->video_tags);
 	$list='"'.$list.'"';
 	if (is_siteadmin($USER)) {
-		$videos = $DB->get_records_sql('SELECT v.*, CONCAT(firstname," ",lastname) as name 
+		$videos = $DB->get_records_sql('SELECT v.*, ' . $DB->sql_concat_join("' '", array("firstname", "lastname")) . '  AS name 
 												FROM {local_video_directory} v 
 												LEFT JOIN {user} u on v.owner_id = u.id 
 												LEFT JOIN {tag_instance} ti on v.id=ti.itemid 
@@ -18,7 +16,7 @@ if ((isset ($SESSION->video_tags)) && (is_array($SESSION->video_tags))) {
 												WHERE ti.itemtype="local_video_directory" and t.name in (' . $list . ') 
 												GROUP by id');
 	} else {
-		$videos = $DB->get_records_sql('SELECT v.*, CONCAT(firstname," ",lastname) as name 
+		$videos = $DB->get_records_sql('SELECT v.*, ' . $DB->sql_concat_join("' '", array("firstname", "lastname")) . '  AS name 
 												FROM {local_video_directory} v 
 												LEFT JOIN {user} u on v.owner_id = u.id 
 												LEFT JOIN {tag_instance} ti on v.id=ti.itemid 
@@ -29,9 +27,9 @@ if ((isset ($SESSION->video_tags)) && (is_array($SESSION->video_tags))) {
 		}
 } else {
 	if (is_siteadmin($USER)) {
-		$videos = $DB->get_records_sql('SELECT v.*, CONCAT(firstname," ",lastname) as name FROM {local_video_directory} v LEFT JOIN {user} u on v.owner_id = u.id');
+		$videos = $DB->get_records_sql('SELECT v.*, ' . $DB->sql_concat_join("' '", array("firstname", "lastname")) . '  AS name FROM {local_video_directory} v LEFT JOIN {user} u on v.owner_id = u.id');
 	} else {
-		$videos = $DB->get_records_sql('SELECT v.*, CONCAT(firstname," ",lastname) as name FROM {local_video_directory} v LEFT JOIN {user} u on v.owner_id = u.id WHERE owner_id ='.$USER->id.' OR (private IS NULL OR private = 0)');
+		$videos = $DB->get_records_sql('SELECT v.*, ' . $DB->sql_concat_join("' '", array("firstname", "lastname")) . '  AS name FROM {local_video_directory} v LEFT JOIN {user} u on v.owner_id = u.id WHERE owner_id ='.$USER->id.' OR (private IS NULL OR private = 0)');
 	}
 }
 
