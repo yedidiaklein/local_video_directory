@@ -32,13 +32,13 @@ if ((isset ($SESSION->video_tags)) && (is_array($SESSION->video_tags))) {
 	$question_marks = substr($question_marks,0,-1);
 
 	$videos = $DB->get_records_sql('SELECT v.*, ' . $DB->sql_concat_join("' '", array("firstname", "lastname")) . ' AS name 
-												FROM {local_video_directory} v 
-												LEFT JOIN {user} u on v.owner_id = u.id 
-												LEFT JOIN {tag_instance} ti on v.id=ti.itemid 
-												LEFT JOIN {tag} t on ti.tagid=t.id 
-												WHERE ti.itemtype="local_video_directory" and t.name in (' . $question_marks . ') 
-												GROUP by id 
-												ORDER BY id', $SESSION->video_tags);
+								FROM {local_video_directory} v 
+								LEFT JOIN {user} u on v.owner_id = u.id 
+								LEFT JOIN {tag_instance} ti on v.id=ti.itemid 
+								LEFT JOIN {tag} t on ti.tagid=t.id 
+								WHERE ti.itemtype="local_video_directory" and t.name in (' . $question_marks . ') 
+								GROUP by id 
+								ORDER BY id', $SESSION->video_tags);
 } else {
 	$videos = $DB->get_records_sql('SELECT v.*, ' . $DB->sql_concat_join("' '", array("firstname", "lastname")) . ' AS name 
 									FROM {local_video_directory} v 
