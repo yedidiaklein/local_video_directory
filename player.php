@@ -28,29 +28,40 @@ include('menu.php');
 if ((isset ($SESSION->video_tags)) && (is_array($SESSION->video_tags))) {
 	$list=implode('","',$SESSION->video_tags);
 	$list='"'.$list.'"';
-	
+	$question_marks = str_repeat("?,", count($SESSION->video_tags));
+	$question_marks = substr($question_marks,0,-1);
+
 	$videos = $DB->get_records_sql('SELECT v.*, ' . $DB->sql_concat_join("' '", array("firstname", "lastname")) . ' AS name 
 												FROM {local_video_directory} v 
 												LEFT JOIN {user} u on v.owner_id = u.id 
 												LEFT JOIN {tag_instance} ti on v.id=ti.itemid 
 												LEFT JOIN {tag} t on ti.tagid=t.id 
-												WHERE ti.itemtype="local_video_directory" and t.name in (' . $list . ') 
-												GROUP by id ORDER BY id');
+												WHERE ti.itemtype="local_video_directory" and t.name in (' . $question_marks . ') 
+												GROUP by id 
+												ORDER BY id', $SESSION->video_tags);
 } else {
-	$videos = $DB->get_records_sql('SELECT v.*, ' . $DB->sql_concat_join("' '", array("firstname", "lastname")) . ' AS name FROM {local_video_directory} v LEFT JOIN {user} u on v.owner_id = u.id ORDER BY v.id');
+	$videos = $DB->get_records_sql('SELECT v.*, ' . $DB->sql_concat_join("' '", array("firstname", "lastname")) . ' AS name 
+									FROM {local_video_directory} v 
+									LEFT JOIN {user} u on v.owner_id = u.id 
+									ORDER BY v.id');
 }
 
 
 echo '<existing_tags>' . get_string('existing_tags','local_video_directory').':';
 //find all movies tags
-$alltags=$DB->get_records_sql('select distinct name from {tag_instance} ti LEFT JOIN {tag} t on ti.tagid=t.id where itemtype="local_video_directory" order by name');
+$alltags=$DB->get_records_sql('SELECT DISTINCT name 
+								FROM {tag_instance} ti 
+								LEFT JOIN {tag} t on ti.tagid=t.id 
+								WHERE itemtype="local_video_directory" 
+								ORDER BY name');
 
 echo '<span class="tag_list hideoverlimit videos">
     <ul class="inline-list">';
 
 foreach ($alltags as $key => $value) {
 	echo '<li>
-                <a href="' . $CFG->wwwroot . '/local/video_directory/tag.php?from=player&action=add&tag=' . $key . '" class="label label-info ">+ ' . $key . '</a>
+                <a href="' . $CFG->wwwroot . '/local/video_directory/tag.php?from=player&action=add&tag=' . 
+				$key . '" class="label label-info ">+ ' . $key . '</a>
           </li>	'; 
 }
 echo '</ul></span></existing_tags>';
@@ -62,7 +73,8 @@ if (is_array($SESSION->video_tags)) {
 
 	foreach ($SESSION->video_tags as $key => $value) {
 		echo '<li>
-                <a href="' . $CFG->wwwroot . '/local/video_directory/tag.php?from=player&action=remove&tag=' . $value . '" class="label label-info ">X ' . $value . '</a>
+                <a href="' . $CFG->wwwroot . '/local/video_directory/tag.php?from=player&action=remove&tag=' . 
+				$value . '" class="label label-info ">X ' . $value . '</a>
           </li>	'; 
 	}
 	echo '</ul></span></selected_tags>';
@@ -84,10 +96,14 @@ if (is_array($SESSION->video_tags)) {
 			$first = $video->id;
 			$first_title=$video->orig_filename;
 		}
-		$videotags=$DB->get_records_sql('select distinct name from {tag_instance} ti LEFT JOIN {tag} t on ti.tagid=t.id where itemtype="local_video_directory" and itemid=' . $video->id . ' order by name');
+		$videotags=$DB->get_records_sql('SELECT DISTINCT name 
+											FROM {tag_instance} ti 
+											LEFT JOIN {tag} t ON ti.tagid=t.id 
+											WHERE itemtype="local_video_directory" AND itemid = ? ORDER BY name',array($video->id));
 		$tagshtml = '<ul class="inline-list">';
 		foreach ($videotags as $key => $value) {
-			$tagshtml .= '<li><a href="' . $CFG->wwwroot . '/local/video_directory/tag.php?from=player&action=add&tag=' . $key . '" class="label label-info ">' . $key . '</a></li>	'; 
+			$tagshtml .= '<li><a href="' . $CFG->wwwroot . '/local/video_directory/tag.php?from=player&action=add&tag=' . 
+			$key . '" class="label label-info ">' . $key . '</a></li>	'; 
 		}
 		$tagshtml .= '</ul>';
 		$video->thumb = str_replace(".png","-mini.png",$video->thumb);
