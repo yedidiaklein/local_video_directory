@@ -4,9 +4,9 @@ require_once('init.php');
 require_once("$CFG->libdir/formslib.php");
 
 
-$ffmpeg = 		$settings -> ffmpeg;
-$streaming_url = 	$settings -> streaming.'/';
-$streaming_dir = 	$converted;
+$ffmpeg = $settings -> ffmpeg;
+$streaming_url = $settings -> streaming.'/';
+$streaming_dir = $converted;
 
 $id = optional_param('id',0, PARAM_INT);
 $seconds = array(3,7,12,20,60,120);
