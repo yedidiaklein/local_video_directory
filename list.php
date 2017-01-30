@@ -16,7 +16,7 @@ $PAGE->set_url('/local/video_directory/list.php');
 $PAGE->navbar->add(get_string('pluginname','local_video_directory'), new moodle_url('/local/video_directory/'));
 $PAGE->navbar->add(get_string('list','local_video_directory'));
 
-$PAGE->requires->js('/local/video_directory/jquery/DataTables/jquery.dataTables.min.js');
+$PAGE->requires->js('/local/video_directory/jquery/DataTables/jquery.dataTables.js');
 $PAGE->requires->css("/local/video_directory/jquery/DataTables/jquery.dataTables.css");
 $PAGE->requires->js(new moodle_url('/local/video_directory/js/list.js'));
 $PAGE->requires->css('/local/video_directory/style.css');
