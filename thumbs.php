@@ -20,6 +20,8 @@ $PAGE->set_context(context_system::instance());
 $PAGE->set_heading(get_string('thumb','local_video_directory'));
 $PAGE->set_title(get_string('thumb','local_video_directory'));
 $PAGE->set_url('/local/video_directory/thumbs.php');
+$PAGE->set_pagelayout('standard');
+
 $PAGE->navbar->add(get_string('thumb','local_video_directory'));
 
 class simplehtml_form extends moodleform {
