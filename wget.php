@@ -3,7 +3,6 @@
 require_once('init.php');
 require_once("$CFG->libdir/formslib.php");
 
-
 $PAGE->set_context(context_system::instance());
 $PAGE->set_heading(get_string('wget','local_video_directory'));
 $PAGE->set_title(get_string('wget','local_video_directory'));
@@ -67,6 +66,4 @@ if ($mform->is_cancelled()) {
     $mform->display();
 }
 
-
 echo $OUTPUT->footer();
-?>
