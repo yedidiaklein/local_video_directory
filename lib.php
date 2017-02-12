@@ -6,12 +6,12 @@ function local_video_directory_cron() {
 
 	include_once( $CFG->dirroot . "/local/video_directory/init.php");
 
-	$ffmpeg = 		$settings -> ffmpeg;
-	$streaming_url = 	$settings -> streaming.'/';
-	$ffprobe = 		$settings -> ffprobe;
-	$ffmpeg_settings = 	$settings -> ffmpeg_settings;
-	$thumbnail_seconds = 	$settings -> thumbnail_seconds;
-	$php = 			$settings -> php;
+	$ffmpeg = $settings->ffmpeg;
+	$streaming_url = $settings->streaming.'/';
+	$ffprobe = $settings->ffprobe;
+	$ffmpeg_settings = $settings->ffmpeg_settings;
+	$thumbnail_seconds = $settings->thumbnail_seconds;
+	$php = $settings->php;
 
 	$orig_dir = $uploaddir;
 	$streaming_dir = $converted;
@@ -26,9 +26,9 @@ function local_video_directory_cron() {
 		$update = $DB->update_record("local_video_directory",$record);
 
 		// Convert$
-		//$convert = $ffmpeg . " -i ". $orig_dir . $video->id . " -strict -2 -c:v libx264 -crf 22 -c:a aac -movflags faststart " . $streaming_dir . $video->id . ".mp4";
+		//$convert = '"' . $ffmpeg . '"' . " -i ". $orig_dir . $video->id . " -strict -2 -c:v libx264 -crf 22 -c:a aac -movflags faststart " . $streaming_dir . $video->id . ".mp4";
 		// ***  -pix_fmt yuv420p
-		$convert = $ffmpeg . " -i ". $orig_dir . $video->id . ' ' . $ffmpeg_settings . ' ' . $streaming_dir . $video->id . ".mp4";
+		$convert = '"' . $ffmpeg . '"' . " -i ". $orig_dir . $video->id . ' ' . $ffmpeg_settings . ' ' . $streaming_dir . $video->id . ".mp4";
 		exec( $convert );
 
 		// Check if was converted
@@ -40,8 +40,8 @@ function local_video_directory_cron() {
 			} else {
 				$timing = "00:00:05";
 			}
-			$thumb = $ffmpeg . " -i ". $orig_dir . $video->id . " -ss " . $timing . " -vframes 1 " . $streaming_dir . $video->id . ".png";
-			$thumb_mini = $ffmpeg . " -i ". $orig_dir . $video->id . " -ss " . $timing . " -vframes 1 -vf scale=100:-1 " . $streaming_dir . $video->id . "-mini.png";
+			$thumb = '"' . $ffmpeg . '"' . " -i ". $orig_dir . $video->id . " -ss " . $timing . " -vframes 1 " . $streaming_dir . $video->id . ".png";
+			$thumb_mini = '"' . $ffmpeg . '"' . " -i ". $orig_dir . $video->id . " -ss " . $timing . " -vframes 1 -vf scale=100:-1 " . $streaming_dir . $video->id . "-mini.png";
 
 			exec( $thumb );
 			exec( $thumb_mini );

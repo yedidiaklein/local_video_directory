@@ -36,17 +36,15 @@ class simplehtml_form extends moodleform {
 
 			$id = optional_param('id',0, PARAM_INT);
 			$length = optional_param('length','3:00:00', PARAM_RAW);
-
+			$length = $length ? $length : '3:00:00'; // in case present but falseish
 			$length = strtotime("1970-01-01 $length UTC");
-			
-			//$seconds = array(3,7,12,20,60,120);
 
 			foreach ($seconds as $second) {
-						if ($second < $length) {
-							$radioarray[] = $mform->createElement('radio', 'thumb', $second, $second . get_string('seconds'), $second);
-						}
+				if ($second < $length) {
+					$radioarray[] = $mform->createElement('radio', 'thumb', $second, $second . get_string('seconds'), $second);
+				}
 			}
-			
+
 			$mform->addGroup($radioarray, 'radioar', '', array(' '), false);
  		  
 			$mform->addElement('hidden', 'id', $id);

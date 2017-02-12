@@ -4,10 +4,12 @@ require_once('locallib.php');
 $selected = basename($_SERVER['SCRIPT_NAME']);
 
 $settings=get_config('local_video_directory');
-echo get_string('freedisk','local_video_directory') . ' : ' . human_filesize(disk_free_space($CFG->dataroot),2,$settings->df);
-
-echo "<videomenu><ul>";
-
+?>
+<div class="alert alert-default alert-block" role="alert">
+	<?= get_string('freedisk','local_video_directory') . ': ' . human_filesize(disk_free_space($CFG->dataroot), 2, $settings->df) ?>
+</div>
+<ul id='videomenu'>
+<?php
 $menu = array('list','player','upload','mass','wget');
 
 foreach ($menu as $item) {
@@ -18,7 +20,6 @@ foreach ($menu as $item) {
 			
 }
 
-
-echo "</ul></videomenu><br>";
-
 ?>
+</ul>
+<br>

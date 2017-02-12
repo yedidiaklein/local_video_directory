@@ -25,7 +25,6 @@ class simplehtml_form extends moodleform {
 
 		$id = optional_param('video_id', 0 , PARAM_INT);
 
-// This is stupid cause mform is stupid !!! --Yedidia
 		if ($id != 0) {
 			$video = $DB->get_record('local_video_directory',array("id" => $id));
 			$orig_filename = $video->orig_filename;
@@ -92,8 +91,6 @@ if ($mform->is_cancelled()) {
   
   	redirect($CFG->wwwroot . '/local/video_directory/list.php');
 } else {
-  // this branch is executed if the form is submitted but the data doesn't validate and the form should be redisplayed
-  // or on the first display of the form.
   //Set default data (if any)
   //  $mform->set_data($toform);
   //displays the form
@@ -102,7 +99,7 @@ if ($mform->is_cancelled()) {
 //	echo '<iframe src="play.php?video_id=' . $id . '" width="655" height="279" scrolling="no"></iframe>';
 	$video = $DB->get_record('local_video_directory',array("id" => $id));
   	echo '<video  width="655" height="279" controls preload="auto" poster="' . $video->thumb . '">
-  			<source src="' . $streaming_url . '/' . $id . '.mp4" type="video/mp4"">
+  			<source src="' . $CFG->wwwroot . '/' . $streaming_url . '/' . $id . '.mp4" type="video/mp4"">
   		  </video>';	
 
   		

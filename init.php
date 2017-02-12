@@ -3,7 +3,7 @@
 
 require_once( __DIR__ . '/../../config.php');
 
-$settings=get_config('local_video_directory');
+$settings = get_config('local_video_directory');
 
 if (!CLI_SCRIPT) {
 	require_login();
@@ -13,9 +13,7 @@ if (!CLI_SCRIPT) {
 	if (!cohort_is_member($settings->cohort, $USER->id) && !is_siteadmin($USER)) {
 		die("Access Denied (This Incident will be Reported....)");
 	}
-
 }
-
 
 // Variables for this plugin
 

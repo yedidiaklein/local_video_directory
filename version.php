@@ -24,10 +24,10 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-$plugin->version   = 2017012401;      // The current module version (Date: YYYYMMDDXX).
+$plugin->version   = 2017020901;      // The current module version (Date: YYYYMMDDXX).
 $plugin->requires  = 2016052300;      // Requires this Moodle version.
 $plugin->component = 'local_video_directory';// Full name of the plugin (used for diagnostics).
 $plugin->maturity = MATURITY_RC;
-$plugin->release = "3.1.2 (Build - 2016071300)";
+$plugin->release = "0.91 (Build - 2017020901)";
 
 $plugin->cron      = 1;
