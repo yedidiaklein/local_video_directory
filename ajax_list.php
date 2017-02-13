@@ -48,16 +48,17 @@ foreach ($videos as $video) {
 	
 	
 	if (($video->owner_id != $USER->id) && !is_siteadmin($USER)) {
-		$video -> actions = '<img id="play_video" onclick="play(\''.$video->streaming_url.'\')" " src="'. $CFG->wwwroot . '/local/video_directory/pix/play.svg" class="action_thumb">'; 
+		$video -> actions = '<img id="play_video" onclick="play(\'play.php?video_id='.$video->id.'\')" " src="'. $CFG->wwwroot . '/local/video_directory/pix/play.svg" class="action_thumb">'; 
 	} else { 
 		$video->actions = '<a href="' . $CFG->wwwroot . '/local/video_directory/delete.php?video_id=' . $video->id .'" title="delete" alt="delete">' .
 		'<img src="' . $CFG->wwwroot . '/local/video_directory/pix/delete.svg" class="action_thumb"></a> ' .
 		'<a href="' . $CFG->wwwroot . '/local/video_directory/edit.php?video_id=' . $video->id .'" title="edit" alt="edit">' .
 		'<img src="' . $CFG->wwwroot . '/local/video_directory/pix/pencil.svg" class="action_thumb"></a>
-		<img id="play_video" onclick="play(\''.$video->streaming_url.'\')" " src="'. $CFG->wwwroot . '/local/video_directory/pix/play.svg" class="action_thumb">';
+		<img id="play_video" onclick="play(\'play.php?video_id='.$video->id.'\')" " src="'. $CFG->wwwroot . '/local/video_directory/pix/play.svg" class="action_thumb">';
 	}
-	
-	$video->streaming_url = '<a target="_blank" href="' . $video->streaming_url .'" >' . $video->streaming_url . '</a>';
+
+        $video->streaming_url = '<a target="_blank" href="' . $video->streaming_url .'" >' . $video->streaming_url . '</a><br>';
+        $video->streaming_url .= '<a target="_blank" href="play.php?video_id=' . $video->id . '" >'. $CFG->wwwroot . '/local/video_directory/play.php?video_id=' . $video->id . '</a>';	
 	
 	if ($video->private) $checked = "checked";
 	else $checked = ""; 
