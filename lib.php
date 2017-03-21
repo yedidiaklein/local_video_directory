@@ -17,23 +17,18 @@ function local_video_directory_cron() {
 	$streaming_dir = $converted;
 
 	// check if we've to convert videos
-	$videos = $DB->get_records('local_video_directory',array("convert_status" => 1));
+	$videos = $DB->get_records('local_video_directory', array("convert_status" => 1));
 	// Move all video that have to be converted to Waiting.. state (4) just to make sure that there is not multiple cron that converts same files
-	$wait = $DB->execute('UPDATE {local_video_directory} SET convert_status=4 WHERE convert_status = 1');
+	$wait = $DB->execute('UPDATE {local_video_directory} SET convert_status = 4 WHERE convert_status = 1');
 	foreach ($videos as $video) {
 		// update convert_status to 2 (Converting....)
 		$record = array("id" => $video->id, "convert_status" => "2");
 		$update = $DB->update_record("local_video_directory",$record);
-
-		// Convert$
-		//$convert = '"' . $ffmpeg . '"' . " -i ". $orig_dir . $video->id . " -strict -2 -c:v libx264 -crf 22 -c:a aac -movflags faststart " . $streaming_dir . $video->id . ".mp4";
-		// ***  -pix_fmt yuv420p
 		$convert = '"' . $ffmpeg . '"' . " -i ". $orig_dir . $video->id . ' ' . $ffmpeg_settings . ' ' . $streaming_dir . $video->id . ".mp4";
 		exec( $convert );
 
 		// Check if was converted
 		if (file_exists($streaming_dir . $video->id . ".mp4")) {
-
 			// Get Video Thumbnail
 			if (is_numeric($thumbnail_seconds)) {
 				$timing = gmdate("H:i:s", $thumbnail_seconds);
@@ -58,7 +53,7 @@ function local_video_directory_cron() {
 							"convert_status" => "3", 
 							"streaming_url" => $streaming_url . $video->id . ".mp4", 
 							"filename" => $video->id . ".mp4",
-							"thumb" => $streaming_url . $video->id . ".png",
+							"thumb" => $video->id,
 							"length" => $length
 							);
 
@@ -73,46 +68,30 @@ function local_video_directory_cron() {
 		unlink($orig_dir . $video->id);
 	}
 
-// take care of wget table
-	$wgets=$DB->get_records('local_video_directory_wget',array("success" => 0));
+	// take care of wget table
+	$wgets = $DB->get_records('local_video_directory_wget', array("success" => 0));
+	
 	if ($wgets) {
 		foreach ($wgets as $wget) {
 			$record = array('id' => $wget->id,'success' => 1);
 			$update = $DB->update_record("local_video_directory_wget",$record);
-			exec($php.' ' . $CFG->dirroot . '/local/video_directory/scripts/wget.php ' . base64_encode($wget->url) . ' &');
+			exec($php . ' ' . $CFG->dirroot . '/local/video_directory/scripts/wget.php ' . base64_encode($wget->url) . ' &');
 		}
 	}
-
-	
 }
 
 function local_video_directory_extend_settings_navigation($settingsnav, $context) {
     global $CFG, $PAGE, $USER;
- 
-    // Only add this settings item on non-site course pages.
-    //if (!$PAGE->course or $PAGE->course->id == 1) {
-    //    return;
-    //}
- 
-    // Only let users with the appropriate capability see this settings item.
-    //if (!has_capability('moodle/backup:backupcourse', context_course::instance($PAGE->course->id))) {
-    //    return;
-    //}
-    
-    // Only if is admin is belong to the right cohort
-    
- 
-    if ($settingnode = $settingsnav->find('courseadmin', navigation_node::TYPE_COURSE)) {
 
+    if ($settingnode = $settingsnav->find('courseadmin', navigation_node::TYPE_COURSE)) {
         require_once($CFG->dirroot.'/cohort/lib.php');
         $settings=get_config('local_video_directory');
 
-	if (!cohort_is_member($settings->cohort, $USER->id) && !is_siteadmin($USER)) {
-		return ;
-	}
+		if (!cohort_is_member($settings->cohort, $USER->id) && !is_siteadmin($USER)) {
+			return ;
+		}
         
         $strfather = get_string('pluginname', 'local_video_directory');
-//        $url = new moodle_url('/local/video_directory/list.php', array('id' => $PAGE->course->id));
         $fathernode = navigation_node::create(
             $strfather,
             null,
@@ -122,8 +101,6 @@ function local_video_directory_extend_settings_navigation($settingsnav, $context
         );
 
         $settingnode->add_node($fathernode);
-
-        
         $strlist = get_string('list', 'local_video_directory');
         $url = new moodle_url('/local/video_directory/list.php', array('id' => $PAGE->course->id));
         $listnode = navigation_node::create(
@@ -134,10 +111,10 @@ function local_video_directory_extend_settings_navigation($settingsnav, $context
             'local_video_directory_list',
             new pix_icon('f/avi-24', $strlist)
         );
+		
         if ($PAGE->url->compare($url, URL_MATCH_BASE)) {
             $listnode->make_active();
         }
-        
         
         $strupload = get_string('upload', 'local_video_directory');
         $urlupload = new moodle_url('/local/video_directory/upload.php', array('id' => $PAGE->course->id));
@@ -149,13 +126,12 @@ function local_video_directory_extend_settings_navigation($settingsnav, $context
             'local_video_directory_upload',
             new pix_icon('t/addcontact', $strupload)
         );
+		
         if ($PAGE->url->compare($urlupload, URL_MATCH_BASE)) {
             $uploadnode->make_active();
         }
 
-
         $fathernode->add_node($listnode);
-        
         $fathernode->add_node($uploadnode);
     }
 }

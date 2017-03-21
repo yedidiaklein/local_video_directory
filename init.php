@@ -22,7 +22,7 @@ if (!file_exists($uploaddir)) {
    	mkdir($uploaddir, 0777, true);
 }
 
-$converted = $CFG->dataroot.'/videos/converted/';
+$converted = $CFG->dataroot . '/videos/converted/';
 if (!file_exists($converted)) {
    	mkdir($converted, 0777, true);
 }
@@ -32,7 +32,7 @@ if (!file_exists($massdir)) {
    	mkdir($massdir, 0777, true);
 }
 
-$wgetdir = $CFG->dataroot.'/videos/wget/';
+$wgetdir = $CFG->dataroot . '/videos/wget/';
 if (!file_exists($wgetdir)) {
    	mkdir($wgetdir, 0777, true);
 }

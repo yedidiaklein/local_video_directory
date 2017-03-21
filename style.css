@@ -8,7 +8,6 @@
 	padding: 0 0 2vw 10px;
 	min-width: 460px;
 }
-
 #videomenu li {
 	float: left;
 	position: relative;
@@ -100,14 +99,28 @@ existing_tags, selected_tags {
 	height:3vw;
 	display:block;
 	margin: 0 auto;
+	border: 3px solid teal;
+    border-radius: 5px;
 }
-
+.thumb:hover {
+	border-color: #60eaea;
+}
 .action_thumb {
 	height:2.2vw; 
 }
 
+#page-local-video_directory-thumbs #fgroup_id_radioar fieldset>span{
+	display: inline-block;
+	border: 1px solid gray;
+	padding: 5px;
+	border-radius: 8px;
+	margin: 3px;
+	width: 150px;
+	height: 87px;
+	vertical-align: top;
+}
 
-.buttons {
+.dir-ltr .buttons {
 	margin-left: 10vw;
 }
 
@@ -213,6 +226,11 @@ input.hidden_input:focus, input.hidden_input:hover  {
     border: 1px solid;
     background-color: white;
 	z-index: 5;
+	width:800px;
+	max-width: 100%;
+}
+#my-video{
+	width: 100%;
 }
 
 .videos ul {

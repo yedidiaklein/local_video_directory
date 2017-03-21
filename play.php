@@ -4,7 +4,7 @@ require_once('init.php');
 
 $id = required_param('video_id', PARAM_INT);
 
-$file = $converted.$id.".mp4";
+$file = "$converted$id.mp4";
 
 
 $fp = @fopen($file, 'rb');      
@@ -22,6 +22,7 @@ if (isset($_SERVER['HTTP_RANGE'])) {
     if (strpos($range, ',') !== false) {
         header('HTTP/1.1 416 Requested Range Not Satisfiable');
         header("Content-Range: bytes $start-$end/$size");
+        header("X-Data: filename $file");
         exit;      
     }              
     if ($range == '-') {            
@@ -35,6 +36,7 @@ if (isset($_SERVER['HTTP_RANGE'])) {
     if ($c_start > $c_end || $c_start > $size - 1 || $c_end >= $size) { 
         header('HTTP/1.1 416 Requested Range Not Satisfiable');
         header("Content-Range: bytes $start-$end/$size");
+        header("X-Data: filename $file");
         exit;      
     }
     $start  = $c_start;             

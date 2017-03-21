@@ -42,19 +42,14 @@ if ($mform->is_cancelled()) {
 } else if ($fromform = $mform->get_data()) {
   	$name = $mform->get_new_filename('userfile');
 	
-	$record=array('orig_filename' => $name , 'owner_id' => $USER->id);
+	$record = array('orig_filename' => $name , 'owner_id' => $USER->id);
 	if ((isset($fromform->private)) && ($fromform->private)) {
 		$record['private'] = 1;
 	}
 
 	$lastinsertid = $DB->insert_record('local_video_directory', $record);
 	$success = $mform->save_file('userfile', $uploaddir.$lastinsertid);
-
 	redirect($CFG->wwwroot . '/local/video_directory/list.php');
-	
-	
-  
-  	redirect($CFG->wwwroot . '/local/video_directory/list.php');
 } else {
 	echo $OUTPUT->header();
   		
