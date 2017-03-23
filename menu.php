@@ -10,7 +10,7 @@ $settings=get_config('local_video_directory');
 </div>
 <ul id='videomenu'>
 <?php
-$menu = array('list','player','upload','mass','wget');
+$menu = array('list','upload','mass','wget');
 
 foreach ($menu as $item) {
 	if ($item . '.php' == $selected)
