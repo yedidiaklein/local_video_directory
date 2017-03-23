@@ -69,3 +69,5 @@ $string['wget'] = 'Upload from Link';
 $string['wget_0'] = 'In Queue';
 $string['wget_1'] = 'Downloading...';
 $string['wget_2'] = 'Moved to Uploaded Files Area';
+$string['clicktochangethumb'] = 'Click to Change Thumb';
+

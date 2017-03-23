@@ -69,3 +69,4 @@ $string['wget'] = 'העלאה מקישור';
 $string['wget_0'] = 'בתור';
 $string['wget_1'] = 'בדרך';
 $string['wget_2'] = 'הועבר לאיזור הקבצים שהועלו מהשרת';
+$string['clicktochangethumb'] = 'לחצו כדי להחליף צלמית';
