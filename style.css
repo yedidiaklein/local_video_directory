@@ -85,10 +85,12 @@ transition: .2s;
 }
 
 
-existing_tags, selected_tags {
-	background-color: lightgrey;
-    padding: 1vw;
+.existing_tags, .selected_tags {
+    background-color: lightgrey;
+    padding: 14px 17px 1px;
     margin: 1vw;
+    border-radius: 10px;
+    border: 2px solid gray;
 }
 
 #tools {

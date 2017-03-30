@@ -20,11 +20,12 @@ function local_video_directory_cron() {
 	$videos = $DB->get_records('local_video_directory', array("convert_status" => 1));
 	// Move all video that have to be converted to Waiting.. state (4) just to make sure that there is not multiple cron that converts same files
 	$wait = $DB->execute('UPDATE {local_video_directory} SET convert_status = 4 WHERE convert_status = 1');
+	
 	foreach ($videos as $video) {
 		// update convert_status to 2 (Converting....)
 		$record = array("id" => $video->id, "convert_status" => "2");
 		$update = $DB->update_record("local_video_directory",$record);
-		$convert = '"' . $ffmpeg . '"' . " -i ". $orig_dir . $video->id . ' ' . $ffmpeg_settings . ' ' . $streaming_dir . $video->id . ".mp4";
+		$convert = '"' . $ffmpeg . '" -i ' . $orig_dir . $video->id . ' ' . $ffmpeg_settings . ' ' . $streaming_dir . $video->id . ".mp4";
 		exec( $convert );
 
 		// Check if was converted
@@ -35,8 +36,9 @@ function local_video_directory_cron() {
 			} else {
 				$timing = "00:00:05";
 			}
-			$thumb = '"' . $ffmpeg . '"' . " -i ". $orig_dir . $video->id . " -ss " . $timing . " -vframes 1 " . $streaming_dir . $video->id . ".png";
-			$thumb_mini = '"' . $ffmpeg . '"' . " -i ". $orig_dir . $video->id . " -ss " . $timing . " -vframes 1 -vf scale=100:-1 " . $streaming_dir . $video->id . "-mini.png";
+			
+			$thumb = '"' . $ffmpeg . '" -i ' . $orig_dir . $video->id . " -ss " . $timing . " -vframes 1 " . $streaming_dir . $video->id . ".png";
+			$thumb_mini = '"' . $ffmpeg . '" -i ' . $orig_dir . $video->id . " -ss " . $timing . " -vframes 1 -vf scale=100:-1 " . $streaming_dir . $video->id . "-mini.png";
 
 			exec( $thumb );
 			exec( $thumb_mini );

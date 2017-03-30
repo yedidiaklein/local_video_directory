@@ -37,7 +37,7 @@ echo '<div id="tools"><button id="datatable_ajax_reload">' . get_string('reload'
 
 echo '<button id="datatable_ajax_clear_tags">' . get_string('show_all', 'local_video_directory') . '</button>';
 
-echo '<existing_tags>' . get_string('existing_tags', 'local_video_directory').':';
+echo '<div class="existing_tags">' . get_string('existing_tags', 'local_video_directory').':';
 //find all movies tags
 $alltags=$DB->get_records_sql('SELECT DISTINCT name FROM {tag_instance} ti LEFT JOIN {tag} t on ti.tagid=t.id where itemtype = \'local_video_directory\' order by name');
 
@@ -49,19 +49,19 @@ foreach ($alltags as $key => $value) {
                 <a href="' . $CFG->wwwroot . '/local/video_directory/tag.php?action=add&tag=' . $key . '" class="label label-info ">+ ' . $key . '</a>
           </li>	'; 
 }
-echo '</ul></span></existing_tags>';
+echo '</ul></span></div>';
 
 if (is_array($SESSION->video_tags)) {
-	echo '<selected_tags>' . get_string('selected_tags', 'local_video_directory').':';
+	echo '<div class="selected_tags">' . get_string('selected_tags', 'local_video_directory').':';
 	echo '<span class="tag_list hideoverlimit videos">
     <ul class="inline-list">';
 
 	foreach ($SESSION->video_tags as $key => $value) {
 		echo '<li>
-                <a href="' . $CFG->wwwroot . '/local/video_directory/tag.php?action=remove&tag=' . $value . '" class="label label-info ">X ' . $value . '</a>
+                <a href="' . $CFG->wwwroot . '/local/video_directory/tag.php?action=remove&tag=' . $value . '" class="label label-info "> &times; ' . $value . '</a>
           </li>	'; 
 	}
-	echo '</ul></span></selected_tags>';
+	echo '</ul></span></div>';
 }
 
 ?>

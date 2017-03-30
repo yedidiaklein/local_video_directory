@@ -26,69 +26,100 @@ defined('MOODLE_INTERNAL') || die();
 
 if ( $hassiteconfig ){
 	$settings = new admin_settingpage( 'local_video_directory', 'Video System Settings' );
+	$iswin = strtoupper(substr(PHP_OS, 0, 3)) === 'WIN';
+
+	if ($iswin) {
+		$settings->add( new admin_setting_configtext(
+			'local_video_directory/ffmpegdrive',
+			get_string('ffmpegdrive', 'local_video_directory'),
+			get_string('ffmpegdrivedesc', 'local_video_directory'),
+			'',
+			PARAM_ALPHA
+		));
+	}
 
 	$settings->add( new admin_setting_configtext(
 		'local_video_directory/ffmpeg',
-		'Ffmpeg Path',
-		'Please enter the path to your local ffmpeg executable files including the executable filename itself. Windows users note: forward slashes are converted to backslashes.',
-		'/usr/bin/ffmpeg',
+		get_string('ffmpegpath', 'local_video_directory'),
+		get_string('ffmpegpathdesc', 'local_video_directory'),
+		$iswin ? '/ffmpeg/bin/ffmpeg.exe' : '/usr/bin/ffmpeg',
 		PARAM_PATH
 	));
+
+	if ($iswin) {
+		$settings->add( new admin_setting_configtext(
+			'local_video_directory/ffprobedrive',
+			get_string('ffprobedrive', 'local_video_directory'),
+			get_string('ffprobedrivedesc', 'local_video_directory'),
+			'',
+			PARAM_ALPHA
+		));
+	}
 
 	$settings->add( new admin_setting_configtext(
 		'local_video_directory/ffprobe',
-		'Ffprobe Path',
-		'Please enter the path to your local ffprobe executable file including the executable filename itself. Windows users note: backslashes are converted to forward slashes.',
-		'/usr/bin/ffprobe',
+		get_string('ffprobepath', 'local_video_directory'),
+		get_string('ffprobepathdesc', 'local_video_directory'),
+		$iswin ? '/ffmpeg/bin/ffprobe.exe' : '/usr/bin/ffprobe',
 		PARAM_PATH
 	));
 
+	if ($iswin) {
+		$settings->add( new admin_setting_configtext(
+			'local_video_directory/phpdrive',
+			get_string('phpdrive', 'local_video_directory'),
+			get_string('phpdrivedesc', 'local_video_directory'),
+			'',
+			PARAM_ALPHA
+		));
+	}
+
 	$settings->add( new admin_setting_configtext(
 		'local_video_directory/php',
-		'php path',
-		'Please enter the path to your local php executable file including the executable filename itself. Windows users note: backslashes are converted to forward slashes.',
-		'/usr/bin/php',
+		get_string('phppath', 'local_video_directory'),
+		get_string('phppathdesc', 'local_video_directory') . ($iswin ? get_string('xampplink', 'local_video_directory') : ''),
+		$iswin ? '/php/php' : '/usr/bin/php',
 		PARAM_PATH
 	));
 
 	$settings->add( new admin_setting_configtext(
 		'local_video_directory/streaming',
-		'Streaming Server URL',
-		'Please enter Here your Streaming Server URL Including Path',
+		get_string('streamingurl', 'local_video_directory'),
+		get_string('streamingurldesc', 'local_video_directory'),
 		$CFG->wwwroot . '/streaming',
 		PARAM_URL
  
 	)); 
  
-	// Add a setting field to the settings for this page
 	$settings->add( new admin_setting_configtext(
 		'local_video_directory/ffmpeg_settings',
-		'Ffmpeg Parameters',
-		'For Advanced Users - Ffmpeg conversion parameters',
+		get_string('ffmpegparameters', 'local_video_directory'),
+		get_string('ffmpegparametersdesc', 'local_video_directory'),
 		'-strict -2 -c:v libx264 -crf 22 -c:a aac -movflags faststart',
 		PARAM_TEXT
  
-	) );
+	));
+	
 	$settings->add( new admin_setting_configtext(
 		'local_video_directory/thumbnail_seconds',
-		'Thumbnail Seconds',
-		'Seconds From Video Starting for Default Thumbnail',
+		get_string('thumbnailseconds', 'local_video_directory'),
+		get_string('thumbnailsecondsdesc', 'local_video_directory'),
 		'5',
 		PARAM_INT
 	)); 
 
 	$settings->add( new admin_setting_configtext(
 		'local_video_directory/df',
-		'Alert on Low Free Disk Space (Bytes)',
-		'Show the Free Disk Space in Red (Bytes)',
-		'1000000000',
+		get_string('alertdiskspace', 'local_video_directory'),
+		get_string('alertdiskspacedesc', 'local_video_directory'),
+		'1000',
 		PARAM_INT
 	)); 
 
 	$settings->add( new admin_setting_configtext(
 		'local_video_directory/cohort',
-		'Cohort ID of allowed users',
-		'You should create a cohort, and set its ID here',
+		get_string('cohortallowed', 'local_video_directory'),
+		get_string('cohortalloweddesc', 'local_video_directory'),
 		'1',
 		PARAM_INT
 	)); 
