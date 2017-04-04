@@ -44,25 +44,19 @@ if (!CLI_SCRIPT) {
 	}
 }
 
-// Variables for this plugin
+// Directories for this plugin
+$dirs = array('uploaddir' => '/videos/',
+				'converted' => '/videos/converted/',
+				'massdir' => '/videos/mass/',
+				'wgetdir' => '/videos/wget/',
+				'multidir' => '/videos/multi/');
 
-$uploaddir = $CFG->dataroot.'/videos/';
-if (!file_exists($uploaddir)) {
-   	mkdir($uploaddir, 0777, true);
+foreach ($dirs as $key => $value) {
+	//add dataroot
+	$dirs[$key] = $CFG->dataroot.$value;
+	//create if doesn't exist
+	if (!file_exists($dirs[$key])) {
+   		mkdir($dirs[$key], 0777, true);
+	}
+	$$key = $dirs[$key];
 }
-
-$converted = $CFG->dataroot . '/videos/converted/';
-if (!file_exists($converted)) {
-   	mkdir($converted, 0777, true);
-}
-
-$massdir = $CFG->dataroot . '/videos/mass/';
-if (!file_exists($massdir)) {
-   	mkdir($massdir, 0777, true);
-}
-
-$wgetdir = $CFG->dataroot . '/videos/wget/';
-if (!file_exists($wgetdir)) {
-   	mkdir($wgetdir, 0777, true);
-}
-
