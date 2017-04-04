@@ -97,8 +97,7 @@ if ( $hassiteconfig ){
 		get_string('ffmpegparametersdesc', 'local_video_directory'),
 		'-strict -2 -c:v libx264 -crf 22 -c:a aac -movflags faststart',
 		PARAM_TEXT
- 
-	));
+ 	));
 	
 	$settings->add( new admin_setting_configtext(
 		'local_video_directory/thumbnail_seconds',
@@ -123,6 +122,22 @@ if ( $hassiteconfig ){
 		'1',
 		PARAM_INT
 	)); 
+
+	$settings->add( new admin_setting_configcheckbox(
+		'local_video_directory/multiresolution',
+		get_string('multiresolution', 'local_video_directory'),
+		get_string('multiresolutiondesc', 'local_video_directory'),
+		'0'
+	)); 
+
+	$settings->add( new admin_setting_configtext(
+		'local_video_directory/resolutions',
+		get_string('resolutions', 'local_video_directory'),
+		get_string('resolutionsdesc', 'local_video_directory'),
+		'1080,720,648,360,288,144',
+		PARAM_TEXT
+ 	));
+
 
 	// Create 
 	$ADMIN->add( 'localplugins', $settings );
