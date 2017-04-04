@@ -12,6 +12,9 @@ function local_video_directory_cron() {
 	$ffmpeg_settings = $settings->ffmpeg_settings;
 	$thumbnail_seconds = $settings->thumbnail_seconds;
 	$php = $settings->php;
+	$multiresolution = $settings->multiresolution;
+	$resolutions = $settings->resolutions;
+
 
 	$orig_dir = $uploaddir;
 	$streaming_dir = $converted;
@@ -50,15 +53,26 @@ function local_video_directory_cron() {
 			$array_length = explode(".", $length_output);
 			$length = $array_length[0];
 
+
+			$metadata=array();
+			$metafields = array("height" => "stream=height", "width" => "stream=width", "size" => "format=size");
+			foreach ($metafields as $key => $value) {
+				$metadata[$key] = exec($ffprobe . " -v error -show_entries " . $value . " -of default=noprint_wrappers=1:nokey=1 " . $streaming_dir . $video->id . ".mp4"); 
+			}
+
 			// update that converted and streaming URL
 			$record = array("id" => $video->id, 
 							"convert_status" => "3", 
 							"streaming_url" => $streaming_url . $video->id . ".mp4", 
 							"filename" => $video->id . ".mp4",
-							"thumb" => $video->id,
-							"length" => $length
+							"thumb" => $streaming_url . $video->id . ".png",
+							"length" => $length,
+							"height" => $metadata['height'],
+							"width" => $metadata['width'],
+							"size" => $metadata['size'],
+							"timecreated" => time(),
+							"timemodified" => time()
 							);
-
 
 			$update = $DB->update_record("local_video_directory",$record);
 		} else {
@@ -78,6 +92,13 @@ function local_video_directory_cron() {
 			$record = array('id' => $wget->id,'success' => 1);
 			$update = $DB->update_record("local_video_directory_wget",$record);
 			exec($php . ' ' . $CFG->dirroot . '/local/video_directory/scripts/wget.php ' . base64_encode($wget->url) . ' &');
+		}
+	}
+	if ($multiresolution) {
+		//create multi resolutions streams
+		$videos=$DB->get_records("local_video_directory", array('convert_status' => 3));
+		foreach ($videos as $video) {
+			create_dash($video -> id,$converted, $multidir, $ffmpeg,$resolutions);
 		}
 	}
 }
@@ -136,4 +157,51 @@ function local_video_directory_extend_settings_navigation($settingsnav, $context
         $fathernode->add_node($listnode);
         $fathernode->add_node($uploadnode);
     }
+}
+
+function create_dash($id,$converted, $dashdir, $ffmpeg,$resolutions) {
+	
+	global $DB, $CFG;
+
+	include_once( $CFG->dirroot . "/local/video_directory/init.php");
+	
+	//update state to 6 - creating dash streams
+	$DB->update_record("local_video_directory",array('id' => $id,'convert_status' => 6));
+
+	$video = $DB->get_record("local_video_directory",array('id' => $id));
+
+	//Multi resolutions for dash-ing
+	// first take care of current resolution
+	$cmd = $ffmpeg . " -i " . $converted . $id . ".mp4" . 
+	" -strict -2 -c:v libx264 -crf 22 -c:a aac -movflags faststart -x264opts 'keyint=24:min-keyint=24:no-scenecut' " . 
+	" " . $dashdir . $id . "_" . $video->height . ".mp4";
+	exec($cmd);
+	$record=array(	"video_id" => $id,
+					"height" => $video->height,
+					"filename" => $id . "_" . $video->height . ".mp4",
+					"datecreated" => time(),
+					"datemodified" => time()
+					);
+	$DB->insert_record("local_video_directory_multi",$record);
+
+	$resolutions = explode(",",$resolutions);
+
+	foreach ($resolutions as $resolution) {
+		if (($resolution < $video->height) && (is_numeric($resolution))) {
+			$cmd = $ffmpeg . " -i " . $converted . $id . ".mp4" . 
+			" -strict -2 -c:v libx264 -crf 22 -c:a aac -movflags faststart -x264opts 'keyint=24:min-keyint=24:no-scenecut' -vf scale=-2:" . 
+			$resolution . " " . $dashdir . $id . "_" . $resolution . ".mp4";
+			exec($cmd); 
+			$record=array(	"video_id" => $id,
+							"height" => $resolution,
+							"filename" => $id . "_" . $resolution . ".mp4",
+							"datecreated" => time(),
+							"datemodified" => time()
+						);
+			$DB->insert_record("local_video_directory_multi",$record);
+		}
+	}
+	//update state to 7 - ready + multi
+	$DB->update_record("local_video_directory",array('id' => $id,'convert_status' => 7));
+
 }

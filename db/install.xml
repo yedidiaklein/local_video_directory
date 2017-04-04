@@ -14,6 +14,11 @@
         <FIELD NAME="private" TYPE="int" LENGTH="1" NOTNULL="false" SEQUENCE="false"/>
         <FIELD NAME="streaming_url" TYPE="char" LENGTH="1000" NOTNULL="false" SEQUENCE="false"/>
         <FIELD NAME="length" TYPE="char" LENGTH="8" NOTNULL="false" SEQUENCE="false"/>
+        <FIELD NAME="width" TYPE="char" LENGTH="8" NOTNULL="false" SEQUENCE="false"/>
+        <FIELD NAME="size" TYPE="char" LENGTH="8" NOTNULL="false" SEQUENCE="false"/>
+        <FIELD NAME="timecreated" TYPE="char" LENGTH="8" NOTNULL="false" SEQUENCE="false"/>
+        <FIELD NAME="timemodified" TYPE="char" LENGTH="8" NOTNULL="false" SEQUENCE="false"/>
+        <FIELD NAME="height" TYPE="int" LENGTH="13" NOTNULL="false" SEQUENCE="false"/>
         <FIELD NAME="thumb" TYPE="char" LENGTH="250" NOTNULL="false" SEQUENCE="false"/>
       </FIELDS>
       <KEYS>
@@ -33,6 +38,20 @@
         <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
       </KEYS>
     </TABLE>
-    
+       <TABLE NAME="local_video_multi" COMMENT="multi resolutions for streaming">
+      <FIELDS>
+        <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true"/>
+        <FIELD NAME="video_id" TYPE="int" LENGTH="20" NOTNULL="true" SEQUENCE="false"/>
+        <FIELD NAME="width" TYPE="int" LENGTH="15" NOTNULL="false" SEQUENCE="false"/>
+        <FIELD NAME="height" TYPE="int" LENGTH="15" NOTNULL="false" SEQUENCE="false"/>
+        <FIELD NAME="size" TYPE="int" LENGTH="20" NOTNULL="false" SEQUENCE="false"/>
+        <FIELD NAME="filename" TYPE="char" LENGTH="200" NOTNULL="true" SEQUENCE="false"/>
+        <FIELD NAME="datecreated" TYPE="int" LENGTH="20" NOTNULL="false" SEQUENCE="false"/>
+        <FIELD NAME="datemodified" TYPE="int" LENGTH="20" NOTNULL="false" SEQUENCE="false"/>
+      </FIELDS>
+      <KEYS>
+        <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
+      </KEYS>
+    </TABLE>
   </TABLES>
 </XMLDB>

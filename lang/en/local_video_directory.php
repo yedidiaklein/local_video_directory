@@ -59,6 +59,8 @@ $string['state_2'] = 'File in Conversion';
 $string['state_3'] = 'File is Ready';
 $string['state_4'] = 'Waiting for Conversion';
 $string['state_5'] = 'Conversion Failed';
+$string['state_6'] = 'Creating Multi Resolution';
+$string['state_7'] = 'Ready + Multi Resolution';
 $string['streaming_url'] = 'Streaming URL';
 $string['tagarea_local_video'] = 'Videos';
 $string['tags'] = 'Tags';
@@ -96,4 +98,7 @@ $string['thumbnailsecondsdesc'] = 'How many seconds From video start to extract 
 $string['alertdiskspacedesc'] = 'Show the Free Disk Space in Red (MBytes)';
 $string['cohortalloweddesc'] = 'Cohort ID of allowed users';
 $string['cohortallowed'] = 'You can create a cohort for users allowed to manage and upload videos, and set its ID here';
-
+$string['multiresolution'] = 'Encode in multiple resolutions'; 
+$string['multiresolutiondesc'] = 'This is important for multi bit rate streaming using Nginx kaltura streaming module';
+$string['resolutions'] = 'Resolution to encode';
+$string['resolutionsdesc'] = 'Please insert list of resolutions (height) comma separated';
