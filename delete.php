@@ -28,9 +28,9 @@ class simplehtml_form extends moodleform {
 			if ($id != 0) {
 	 			$video = $DB -> get_record('local_video_directory',array('id' => $id)); 
  
- 				$mform->addElement('html', $video->orig_filename);
+                                $mform->addElement('html', $video->orig_filename);
  
-				$mform->addElement('hidden', 'thumb', $video->thumb);
+			        $mform->addElement('hidden', 'thumb', $video->thumb);
 			} else {
 				$mform->addElement('hidden', 'thumb', "");
 			}
