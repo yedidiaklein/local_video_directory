@@ -62,10 +62,10 @@ function xmldb_local_video_directory_upgrade($oldversion) {
 
         // Video_directory savepoint reached.
         upgrade_plugin_savepoint(true, 2017040403, 'local', 'video_directory');
-   	}
+       }
 
 
 }
 
-	
+    
 

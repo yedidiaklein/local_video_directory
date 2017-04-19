@@ -30,11 +30,11 @@ $value  = optional_param('value', "" ,PARAM_RAW);
 $field  = required_param('field', PARAM_RAW);
 
 if ($value != "") {
-	$record = array("id" => $id, $field => urldecode($value));	
+    $record = array("id" => $id, $field => urldecode($value));    
 } else {
-	$record = array("id" => $id, "private" => (int)$status);
+    $record = array("id" => $id, "private" => (int)$status);
 }
 
 if ($update = $DB->update_record("local_video_directory",$record)) {
-	echo '1';
+    echo '1';
 }

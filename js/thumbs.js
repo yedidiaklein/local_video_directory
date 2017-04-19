@@ -16,7 +16,7 @@ require(['jquery'], function($) {
 			});
 		},
 		ChangeRBText: function (rbId, html) {
-			$('#' + rbId).next().html(html);
+			$('#' + rbId).next(2).html(html);
 		}
 	}
 	

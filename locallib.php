@@ -3,16 +3,16 @@
 function human_filesize($bytes, $decimals = 2, $red = 0) {
   $sz = 'BKMGTP';
   $factor = floor((strlen($bytes) - 1) / 3);
-  	if (($red != 0) && ($bytes < $red))
-	  return '<df style="color:red">' . sprintf("%.{$decimals}f", $bytes / pow(1024, $factor)) . @$sz[$factor] . '</df>';
-	else 
-	  return '<df>' . sprintf("%.{$decimals}f", $bytes / pow(1024, $factor)) . @$sz[$factor] . '</df>';
-	
+      if (($red != 0) && ($bytes < $red))
+      return '<df style="color:red">' . sprintf("%.{$decimals}f", $bytes / pow(1024, $factor)) . @$sz[$factor] . '</df>';
+    else 
+      return '<df>' . sprintf("%.{$decimals}f", $bytes / pow(1024, $factor)) . @$sz[$factor] . '</df>';
+    
 }
 
 function local_video_directory_get_tagged_pages($tag, $exclusivemode = false, $fromctx = 0, $ctx = 0, $rec = 1, $page = 0) {
-	global $CFG;
-	//file_put_contents( $CFG->dataroot . "/tags.log", $tag, FILE_APPEND);
+    global $CFG;
+    //file_put_contents( $CFG->dataroot . "/tags.log", $tag, FILE_APPEND);
     // Find items.
     // Please refer to existing callbacks in core for examples.
  
@@ -42,5 +42,5 @@ function local_video_directory_get_tagged_pages($tag, $exclusivemode = false, $f
 //        return new core_tag\output\tagindex($tag, 'local_video_directory', 'local_video_directory', $content,
 //                $exclusivemode, $fromctx, $ctx, $rec, $page, $totalpages);
 //    }
-	return 1;
+    return 1;
 }
