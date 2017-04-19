@@ -25,10 +25,10 @@ $PAGE->set_context(context_system::instance());
 $videolist = array();
 
 if (isset($SESSION->video_tags) && is_array($SESSION->video_tags)) {
-	$list = implode("', '", $SESSION->video_tags);
-	$list = "'" . $list . "'";
-	if (is_siteadmin($USER)) {
-		$videos = $DB->get_records_sql('SELECT v.*, ' . $DB->sql_concat_join("' '", array("firstname", "lastname")) . ' AS name 
+        $list = implode("', '", $SESSION->video_tags);
+        $list = "'" . $list . "'";
+        if (is_siteadmin($USER)) {
+                 $videos = $DB->get_records_sql('SELECT v.*, ' . $DB->sql_concat_join("' '", array("firstname", "lastname")) . ' AS name 
 												FROM {local_video_directory} v 
 												LEFT JOIN {user} u on v.owner_id = u.id 
 												LEFT JOIN {tag_instance} ti on v.id=ti.itemid 
