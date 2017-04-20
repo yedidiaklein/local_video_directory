@@ -22,8 +22,6 @@
  * @license    http://www.gnu.org/copyleft/gpl.html gnu gpl v3 or later
  */
 
-defined('MOODLE_INTERNAL') || die();
-
 if ( $hassiteconfig ){
     $settings = new admin_settingpage( 'local_video_directory', 'Video System Settings' );
     $iswin = strtoupper(substr(PHP_OS, 0, 3)) === 'WIN';

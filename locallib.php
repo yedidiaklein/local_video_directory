@@ -18,7 +18,6 @@
  * @copyright  2017 Yedidia Klein <yedidia@openapp.co.il>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-defined('MOODLE_INTERNAL') || die();
 
 function human_filesize($bytes, $decimals = 2, $red = 0) {
   $sz = 'BKMGTP';
