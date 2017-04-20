@@ -1,4 +1,24 @@
 <?php
+// This file is part of Moodle - http://moodle.org/
+//
+// Moodle is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Moodle is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+/**
+ * @package    local_video_directory
+ * @copyright  2017 Yedidia Klein <yedidia@openapp.co.il>
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
+defined('MOODLE_INTERNAL') || die();
 
 function local_video_directory_cron() {
  
@@ -19,21 +39,21 @@ function local_video_directory_cron() {
     $orig_dir = $uploaddir;
     $streaming_dir = $converted;
 
-    // check if we've to convert videos
+    // check if we've to convert videos.
     $videos = $DB->get_records('local_video_directory', array("convert_status" => 1));
-    // Move all video that have to be converted to Waiting.. state (4) just to make sure that there is not multiple cron that converts same files
+    // Move all video that have to be converted to Waiting.. state (4) just to make sure that there is not multiple cron that converts same files.
     $wait = $DB->execute('UPDATE {local_video_directory} SET convert_status = 4 WHERE convert_status = 1');
     
     foreach ($videos as $video) {
-        // update convert_status to 2 (Converting....)
+        // update convert_status to 2 (Converting....).
         $record = array("id" => $video->id, "convert_status" => "2");
         $update = $DB->update_record("local_video_directory",$record);
         $convert = '"' . $ffmpeg . '" -i ' . $orig_dir . $video->id . ' ' . $ffmpeg_settings . ' ' . $streaming_dir . $video->id . ".mp4";
         exec( $convert );
 
-        // Check if was converted
+        // Check if was converted.
         if (file_exists($streaming_dir . $video->id . ".mp4")) {
-            // Get Video Thumbnail
+            // Get Video Thumbnail.
             if (is_numeric($thumbnail_seconds)) {
                 $timing = gmdate("H:i:s", $thumbnail_seconds);
             } else {
@@ -46,7 +66,7 @@ function local_video_directory_cron() {
             exec( $thumb );
             exec( $thumb_mini );
 
-            //get video length
+            //get video length.
             $length_cmd = $ffprobe ." -v error -show_entries format=duration -sexagesimal -of default=noprint_wrappers=1:nokey=1 " . $streaming_dir . $video->id . ".mp4";
             $length_output = exec( $length_cmd );
             // remove data after .
@@ -60,7 +80,7 @@ function local_video_directory_cron() {
                 $metadata[$key] = exec($ffprobe . " -v error -show_entries " . $value . " -of default=noprint_wrappers=1:nokey=1 " . $streaming_dir . $video->id . ".mp4"); 
             }
 
-            // update that converted and streaming URL
+            // update that converted and streaming URL.
             $record = array("id" => $video->id, 
                             "convert_status" => "3", 
                             "streaming_url" => $streaming_url . $video->id . ".mp4", 
@@ -76,15 +96,15 @@ function local_video_directory_cron() {
 
             $update = $DB->update_record("local_video_directory",$record);
         } else {
-            // update that converted and streaming URL
+            // update that converted and streaming URL.
             $record = array("id" => $video->id, "convert_status" => "5");
             $update = $DB->update_record("local_video_directory",$record);            
         }
-        //delete original file
+        //delete original file.
         unlink($orig_dir . $video->id);
     }
 
-    // take care of wget table
+    // take care of wget table.
     $wgets = $DB->get_records('local_video_directory_wget', array("success" => 0));
     
     if ($wgets) {
@@ -95,7 +115,7 @@ function local_video_directory_cron() {
         }
     }
     if ($multiresolution) {
-        //create multi resolutions streams
+        //create multi resolutions streams.
         $videos=$DB->get_records("local_video_directory", array('convert_status' => 3));
         foreach ($videos as $video) {
             create_dash($video -> id,$converted, $multidir, $ffmpeg,$resolutions);
@@ -165,13 +185,13 @@ function create_dash($id, $converted, $dashdir, $ffmpeg, $resolutions) {
 
     include_once( $CFG->dirroot . "/local/video_directory/init.php");
     
-    //update state to 6 - creating dash streams
+    //update state to 6 - creating dash streams.
     $DB->update_record("local_video_directory",array('id' => $id,'convert_status' => 6));
 
     $video = $DB->get_record("local_video_directory",array('id' => $id));
 
-    //Multi resolutions for dash-ing
-    // first take care of current resolution
+    //Multi resolutions for dash-ing.
+    // first take care of current resolution.
     $cmd = $ffmpeg . " -i " . $converted . $id . ".mp4" . 
     " -strict -2 -c:v libx264 -crf 22 -c:a aac -movflags faststart -x264opts 'keyint=24:min-keyint=24:no-scenecut' " . 
     " " . $dashdir . $id . "_" . $video->height . ".mp4";
@@ -201,7 +221,7 @@ function create_dash($id, $converted, $dashdir, $ffmpeg, $resolutions) {
             $DB->insert_record("local_video_directory_multi",$record);
         }
     }
-    //update state to 7 - ready + multi
+    //update state to 7 - ready + multi.
     $DB->update_record("local_video_directory",array('id' => $id,'convert_status' => 7));
 
 }
