@@ -1,5 +1,4 @@
 <?php
-
 function xmldb_local_video_directory_upgrade($oldversion) {
     global $DB;
     $dbman = $DB->get_manager();
@@ -19,7 +18,7 @@ function xmldb_local_video_directory_upgrade($oldversion) {
         $table->add_field('datecreated', XMLDB_TYPE_INTEGER, '20', null, null, null, null);
         $table->add_field('datemodified', XMLDB_TYPE_INTEGER, '20', null, null, null, null);
 
-        // Adding keys to table local_video_directory_multi
+        // Adding keys to table local_video_directory_multi.
         $table->add_key('primary', XMLDB_KEY_PRIMARY, array('id'));
 
         // Conditionally launch create table for local_video_directory_multi.
@@ -58,14 +57,8 @@ function xmldb_local_video_directory_upgrade($oldversion) {
             $dbman->add_field($table, $field);
         }
 
-
-
         // Video_directory savepoint reached.
         upgrade_plugin_savepoint(true, 2017040403, 'local', 'video_directory');
        }
-
-
+    return 1;
 }
-
-    
-
