@@ -94,7 +94,7 @@ if ( $hassiteconfig ){
         'local_video_directory/ffmpeg_settings',
         get_string('ffmpegparameters', 'local_video_directory'),
         get_string('ffmpegparametersdesc', 'local_video_directory'),
-        '-strict -2 -c:v libx264 -crf 22 -c:a aac -movflags faststart',
+        '-strict -2 -c:v libx264 -crf 22 -c:a aac -movflags faststart -vf "scale=trunc(iw/2)*2:trunc(ih/2)*2"',
         PARAM_TEXT
      ));
     
