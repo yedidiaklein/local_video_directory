@@ -19,6 +19,8 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 require_once 'init.php';
+defined('MOODLE_INTERNAL') || die();
+
 $ffmpeg = $settings->ffmpeg;
 $id = required_param('id', PARAM_INT);
 $second = required_param('second', PARAM_INT);

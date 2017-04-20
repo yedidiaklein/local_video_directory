@@ -20,6 +20,8 @@
  */
 
 require_once 'init.php';
+defined('MOODLE_INTERNAL') || die();
+
 $id = required_param('id',PARAM_INT);
 $second = optional_param('second', 0, PARAM_INT);
 $streaming_dir = $converted;

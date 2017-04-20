@@ -20,6 +20,8 @@
  */
 
 require_once('init.php');
+defined('MOODLE_INTERNAL') || die();
+
 require_once("$CFG->libdir/formslib.php");
 
 $streaming_url = $settings->streaming;

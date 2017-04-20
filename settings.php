@@ -21,6 +21,7 @@
  * @copyright  2016 OpenApp http://openapp.co.il
  * @license    http://www.gnu.org/copyleft/gpl.html gnu gpl v3 or later
  */
+defined('MOODLE_INTERNAL') || die();
 
 if ( $hassiteconfig ){
     $settings = new admin_settingpage( 'local_video_directory', 'Video System Settings' );

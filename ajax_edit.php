@@ -20,6 +20,7 @@
  */
 
 require_once('init.php');
+defined('MOODLE_INTERNAL') || die();
 
 $PAGE->set_context(context_system::instance());
 

@@ -20,6 +20,7 @@
  */
 
 require_once('init.php');
+defined('MOODLE_INTERNAL') || die();
 
 $tags = optional_param('tag',0, PARAM_RAW);
 

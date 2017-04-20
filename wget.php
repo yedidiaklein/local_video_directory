@@ -20,6 +20,8 @@
  */
 
 require_once('init.php');
+defined('MOODLE_INTERNAL') || die();
+
 require_once("$CFG->libdir/formslib.php");
 
 $PAGE->set_context(context_system::instance());
