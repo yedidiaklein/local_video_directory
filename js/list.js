@@ -6,19 +6,19 @@ require(['jquery', 'jqueryui', 'datatables'], function($, jqueryui, datatables) 
                 "url": M.cfg.wwwroot + '/local/video_directory/ajax_list.php',
                 "dataSrc": ""
             },
-            "order": [[ 2, "desc" ]],
+            "order": [[2, "desc"]],
             "columns": [
-                { "data": "actions" },
-                { "data": "thumb" },
-                { "data": "id" },
-                { "data": "name" },
-                { "data": "orig_filename" },
-                { "data": "filename" },
-                { "data": "length" },
-                { "data": "convert_status" },
-                { "data": "private" },
-                { "data": "streaming_url" },
-                { "data": "tags" }
+                {"data": "actions"},
+                {"data": "thumb"},
+                {"data": "id"},
+                {"data": "name"},
+                {"data": "orig_filename"},
+                {"data": "filename"},
+                {"data": "length"},
+                {"data": "convert_status"},
+                {"data": "private"},
+                {"data": "streaming_url"},
+                {"data": "tags"}
             ]
         });
         
@@ -37,15 +37,15 @@ require(['jquery', 'jqueryui', 'datatables'], function($, jqueryui, datatables) 
             var status = this.type == 'checkbox' ? this.checked : null;
             var value = this.type == 'checkbox' ? null : this.value;
             $.post(M.cfg.wwwroot + '/local/video_directory/ajax_edit.php', {field: field, id: id, value: value, status: status}, function (data){
-                // do nothing
+                // do nothing.
             })
             .fail(function() {
-                alert( "error" );
-            });            
+                alert("error");
+            });
         });
 
         $('.play_video').click(function () {
-            $("#video_player").show();                
+            $("#video_player").show();
         });
     });
 });
@@ -55,7 +55,7 @@ var local_video_directory = {
         var video = document.getElementById('my-video'), source = document.createElement('source');
         document.getElementById('video_player').style.display = 'block';
         video.pause();
-        source.setAttribute('src', stream); 
+        source.setAttribute('src', stream);
         video.appendChild(source);
         video.load();
         video.play();
