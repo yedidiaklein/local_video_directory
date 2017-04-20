@@ -48,9 +48,11 @@ if (isset($SESSION->video_tags) && is_array($SESSION->video_tags)) {
         }
 } else {
          if (is_siteadmin($USER)) {
-        $videos = $DB->get_records_sql('SELECT v.*, ' . $DB->sql_concat_join("' '", array("firstname", "lastname")) . ' AS name FROM {local_video_directory} v LEFT JOIN {user} u on v.owner_id = u.id');
+        $videos = $DB->get_records_sql('SELECT v.*, ' . $DB->sql_concat_join("' '", array("firstname", "lastname")) .
+        ' AS name FROM {local_video_directory} v LEFT JOIN {user} u on v.owner_id = u.id');
     } else {
-        $videos = $DB->get_records_sql('SELECT v.*, ' . $DB->sql_concat_join("' '", array("firstname", "lastname")) . ' AS name FROM {local_video_directory} v LEFT JOIN {user} u on v.owner_id = u.id WHERE owner_id =' . $USER->id . ' OR (private IS NULL OR private = 0)');
+        $videos = $DB->get_records_sql('SELECT v.*, ' . $DB->sql_concat_join("' '", array("firstname", "lastname")) .
+        ' AS name FROM {local_video_directory} v LEFT JOIN {user} u on v.owner_id = u.id WHERE owner_id =' . $USER->id . ' OR (private IS NULL OR private = 0)');
     }
 }
 foreach ($videos as $video) {
@@ -63,7 +65,8 @@ foreach ($videos as $video) {
     $thumbdata = explode('-', $video->thumb);
     $thumb_id = $thumbdata[0];
     $thumb_seconds = isset($thumbdata[1]) ? "&second=$thumbdata[1]" : '';
-    $video->thumb = "<a href='$CFG->wwwroot/local/video_directory/thumbs.php?id=$video->id' title='" . get_string('clicktochangethumb','local_video_directory') . "'>" . ($video->thumb ? "<img src='$CFG->wwwroot/local/video_directory/thumb.php?id=$thumb_id$thumb_seconds' class='thumb'>" : get_string('noimage', 'local_video_directory')) . "</a>";
+    $video->thumb = "<a href='$CFG->wwwroot/local/video_directory/thumbs.php?id=$video->id' title='" . get_string('clicktochangethumb','local_video_directory') ."'>" .
+                    ($video->thumb ? "<img src='$CFG->wwwroot/local/video_directory/thumb.php?id=$thumb_id$thumb_seconds' class='thumb'>" : get_string('noimage', 'local_video_directory')) . "</a>";
     if (file_exists("$CFG->dataroot/videos/converted/$video->id.mp4")) {
         $play_button = '<img class="play_video action_thumb" onclick="local_video_directory.play(\'play.php?video_id=' . $video->id . '\')" " src="' . $CFG->wwwroot . '/local/video_directory/pix/play.svg">';
     } else {

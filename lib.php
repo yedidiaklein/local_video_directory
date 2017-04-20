@@ -85,7 +85,7 @@ function local_video_directory_cron() {
                             "convert_status" => "3", 
                             "streaming_url" => $streaming_url . $video->id . ".mp4", 
                             "filename" => $video->id . ".mp4",
-                            "thumb" => $streaming_url . $video->id . ".png",
+                            "thumb" => $video->id,
                             "length" => $length,
                             "height" => $metadata['height'],
                             "width" => $metadata['width'],
