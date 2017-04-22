@@ -58,7 +58,7 @@ class simplehtml_form extends moodleform {
             $mform->setType('orig_filename', PARAM_RAW);
             $mform->setDefault('orig_filename',$orig_filename );        //Default value
 
-// For future implementation - map videos to courses. 
+// For future implementation - map videos to courses.
 /*           $courses = enrol_get_my_courses();
             $names = array();
             $ids = array();
