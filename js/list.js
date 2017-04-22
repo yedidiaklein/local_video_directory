@@ -56,7 +56,12 @@ var local_video_directory = {
         document.getElementById('video_player').style.display = 'block';
         video.pause();
         source.setAttribute('src', stream);
-        video.appendChild(source);
+        if (video.childElementCount == 1) {
+            video.replaceChild(source,video.childNodes[0]);
+        } else {
+            video.appendChild(source);
+        }
+        
         video.load();
         video.play();
     },

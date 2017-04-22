@@ -103,7 +103,7 @@ if ($mform->is_cancelled()) {
 } else if ($fromform = $mform->get_data()) {
   //In this case you process validated data. $mform->get_data() returns data posted in form.
 
-       $record = array("id" => $fromform->id, "orig_filename" => $fromform->orig_filename );
+    $record = array("id" => $fromform->id, "orig_filename" => $fromform->orig_filename );
     $update = $DB->update_record("local_video_directory",$record);
     $context = context_system::instance();
     core_tag_tag::set_item_tags('local_video_directory', 'local_video_directory', $fromform->id, $context, $fromform->tags);
