@@ -45,11 +45,12 @@ if (!CLI_SCRIPT) {
 }
 
 // Directories for this plugin
-$dirs = array('uploaddir' => '/videos/',
-                'converted' => '/videos/converted/',
-                'massdir' => '/videos/mass/',
-                'wgetdir' => '/videos/wget/',
-                'multidir' => '/videos/multi/');
+define('DS', DIRECTORY_SEPARATOR);
+$dirs = array('uploaddir' => DS . 'videos' . DS,
+                'converted' => DS . 'videos' . DS . 'converted' . DS,
+                'massdir' => DS . 'videos' . DS . 'mass' . DS,
+                'wgetdir' => DS . 'videos' . DS . 'wget' . DS,
+                'multidir' => DS . 'videos' . DS . 'multi' . DS);
 
 foreach ($dirs as $key => $value) {
     //add dataroot
