@@ -33,9 +33,9 @@ if (is_numeric($second)) {
 } else {
     $timing = "00:00:05";
 }
-
-$thumb = '"' . $ffmpeg . "\" -i ". $streaming_dir . $id . ".mp4 -ss " . $timing . " -vframes 1  -vf scale=100:-1 " . $streaming_dir . $id . "-" . $second . ".png";
-$output = exec($thumb);
+// Added -y for windows during execution it will ask wheather to Overwite or not [y/n] -y make overwrite always
+$thumb = '"' . $ffmpeg . '" -y -i ' . $streaming_dir . $id . ".mp4 -ss " . $timing . " -vframes 1  -vf scale=100:-1 " . $streaming_dir . $id . "-" . $second . ".png";
+$output = exec( $thumb );
 
 if (file_exists($streaming_dir . $id . "-" . $second . ".png")) {
     echo $CFG->wwwroot . '/local/video_directory/thumb.php?id=' . $id . "&second=" . $second;
