@@ -3,6 +3,16 @@ function xmldb_local_video_directory_upgrade($oldversion) {
     global $DB;
     $dbman = $DB->get_manager();
 
+    if ($oldversion < 2017043005) {
+        $table = new xmldb_table('local_video_directory');
+        $field = new xmldb_field('views', XMLDB_TYPE_INTEGER, '13', 0, XMLDB_NOTNULL, null, 0, 'length');
+        if (!$dbman->field_exists($table, $field)) {
+            $dbman->add_field($table, $field);
+        }
+        // Video_directory savepoint reached.
+        upgrade_plugin_savepoint(true, 2017043005, 'local', 'video_directory');
+    }
+
     if ($oldversion < 2017040403) {
 
         // Define table local_video_multi to be created.
