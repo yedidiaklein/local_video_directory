@@ -25,7 +25,7 @@ defined('MOODLE_INTERNAL') || die();
 require_once("$CFG->libdir/formslib.php");
 
 
-$ffmpeg = $settings -> ffmpeg;
+$ffmpeg = $settings->ffmpeg;
 $streaming_url = $settings -> streaming.'/';
 $streaming_dir = $converted;
 
@@ -53,11 +53,10 @@ $PAGE->navbar->add(get_string('thumb', 'local_video_directory'));
 class simplehtml_form extends moodleform {
     public function definition() {
         global $CFG, $DB, $seconds, $streaming_dir, $OUTPUT;
-
-            $mform = $this->_form; // Don't forget the underscore! 
+            $mform = $this->_form;
              
-             // LOOP from array seconds...
-              $radioarray = array();
+            // LOOP from array seconds...
+            $radioarray = array();
 
             $id = optional_param('id', 0, PARAM_INT);
             $length = $DB->get_field('local_video_directory', 'length', array('id' => $id));
@@ -87,25 +86,20 @@ class simplehtml_form extends moodleform {
     }
 }
 
-//Instantiate simplehtml_form 
 $mform = new simplehtml_form();
  
-//Form processing and displaying is done here
 if ($mform->is_cancelled()) {
-    //Handle form cancel operation, if cancel button is present on form
     redirect($CFG->wwwroot . '/local/video_directory/list.php');
 } else if ($fromform = $mform->get_data()) {
-    //In this case you process validated data. $mform->get_data() returns data posted in form.
-      $id = $fromform->id;
-       $record = array("id" => $id, "thumb" => $id . "-" . $fromform->thumb);
+    $id = $fromform->id;
+    $record = array("id" => $id, "thumb" => $id . "-" . $fromform->thumb);
     $update = $DB->update_record("local_video_directory", $record);
     
-    //generate also the big thumb and rename the small one
+    //generate the big thumb and rename the small one
     rename($streaming_dir . $id . "-" . $fromform->thumb . ".png", $streaming_dir . $id . "-" . $fromform->thumb . "-mini.png");
     $timing = gmdate("H:i:s", $fromform->thumb );
-    $thumb = $ffmpeg . " -i ". $streaming_dir . $id . ".mp4 -ss " . $timing . " -vframes 1 " . $streaming_dir . $id . "-" . $fromform->thumb . ".png";
-    exec ( $thumb );
-    
+    $thumb = '"' . $ffmpeg . '" -i ' . $streaming_dir . $id . ".mp4 -ss " . $timing . " -vframes 1 " . $streaming_dir . $id . "-" . $fromform->thumb . ".png -y";
+    $output = exec ( $thumb );
 
     // delete all other thumbs...
     foreach ($seconds as $second) {
@@ -120,16 +114,13 @@ if ($mform->is_cancelled()) {
     
     // delete orig thumb
     $file = $converted . $id . '.png';
+    
     if (file_exists($file)) {
         unlink($file);
     }
-  
-      redirect($CFG->wwwroot . '/local/video_directory/list.php');
+
+    redirect($CFG->wwwroot . '/local/video_directory/list.php');
 } else {
-    // this branch is executed if the form is submitted but the data doesn't validate and the form should be redisplayed
-    // or on the first display of the form.
-    // Set default data (if any)
-    // $mform->set_data($toform);
     echo $OUTPUT->header();
     echo get_string('choose_thumb', 'local_video_directory') . '<br>';
           

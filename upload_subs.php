@@ -42,7 +42,7 @@ class simplehtml_form extends moodleform {
 
         $mform = $this->_form;
         if (file_exists($subsdir.$id.".vtt")) {
-            $subSize = human_filesize(filesize($subsdir.$id.".vtt"));
+            $subSize = local_video_directory_human_filesize(filesize($subsdir.$id.".vtt"));
             $mform->addElement('html', '<div class="alert alert-info alert-block fade in">'.get_string('subs_exist_in_size','local_video_directory').
             " ".$subSize. ' (<a href=subs.php?video_id=' . $id . '&download=1>Download</a> / <a href=delete_subs.php?video_id=' . $id . '>Delete</a>)</div>');
         } else {

@@ -29,7 +29,7 @@ $iswin = strtoupper(substr(PHP_OS, 0, 3)) === 'WIN';
 
 foreach ($shellcomponents as $sc) {
     if (isset($settings->$sc)) {
-        $settings->$sc = ($iswin && isset($settings->{$sc . 'drive'}) && preg_match('~^[a-z]$~', $settings->{$sc . 'drive'}) ? $settings->{$sc . 'drive'} . ":" . (strpos($settings->$sc, '/') === 0 ? '' : '/') : '') . $settings->$sc;
+        $settings->$sc = ($iswin && isset($settings->{$sc . 'drive'}) && preg_match('~^[a-z]$~', $settings->{$sc . 'drive'}) ? $settings->{$sc . 'drive'} . ":" . (strpos($settings->$sc, '/') === 0 ? '' : '/') : '') . ($iswin ? str_replace('/', DIRECTORY_SEPARATOR, $settings->$sc) : $settings->$sc);
     }
 }
 
@@ -45,13 +45,12 @@ if (!CLI_SCRIPT) {
 }
 
 // Directories for this plugin
-define('DS', DIRECTORY_SEPARATOR);
-$dirs = array('uploaddir' => DS . 'videos' . DS,
-                'converted' => DS . 'videos' . DS . 'converted' . DS,
-                'massdir' => DS . 'videos' . DS . 'mass' . DS,
-                'wgetdir' => DS . 'videos' . DS . 'wget' . DS,
-                'multidir' => DS . 'videos' . DS . 'multi' . DS,
-                'subsdir' => DS . 'videos' . DS . 'subs' . DS);
+$dirs = array('uploaddir' => DIRECTORY_SEPARATOR . 'videos' . DIRECTORY_SEPARATOR,
+              'converted' => DIRECTORY_SEPARATOR . 'videos' . DIRECTORY_SEPARATOR . 'converted' . DIRECTORY_SEPARATOR,
+                'massdir' => DIRECTORY_SEPARATOR . 'videos' . DIRECTORY_SEPARATOR . 'mass' . DIRECTORY_SEPARATOR,
+                'wgetdir' => DIRECTORY_SEPARATOR . 'videos' . DIRECTORY_SEPARATOR . 'wget' . DIRECTORY_SEPARATOR,
+               'multidir' => DIRECTORY_SEPARATOR . 'videos' . DIRECTORY_SEPARATOR . 'multi' . DIRECTORY_SEPARATOR,
+                'subsdir' => DIRECTORY_SEPARATOR . 'videos' . DIRECTORY_SEPARATOR . 'subs' . DIRECTORY_SEPARATOR);
 
 foreach ($dirs as $key => $value) {
     //add dataroot
