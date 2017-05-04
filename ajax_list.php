@@ -83,6 +83,12 @@ foreach ($videos as $video) {
         <a href="' . $CFG->wwwroot . '/local/video_directory/edit.php?video_id=' . $video->id .'" title="edit" alt="edit">
             <img src="' . $CFG->wwwroot . '/local/video_directory/pix/pencil.svg" class="action_thumb">
         </a>
+        <a href="' . $CFG->wwwroot . '/local/video_directory/upload_subs.php?id=' . $video->id .'" title="subtitles upload" alt="subtitles upload">
+            <img src="' . $CFG->wwwroot . '/local/video_directory/pix/subs';
+        if (!$video->subs) 
+            $video->actions .= "_grey";        
+        $video->actions .= '.svg" class="action_thumb">
+        </a>
         ' . $play_button;
     }
     $video->streaming_url = '<a target="_blank" href="' . $video->streaming_url .'" >' . $video->streaming_url . '</a><br>';

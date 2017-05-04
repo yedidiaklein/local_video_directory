@@ -50,7 +50,8 @@ $dirs = array('uploaddir' => DS . 'videos' . DS,
                 'converted' => DS . 'videos' . DS . 'converted' . DS,
                 'massdir' => DS . 'videos' . DS . 'mass' . DS,
                 'wgetdir' => DS . 'videos' . DS . 'wget' . DS,
-                'multidir' => DS . 'videos' . DS . 'multi' . DS);
+                'multidir' => DS . 'videos' . DS . 'multi' . DS,
+                'subsdir' => DS . 'videos' . DS . 'subs' . DS);
 
 foreach ($dirs as $key => $value) {
     //add dataroot

@@ -102,3 +102,6 @@ $string['multiresolution'] = 'Encode in multiple resolutions';
 $string['multiresolutiondesc'] = 'This is important for multi bit rate streaming using Nginx kaltura streaming module';
 $string['resolutions'] = 'Resolution to encode';
 $string['resolutionsdesc'] = 'Please insert list of resolutions (height) comma separated';
+$string['upload_subs'] = 'Subtitles Upload';
+$string['subs_exist_in_size'] = 'Subtitles file exist and is in size :';
+$string['no_file'] = 'File was not Uploaded Yet';

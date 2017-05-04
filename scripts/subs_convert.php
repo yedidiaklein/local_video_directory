@@ -13,18 +13,27 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
-
 /**
- * Version details.
- *
- * @package   local_video_directory
- * @copyright 2016 OpenApp By Yedidia Klein http://openapp.co.il
- * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * @package    local_video_directory
+ * @copyright  2017 Yedidia Klein <yedidia@openapp.co.il>
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
+// for subtitles conversion.
+//use Captioning;
+// use Captioning\Format\WebvttFile;
 
-$plugin->version   = 2017050400;      // The current module version (Date: YYYYMMDDXX).
-$plugin->requires  = 2016052300;      // Requires this Moodle version.
-$plugin->component = 'local_video_directory';// Full name of the plugin (used for diagnostics).
-$plugin->maturity = MATURITY_RC;
-$plugin->release = "0.92 (Build - 2017050400)";
-$plugin->cron      = 1;
+include("Captioning/Format/SubripFile.php");
+include("Captioning/Format/File.php");
+
+
+try {
+    // Save uploaded file.
+    //$success = $mform->save_file('userfile', $subsdir.$fromform->id.".srt");
+    // Convert to vtt.
+    $srt = new Captioning\Format\SubripFile("in.srt");
+    $srt->convertTo('webvtt')->save("out.vtt");
+    // Delete uploaded file.
+    //unlink("in.srt");
+} catch(Exception $e) {
+    echo "Error: ".$e->getMessage()."\n";
+}

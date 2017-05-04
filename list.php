@@ -67,7 +67,7 @@ echo '<span class="tag_list hideoverlimit videos">
 
 foreach ($alltags as $key => $value) {
     echo '<li>
-                <a href="' . $CFG->wwwroot . '/local/video_directory/tag.php?action=add&tag=' . $key . '" class="label label-info ">+ ' . $key . '</a>
+                <a href="' . $CFG->wwwroot . '/local/video_directory/tag.php?action=add&tag=' . urlencode($key) . '" class="label label-info ">+ ' . $key . '</a>
           </li>    '; 
 }
 echo '</ul></span></div>';
@@ -79,7 +79,8 @@ if (is_array($SESSION->video_tags)) {
 
     foreach ($SESSION->video_tags as $key => $value) {
         echo '<li>
-                <a href="' . $CFG->wwwroot . '/local/video_directory/tag.php?action=remove&tag=' . $value . '" class="label label-info "> &times; ' . $value . '</a>
+                <a href="' . $CFG->wwwroot . '/local/video_directory/tag.php?action=remove&tag=' . 
+                urlencode($value) . '" class="label label-info "> &times; ' . $value . '</a>
           </li>    '; 
     }
     echo '</ul></span></div>';

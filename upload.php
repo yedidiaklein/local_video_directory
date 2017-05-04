@@ -61,7 +61,7 @@ $mform = new simplehtml_form();
 if ($mform->is_cancelled()) {
     redirect($CFG->wwwroot . '/local/video_directory/list.php');
 } else if ($fromform = $mform->get_data()) {
-      $name = $mform->get_new_filename('userfile');
+    $name = $mform->get_new_filename('userfile');
     
     $record = array('orig_filename' => $name , 'owner_id' => $USER->id);
     if ((isset($fromform->private)) && ($fromform->private)) {
