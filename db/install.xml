@@ -16,8 +16,8 @@
         <FIELD NAME="length" TYPE="char" LENGTH="8" NOTNULL="false" SEQUENCE="false"/>
         <FIELD NAME="width" TYPE="char" LENGTH="8" NOTNULL="false" SEQUENCE="false"/>
         <FIELD NAME="size" TYPE="char" LENGTH="8" NOTNULL="false" SEQUENCE="false"/>
-        <FIELD NAME="timecreated" TYPE="char" LENGTH="8" NOTNULL="false" SEQUENCE="false"/>
-        <FIELD NAME="timemodified" TYPE="char" LENGTH="8" NOTNULL="false" SEQUENCE="false"/>
+        <FIELD NAME="timecreated" TYPE="char" LENGTH="13" NOTNULL="false" SEQUENCE="false"/>
+        <FIELD NAME="timemodified" TYPE="char" LENGTH="13" NOTNULL="false" SEQUENCE="false"/>
         <FIELD NAME="height" TYPE="int" LENGTH="13" NOTNULL="false" SEQUENCE="false"/>
         <FIELD NAME="thumb" TYPE="char" LENGTH="250" NOTNULL="false" SEQUENCE="false"/>
         <FIELD NAME="views" TYPE="int" LENGTH="13" NOTNULL="true" DEFAULT="0" SEQUENCE="false"/>
@@ -40,7 +40,7 @@
         <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
       </KEYS>
     </TABLE>
-       <TABLE NAME="local_video_multi" COMMENT="multi resolutions for streaming">
+       <TABLE NAME="local_video_directory_multi" COMMENT="multi resolutions for streaming">
       <FIELDS>
         <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true"/>
         <FIELD NAME="video_id" TYPE="int" LENGTH="20" NOTNULL="true" SEQUENCE="false"/>
