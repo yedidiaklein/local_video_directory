@@ -48,7 +48,7 @@ class simplehtml_form extends moodleform {
  			$mform->addElement('checkbox', 'private', get_string('private', 'local_video_directory'));
 			$mform->setDefault('private','checked');
 			$mform->addElement('filemanager', 'attachments', get_string('file', 'moodle'), null,
-                    array('subdirs' => 3, 'areamaxbytes' => -1, 'maxfiles' => 50,
+                    array('subdirs' => 3, 'maxfiles' => 50,
                           'accepted_types' => array('audio','video'), 'return_types'=> FILE_INTERNAL | FILE_EXTERNAL));
 
  			if (empty($entry->id)) {
