@@ -28,10 +28,10 @@ $file = "$converted$id.mp4";
 
 
 $fp = @fopen($file, 'rb');      
-$size   = filesize($file); // File size 
+$size = filesize($file); // File size 
 $length = $size;           // Content length
-$start  = 0;               // Start byte
-$end    = $size - 1;       // End byte  
+$start = 0;               // Start byte
+$end = $size - 1;       // End byte  
 header('Content-type: video/mp4');
 header("Accept-Ranges: 0-$length");
 header("Accept-Ranges: bytes"); 
@@ -48,9 +48,9 @@ if (isset($_SERVER['HTTP_RANGE'])) {
     if ($range == '-') {            
         $c_start = $size - substr($range, 1);
     }else{         
-        $range  = explode('-', $range); 
+        $range = explode('-', $range); 
         $c_start = $range[0];           
-        $c_end   = (isset($range[1]) && is_numeric($range[1])) ? $range[1] : $size;
+        $c_end = (isset($range[1]) && is_numeric($range[1])) ? $range[1] : $size;
     }
     $c_end = ($c_end > $end) ? $end : $c_end;
     if ($c_start > $c_end || $c_start > $size - 1 || $c_end >= $size) { 
@@ -59,8 +59,8 @@ if (isset($_SERVER['HTTP_RANGE'])) {
         header("X-Data: filename $file");
         exit;      
     }
-    $start  = $c_start;             
-    $end    = $c_end;               
+    $start = $c_start;             
+    $end = $c_end;               
     $length = $end - $start + 1;    
     fseek($fp, $start);             
     header('HTTP/1.1 206 Partial Content');
