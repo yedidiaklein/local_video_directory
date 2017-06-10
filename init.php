@@ -19,7 +19,7 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-// This file is icluded on all module files and has global variables that are needed all over
+// This file is icluded on all module files and has global variables that are needed all over.
 
 require_once( __DIR__ . '/../../config.php');
 
@@ -29,7 +29,8 @@ $iswin = strtoupper(substr(PHP_OS, 0, 3)) === 'WIN';
 
 foreach ($shellcomponents as $sc) {
     if (isset($settings->$sc)) {
-        $settings->$sc = ($iswin && isset($settings->{$sc . 'drive'}) && preg_match('~^[a-z]$~', $settings->{$sc . 'drive'}) ? $settings->{$sc . 'drive'} . ":" . (strpos($settings->$sc, '/') === 0 ? '' : '/') : '') . ($iswin ? str_replace('/', DIRECTORY_SEPARATOR, $settings->$sc) : $settings->$sc);
+        $settings->$sc = ($iswin && isset($settings->{$sc . 'drive'}) && preg_match('~^[a-z]$~', $settings->{$sc . 'drive'}) ? $settings->{$sc . 'drive'} . 
+        ":" . (strpos($settings->$sc, '/') === 0 ? '' : '/') : '') . ($iswin ? str_replace('/', DIRECTORY_SEPARATOR, $settings->$sc) : $settings->$sc);
     }
 }
 

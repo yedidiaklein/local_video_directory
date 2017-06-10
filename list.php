@@ -60,15 +60,21 @@ echo '<button id="datatable_ajax_clear_tags">' . get_string('show_all', 'local_v
 
 echo '<div class="existing_tags">' . get_string('existing_tags', 'local_video_directory').':';
 //find all movies tags
-$alltags=$DB->get_records_sql('SELECT DISTINCT name FROM {tag_instance} ti LEFT JOIN {tag} t on ti.tagid=t.id where itemtype = \'local_video_directory\' order by name');
+$alltags=$DB->get_records_sql('SELECT DISTINCT name 
+                                FROM {tag_instance} ti 
+                                LEFT JOIN {tag} t 
+                                ON ti.tagid=t.id 
+                                WHERE itemtype = \'local_video_directory\' 
+                                ORDER BY name');
 
 echo '<span class="tag_list hideoverlimit videos">
     <ul class="inline-list">';
 
 foreach ($alltags as $key => $value) {
     echo '<li>
-                <a href="' . $CFG->wwwroot . '/local/video_directory/tag.php?action=add&tag=' . urlencode($key) . '" class="label label-info ">+ ' . $key . '</a>
-          </li>    '; 
+                <a href="' . $CFG->wwwroot . '/local/video_directory/tag.php?action=add&tag=' . 
+                urlencode($key) . '" class="label label-info ">+ ' . $key . '</a>
+          </li>'; 
 }
 echo '</ul></span></div>';
 

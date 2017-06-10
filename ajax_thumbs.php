@@ -18,13 +18,13 @@
  * @copyright  2017 Yedidia Klein <yedidia@openapp.co.il>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-require_once 'init.php';
+require_once('init.php');
 defined('MOODLE_INTERNAL') || die();
 
 $ffmpeg = $settings->ffmpeg;
 $id = required_param('id', PARAM_INT);
 $second = required_param('second', PARAM_INT);
-$streaming_dir = $converted;
+$streamingDir = $converted;
 
 $PAGE->set_context(context_system::instance());
 
@@ -34,10 +34,10 @@ if (is_numeric($second)) {
     $timing = "00:00:05";
 }
 // Added -y for windows during execution it will ask wheather to Overwite or not [y/n] -y make overwrite always
-$thumb = '"' . $ffmpeg . '" -y -i ' . $streaming_dir . $id . ".mp4 -ss " . $timing . " -vframes 1  -vf scale=100:-1 " . $streaming_dir . $id . "-" . $second . ".png";
+$thumb = '"' . $ffmpeg . '" -y -i ' . $streamingDir . $id . ".mp4 -ss " . $timing . " -vframes 1  -vf scale=100:-1 " . $streamingDir . $id . "-" . $second . ".png";
 $output = exec( $thumb );
 
-if (file_exists($streaming_dir . $id . "-" . $second . ".png")) {
+if (file_exists($streamingDir . $id . "-" . $second . ".png")) {
     echo $CFG->wwwroot . '/local/video_directory/thumb.php?id=' . $id . "&second=" . $second;
 } else {
     echo 'noimage';

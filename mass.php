@@ -41,10 +41,11 @@ class simplehtml_form extends moodleform {
 
         $mform->addElement('html', '<table class="generaltable">');
         $mform->addElement('html', '<tr><th style="width:10%">' .get_string('choose', 'local_video_directory'). '</th><th>' 
-                                . get_string('filename', 'local_video_directory') . '</th><th>' . get_string('size', 'local_video_directory') . '</th>'
+                                . get_string('filename', 'local_video_directory') . '</th><th>' 
+                                . get_string('size', 'local_video_directory') . '</th>'
                                 . '<th>' . get_string('download_status', 'local_video_directory') . '</th></tr>');
 
-        // files in download queue
+        // files in download queue.
         $wgets = $DB->get_records_sql('SELECT * FROM {local_video_directory_wget} WHERE owner_id= ?', array($USER->id));
         
         foreach ($wgets as $wget) {
@@ -104,24 +105,22 @@ if ($mform->is_cancelled()) {
             $tags = $fromform->tags;
             
             if ($directory != "/") {
-                // remove / at start and end
+                // remove / at start and end.
                 $directory = preg_replace(array("/^\//","/\/$/"), "" , $directory);
                 $directory = explode("/", $directory);
                 if (is_array($fromform->tags)) {
-                    $tags=array_merge($fromform->tags,$directory);
+                    $tags=array_merge($fromform->tags, $directory);
                 } else {
                     $tags=$directory;
                 }
             }
             $record=array('orig_filename' => $basename, 'owner_id' => $USER->id , 'private' => 1 );
             $lastinsertid = $DB->insert_record('local_video_directory', $record);
-            $copied = copy($massdir . '/' . $filename ,$uploaddir . $lastinsertid);
+            $copied = copy($massdir . '/' . $filename , $uploaddir . $lastinsertid);
             if ($copied) {
                 unlink($massdir . '/' . $filename);
             }
-
             core_tag_tag::set_item_tags('local_video_directory', 'local_video_directory', $lastinsertid, $context, $tags);
-            
         }
     }
     
@@ -129,27 +128,21 @@ if ($mform->is_cancelled()) {
     redirect($CFG->wwwroot . '/local/video_directory/list.php');
 } else {
     $PAGE->requires->css('/local/video_directory/style.css');
-  
     echo $OUTPUT->header();
-
-    require 'menu.php';
-  
+    require('menu.php');
     $mform->display();
 }
 
 echo $OUTPUT->footer();
 
-function listdir($start_dir='.') {
-
+function listdir($startDir='.') {
     $files = array();
-    
-    if (is_dir($start_dir)) {
-        $fh = opendir($start_dir);
-        
+    if (is_dir($startDir)) {
+        $fh = opendir($startDir);
         while (($file = readdir($fh)) !== false) {
-            # loop through the files, skipping . and .., and recursing if necessary
-            if (strcmp($file, '.')==0 || strcmp($file, '..')==0) continue;
-            $filepath = $start_dir . '/' . $file;
+            // loop through the files, skipping . and .., and recursing if necessary.
+            if (strcmp($file, '.') == 0 || strcmp($file, '..') == 0) continue;
+            $filepath = $startDir . '/' . $file;
             if ( is_dir($filepath) ) {
                 $files = array_merge($files, listdir($filepath));
             } else {
@@ -158,7 +151,7 @@ function listdir($start_dir='.') {
         }
         closedir($fh);
     } else {
-        # false if the function was called with an invalid non-directory argument
+        // false if the function was called with an invalid non-directory argument.
         $files = false;
     }
 

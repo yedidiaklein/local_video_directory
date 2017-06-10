@@ -26,10 +26,10 @@ $PAGE->set_context(context_system::instance());
 $videolist = array();
 
 if (isset($SESSION->video_tags) && is_array($SESSION->video_tags)) {
-        $list = implode("', '", $SESSION->video_tags);
-        $list = "'" . $list . "'";
-        if (is_siteadmin($USER)) {
-                 $videos = $DB->get_records_sql('SELECT v.*, ' . $DB->sql_concat_join("' '", array("firstname", "lastname")) . ' AS name
+    $list = implode("', '", $SESSION->video_tags);
+    $list = "'" . $list . "'";
+    if (is_siteadmin($USER)) {
+        $videos = $DB->get_records_sql('SELECT v.*, ' . $DB->sql_concat_join("' '", array("firstname", "lastname")) . ' AS name
                                                 FROM {local_video_directory} v
                                                 LEFT JOIN {user} u on v.owner_id = u.id
                                                 LEFT JOIN {tag_instance} ti on v.id=ti.itemid
@@ -45,14 +45,15 @@ if (isset($SESSION->video_tags) && is_array($SESSION->video_tags)) {
                                                 WHERE ti.itemtype = \'local_video_directory\' AND t.name IN (' . $list . ')
                                                 AND (owner_id =' . $USER->id . ' OR (private IS NULL OR private = 0))
                                                 GROUP by id');
-        }
+    }
 } else {
          if (is_siteadmin($USER)) {
         $videos = $DB->get_records_sql('SELECT v.*, ' . $DB->sql_concat_join("' '", array("firstname", "lastname")) .
         ' AS name FROM {local_video_directory} v LEFT JOIN {user} u on v.owner_id = u.id');
     } else {
         $videos = $DB->get_records_sql('SELECT v.*, ' . $DB->sql_concat_join("' '", array("firstname", "lastname")) .
-        ' AS name FROM {local_video_directory} v LEFT JOIN {user} u on v.owner_id = u.id WHERE owner_id =' . $USER->id . ' OR (private IS NULL OR private = 0)');
+        ' AS name FROM {local_video_directory} v LEFT JOIN {user} u on v.owner_id = u.id WHERE owner_id =' . $USER->id . 
+        ' OR (private IS NULL OR private = 0)');
     }
 }
 
@@ -65,19 +66,23 @@ foreach ($videos as $video) {
 	$OUTPUT->tag_list(core_tag_tag::get_item_tags('local_video_directory', 'local_video_directory', $video->id), "", 'videos'));
     $video->thumb = str_replace(".png", "-mini.png", $video->thumb);
     $thumbdata = explode('-', $video->thumb);
-    $thumb_id = $thumbdata[0];
+    $thumbId = $thumbdata[0];
     $thumb_seconds = isset($thumbdata[1]) ? "&second=$thumbdata[1]" : '';
-    $video->thumb = "<a href='$CFG->wwwroot/local/video_directory/thumbs.php?id=$video->id' title='" . get_string('clicktochangethumb','local_video_directory') . "'>" . ($video->thumb ? "<img src='$CFG->wwwroot/local/video_directory/thumb.php?id=$thumb_id$thumb_seconds' class='thumb'>" : get_string('noimage', 'local_video_directory')) . "</a>";
+    $video->thumb = "<a href='$CFG->wwwroot/local/video_directory/thumbs.php?id=$video->id' title='" . 
+        get_string('clicktochangethumb','local_video_directory') . 
+        "'>" . ($video->thumb ? "<img src='$CFG->wwwroot/local/video_directory/thumb.php?id=$thumbId$thumb_seconds' class='thumb'>"
+        : get_string('noimage', 'local_video_directory')) . "</a>";
 	
     if (file_exists("$CFG->dataroot/videos/converted/$video->id.mp4")) {
-        $play_button = '<img class="play_video action_thumb" onclick="local_video_directory.play(\'play.php?video_id=' . $video->id . '\')" " src="' . $CFG->wwwroot . '/local/video_directory/pix/play.svg">';
+        $playButton = '<img class="play_video action_thumb" onclick="local_video_directory.play(\'play.php?video_id=' . 
+        $video->id . '\')" " src="' . $CFG->wwwroot . '/local/video_directory/pix/play.svg">';
     } else {
-        $play_button = '';
+        $playButton = '';
         $video->convert_status .= '<br>' . get_string('awaitingconversion', 'local_video_directory');
     }
 	
     if (($video->owner_id != $USER->id) && !is_siteadmin($USER)) {
-        $video->actions = $play_button; 
+        $video->actions = $playButton; 
     } else { 
         $video->actions = '
         <a href="' . $CFG->wwwroot . '/local/video_directory/delete.php?video_id=' . $video->id . '" title="delete" alt="delete">
@@ -86,7 +91,8 @@ foreach ($videos as $video) {
         <a href="' . $CFG->wwwroot . '/local/video_directory/edit.php?video_id=' . $video->id .'" title="edit" alt="edit">
             <img src="' . $CFG->wwwroot . '/local/video_directory/pix/pencil.svg" class="action_thumb">
         </a>
-        <a href="' . $CFG->wwwroot . '/local/video_directory/upload_subs.php?id=' . $video->id .'" title="subtitles upload" alt="subtitles upload">
+        <a href="' . $CFG->wwwroot . '/local/video_directory/upload_subs.php?id=' . 
+        $video->id .'" title="subtitles upload" alt="subtitles upload">
             <img src="' . $CFG->wwwroot . '/local/video_directory/pix/subs';
         
 		if (!isset($video->subs)) {
@@ -95,11 +101,13 @@ foreach ($videos as $video) {
 		
 		$video->actions .= '.svg" class="action_thumb">
         </a>
-        ' . $play_button;
+        ' . $playButton;
     }
 	
     $video->streaming_url = '<a target="_blank" href="' . $video->streaming_url .'" >' . $video->streaming_url . '</a><br>';
-    $video->streaming_url .= '<a target="_blank" href="play.php?video_id=' . $video->id . '" >'. $CFG->wwwroot . '/local/video_directory/play.php?video_id=' . $video->id . '</a>';
+    $video->streaming_url .= '<a target="_blank" href="play.php?video_id=' . $video->id . '" >'. 
+        $CFG->wwwroot . '/local/video_directory/play.php?video_id=' . 
+        $video->id . '</a>';
 	
     if ($video->private) {
         $checked = "checked";
@@ -112,7 +120,8 @@ foreach ($videos as $video) {
          $video->private = '';
     } else { 
         $video->private = '<input type="checkbox" class="checkbox ajax_edit" id="private_' . $video->id . '" ' . $checked . '>';
-        $video->orig_filename = "<input type='text' class='hidden_input ajax_edit' id='orig_filename_" . $video->id . "' value='" . htmlspecialchars($video->orig_filename, ENT_QUOTES). "'>";        
+        $video->orig_filename = "<input type='text' class='hidden_input ajax_edit' id='orig_filename_" . 
+            $video->id . "' value='" . htmlspecialchars($video->orig_filename, ENT_QUOTES). "'>";        
     }    
 	
 	$videolist[] = $video;
