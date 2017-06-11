@@ -21,67 +21,69 @@
 defined('MOODLE_INTERNAL') || die();
 
 function local_video_directory_cron() {
- 
     global $CFG, $DB;
 
     include_once( $CFG->dirroot . "/local/video_directory/init.php");
 
     $ffmpeg = $settings->ffmpeg;
-    $streamingUrl = $settings->streaming.'/';
+    $streamingurl = $settings->streaming.'/';
     $ffprobe = $settings->ffprobe;
-    $ffmpegSettings = $settings->ffmpegSettings;
-    $thumbnailSeconds = $settings->thumbnailSeconds;
+    $ffmpegsettings = $settings->ffmpegsettings;
+    $thumbnailseconds = $settings->thumbnailseconds;
     $php = $settings->php;
     $multiresolution = $settings->multiresolution;
     $resolutions = $settings->resolutions;
-    $origDir = $uploaddir;
-    $streamingDir = $converted;
+    $origdir = $uploaddir;
+    $streamingdir = $converted;
 
-    // check if we've to convert videos.
+    // Check if we've to convert videos.
     $videos = $DB->get_records('local_video_directory', array("convert_status" => 1));
-    // Move all video that have to be converted to Waiting.. state (4) just to make sure that there is not multiple cron that converts same files.
+    // Move all video that have to be converted to Waiting.. state (4) just to make sure that there is not 
+    // multiple cron that converts same files.
     $wait = $DB->execute('UPDATE {local_video_directory} SET convert_status = 4 WHERE convert_status = 1');
-    
+
     foreach ($videos as $video) {
-        // update convert_status to 2 (Converting....).
+        // Update convert_status to 2 (Converting....).
         $record = array("id" => $video->id, "convert_status" => "2");
         $update = $DB->update_record("local_video_directory", $record);
-        $convert = '"' . $ffmpeg . '" -i ' . $origDir . $video->id . ' ' . $ffmpegSettings . ' ' . $streamingDir . $video->id . ".mp4";
+        $convert = '"' . $ffmpeg . '" -i ' . $origdir . $video->id . ' ' . $ffmpegsettings . ' ' .
+                $streamingdir . $video->id . ".mp4";
         exec($convert);
 
         // Check if was converted.
-        if (file_exists($streamingDir . $video->id . ".mp4")) {
+        if (file_exists($streamingdir . $video->id . ".mp4")) {
             // Get Video Thumbnail.
-            if (is_numeric($thumbnailSeconds)) {
-                $timing = gmdate("H:i:s", $thumbnailSeconds);
+            if (is_numeric($thumbnailseconds)) {
+                $timing = gmdate("H:i:s", $thumbnailseconds);
             } else {
                 $timing = "00:00:05";
             }
-            
-            $thumb = '"' . $ffmpeg . '" -i ' . $origDir . $video->id . " -ss " . $timing . " -vframes 1 " . $streamingDir . $video->id . ".png";
-            $thumb_mini = '"' . $ffmpeg . '" -i ' . $origDir . $video->id . " -ss " . $timing . " -vframes 1 -vf scale=100:-1 " . $streamingDir . $video->id . "-mini.png";
 
-            exec( $thumb );
-            exec( $thumb_mini );
+            $thumb = '"' . $ffmpeg . '" -i ' . $origdir . $video->id . " -ss " . $timing . " -vframes 1 " . $streamingdir . $video->id . ".png";
+            $thumbmini = '"' . $ffmpeg . '" -i ' . $origdir . $video->id . " -ss " . $timing . " -vframes 1 -vf scale=100:-1 " . $streamingdir . $video->id . "-mini.png";
 
-            //get video length.
-            $length_cmd = $ffprobe ." -v error -show_entries format=duration -sexagesimal -of default=noprint_wrappers=1:nokey=1 " . $streamingDir . $video->id . ".mp4";
-            $length_output = exec( $length_cmd );
-            // remove data after .
-            $array_length = explode(".", $length_output);
-            $length = $array_length[0];
+            exec($thumb);
+            exec($thumbmini);
+
+            // Get video length.
+            $lengthcmd = $ffprobe ." -v error -show_entries format=duration -sexagesimal -of default=noprint_wrappers=1:nokey=1 " . $streamingdir . $video->id . ".mp4";
+            $lengthoutput = exec( $lengthcmd );
+            // Remove data after .
+            $arraylength = explode(".", $lengthoutput);
+            $length = $arraylength[0];
 
 
-            $metadata=array();
+            $metadata = array();
             $metafields = array("height" => "stream=height", "width" => "stream=width", "size" => "format=size");
             foreach ($metafields as $key => $value) {
-                $metadata[$key] = exec($ffprobe . " -v error -show_entries " . $value . " -of default=noprint_wrappers=1:nokey=1 " . $streamingDir . $video->id . ".mp4"); 
+                $metadata[$key] = exec($ffprobe . " -v error -show_entries " . $value .
+                    " -of default=noprint_wrappers=1:nokey=1 " . $streamingdir . $video->id . ".mp4"); 
             }
 
-            // update that converted and streaming URL.
-            $record = array("id" => $video->id, 
-                            "convert_status" => "3", 
-                            "streamingUrl" => $streamingUrl . $video->id . ".mp4", 
+            // Update that converted and streaming URL.
+            $record = array("id" => $video->id,
+                            "convert_status" => "3",
+                            "streamingurl" => $streamingurl . $video->id . ".mp4",
                             "filename" => $video->id . ".mp4",
                             "thumb" => $video->id,
                             "length" => $length,
@@ -92,31 +94,31 @@ function local_video_directory_cron() {
                             "timemodified" => time()
                             );
 
-            $update = $DB->update_record("local_video_directory",$record);
+            $update = $DB->update_record("local_video_directory", $record);
         } else {
-            // update that converted and streaming URL.
+            // Update that converted and streaming URL.
             $record = array("id" => $video->id, "convert_status" => "5");
-            $update = $DB->update_record("local_video_directory", $record);            
+            $update = $DB->update_record("local_video_directory", $record);
         }
-        //delete original file.
-        unlink($origDir . $video->id);
+        // Delete original file.
+        unlink($origdir . $video->id);
     }
 
-    // take care of wget table.
+    // Take care of wget table.
     $wgets = $DB->get_records('local_video_directory_wget', array("success" => 0));
-    
+
     if ($wgets) {
         foreach ($wgets as $wget) {
-            $record = array('id' => $wget->id,'success' => 1);
+            $record = array('id' => $wget->id, 'success' => 1);
             $update = $DB->update_record("local_video_directory_wget", $record);
             exec($php . ' ' . $CFG->dirroot . '/local/video_directory/scripts/wget.php ' . base64_encode($wget->url) . ' &');
         }
     }
     if ($multiresolution) {
-        //create multi resolutions streams.
-        $videos=$DB->get_records("local_video_directory", array('convert_status' => 3));
+        // Create multi resolutions streams.
+        $videos = $DB->get_records("local_video_directory", array('convert_status' => 3));
         foreach ($videos as $video) {
-            create_dash($video -> id,$converted, $multidir, $ffmpeg, $resolutions);
+            create_dash($video->id, $converted, $multidir, $ffmpeg, $resolutions);
         }
     }
 }
@@ -126,12 +128,12 @@ function local_video_directory_extend_settings_navigation($settingsnav, $context
 
     if ($settingnode = $settingsnav->find('courseadmin', navigation_node::TYPE_COURSE)) {
         require_once($CFG->dirroot.'/cohort/lib.php');
-        $settings=get_config('local_video_directory');
+        $settings = get_config('local_video_directory');
 
         if (!cohort_is_member($settings->cohort, $USER->id) && !is_siteadmin($USER)) {
-            return ;
+            return;
         }
-        
+
         $strfather = get_string('pluginname', 'local_video_directory');
         $fathernode = navigation_node::create(
             $strfather,
@@ -167,7 +169,7 @@ function local_video_directory_extend_settings_navigation($settingsnav, $context
             'local_video_directory_upload',
             new pix_icon('t/addcontact', $strupload)
         );
-        
+
         if ($PAGE->url->compare($urlupload, URL_MATCH_BASE)) {
             $uploadnode->make_active();
         }
@@ -178,7 +180,6 @@ function local_video_directory_extend_settings_navigation($settingsnav, $context
 }
 
 function create_dash($id, $converted, $dashdir, $ffmpeg, $resolutions) {
-    
     global $DB, $CFG;
 
     include_once( $CFG->dirroot . "/local/video_directory/init.php");
@@ -201,15 +202,15 @@ function create_dash($id, $converted, $dashdir, $ffmpeg, $resolutions) {
                   "datemodified" => time());
     $DB->insert_record("local_video_directory_multi", $record);
 
-    $resolutions = explode(",",$resolutions);
+    $resolutions = explode(",", $resolutions);
 
     foreach ($resolutions as $resolution) {
         if (($resolution < $video->height) && (is_numeric($resolution))) {
-            $cmd = $ffmpeg . " -i " . $converted . $id . ".mp4" . 
+            $cmd = $ffmpeg . " -i " . $converted . $id . ".mp4" .
             " -strict -2 -c:v libx264 -crf 22 -c:a aac -movflags faststart -x264opts 'keyint=24:min-keyint=24:no-scenecut' -vf scale=-2:" . 
             $resolution . " " . $dashdir . $id . "_" . $resolution . ".mp4";
-            exec($cmd); 
-            $record=array("video_id" => $id,
+            exec($cmd);
+            $record = array("video_id" => $id,
                           "height" => $resolution,
                           "filename" => $id . "_" . $resolution . ".mp4",
                           "datecreated" => time(),

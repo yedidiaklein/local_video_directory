@@ -29,15 +29,17 @@ $iswin = strtoupper(substr(PHP_OS, 0, 3)) === 'WIN';
 
 foreach ($shellcomponents as $sc) {
     if (isset($settings->$sc)) {
-        $settings->$sc = ($iswin && isset($settings->{$sc . 'drive'}) && preg_match('~^[a-z]$~', $settings->{$sc . 'drive'}) ? $settings->{$sc . 'drive'} . 
-        ":" . (strpos($settings->$sc, '/') === 0 ? '' : '/') : '') . ($iswin ? str_replace('/', DIRECTORY_SEPARATOR, $settings->$sc) : $settings->$sc);
+        $settings->$sc = ($iswin && isset($settings->{$sc . 'drive'}) && preg_match('~^[a-z]$~', 
+        $settings->{$sc . 'drive'}) ? $settings->{$sc . 'drive'} .
+        ":" . (strpos($settings->$sc, '/') === 0 ? '' : '/') : '') .
+        ($iswin ? str_replace('/', DIRECTORY_SEPARATOR, $settings->$sc) : $settings->$sc);
     }
 }
 
 if (!CLI_SCRIPT) {
     require_login();
 
-    //check if user belong to the cohort or is admin
+    // Check if user belong to the cohort or is admin.
     require_once($CFG->dirroot.'/cohort/lib.php');
     
     if (!cohort_is_member($settings->cohort, $USER->id) && !is_siteadmin($USER)) {
@@ -45,7 +47,7 @@ if (!CLI_SCRIPT) {
     }
 }
 
-// Directories for this plugin
+// Directories for this plugin.
 $dirs = array('uploaddir' => DIRECTORY_SEPARATOR . 'videos' . DIRECTORY_SEPARATOR,
               'converted' => DIRECTORY_SEPARATOR . 'videos' . DIRECTORY_SEPARATOR . 'converted' . DIRECTORY_SEPARATOR,
                 'massdir' => DIRECTORY_SEPARATOR . 'videos' . DIRECTORY_SEPARATOR . 'mass' . DIRECTORY_SEPARATOR,
@@ -54,9 +56,9 @@ $dirs = array('uploaddir' => DIRECTORY_SEPARATOR . 'videos' . DIRECTORY_SEPARATO
                 'subsdir' => DIRECTORY_SEPARATOR . 'videos' . DIRECTORY_SEPARATOR . 'subs' . DIRECTORY_SEPARATOR);
 
 foreach ($dirs as $key => $value) {
-    //add dataroot
+    // Add dataroot.
     $dirs[$key] = $CFG->dataroot.$value;
-    //create if doesn't exist
+    // Create if doesn't exist.
     if (!file_exists($dirs[$key])) {
            mkdir($dirs[$key], 0777, true);
     }

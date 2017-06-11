@@ -24,7 +24,7 @@ defined('MOODLE_INTERNAL') || die();
 $ffmpeg = $settings->ffmpeg;
 $id = required_param('id', PARAM_INT);
 $second = required_param('second', PARAM_INT);
-$streamingDir = $converted;
+$streamingdir = $converted;
 
 $PAGE->set_context(context_system::instance());
 
@@ -33,11 +33,12 @@ if (is_numeric($second)) {
 } else {
     $timing = "00:00:05";
 }
-// Added -y for windows during execution it will ask wheather to Overwite or not [y/n] -y make overwrite always
-$thumb = '"' . $ffmpeg . '" -y -i ' . $streamingDir . $id . ".mp4 -ss " . $timing . " -vframes 1  -vf scale=100:-1 " . $streamingDir . $id . "-" . $second . ".png";
+// Added -y for windows during execution it will ask wheather to Overwite or not [y/n] -y make overwrite always.
+$thumb = '"' . $ffmpeg . '" -y -i ' . $streamingdir . $id . ".mp4 -ss " . $timing . " -vframes 1  -vf scale=100:-1 "
+        . $streamingdir . $id . "-" . $second . ".png";
 $output = exec( $thumb );
 
-if (file_exists($streamingDir . $id . "-" . $second . ".png")) {
+if (file_exists($streamingdir . $id . "-" . $second . ".png")) {
     echo $CFG->wwwroot . '/local/video_directory/thumb.php?id=' . $id . "&second=" . $second;
 } else {
     echo 'noimage';

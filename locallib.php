@@ -23,7 +23,7 @@ defined('MOODLE_INTERNAL') || die();
 function local_video_directory_human_filesize($bytes, $decimals = 2, $red = 0) {
     $sz = 'BKMGTP';
     $factor = floor((strlen($bytes) - 1) / 3);
-	
+
     if (($red != 0) && ($bytes < $red)) {
         return '<df style="color:red">' . sprintf("%.{$decimals}f", $bytes / pow(1024, $factor)) . @$sz[$factor] . '</df>';
     } else {
@@ -33,6 +33,7 @@ function local_video_directory_human_filesize($bytes, $decimals = 2, $red = 0) {
 
 function local_video_directory_get_tagged_pages($tag, $exclusivemode = false, $fromctx = 0, $ctx = 0, $rec = 1, $page = 0) {
     global $CFG;
-    $builder = new core_tag_index_builder('local_video_directory', 'local_video_directory', $query, $params, $page * $perpage, $perpage + 1);
+    $builder = new core_tag_index_builder('local_video_directory', 'local_video_directory',
+                $query, $params, $page * $perpage, $perpage + 1);
     return 1;
 }

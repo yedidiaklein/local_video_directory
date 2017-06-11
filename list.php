@@ -22,10 +22,10 @@
 require_once('init.php');
 defined('MOODLE_INTERNAL') || die();
 
-$tags = optional_param('tag',0, PARAM_RAW);
+$tags = optional_param('tag', 0, PARAM_RAW);
 
 if ($tags != '') {
-    $SESSION->video_tags = explode(', ',$tags);
+    $SESSION->video_tags = explode(', ', $tags);
 } else {
     $SESSION->video_tags = ' - ';
 }
@@ -45,26 +45,26 @@ $PAGE->requires->js('/local/video_directory/js/list.js');
 $PAGE->requires->css('/local/video_directory/style.css');
 
 
-//Table headers
+// Table headers.
 $PAGE->requires->strings_for_js(array('id', 'filename', 'private', 'streaming_url', 'owner', 'orig_filename', 'convert_status'),
     'local_video_directory');
 
 echo $OUTPUT->header();
 
-//Menu
-include('menu.php');
+// Menu.
+require('menu.php');
 
 echo '<div id="tools"><button id="datatable_ajax_reload">' . get_string('reload', 'local_video_directory') . '</button>';
 
 echo '<button id="datatable_ajax_clear_tags">' . get_string('show_all', 'local_video_directory') . '</button>';
 
 echo '<div class="existing_tags">' . get_string('existing_tags', 'local_video_directory').':';
-//find all movies tags
-$alltags=$DB->get_records_sql('SELECT DISTINCT name 
-                                FROM {tag_instance} ti 
-                                LEFT JOIN {tag} t 
-                                ON ti.tagid=t.id 
-                                WHERE itemtype = \'local_video_directory\' 
+// Find all movies tags.
+$alltags = $DB->get_records_sql('SELECT DISTINCT name 
+                                FROM {tag_instance} ti
+                                LEFT JOIN {tag} t
+                                ON ti.tagid=t.id
+                                WHERE itemtype = \'local_video_directory\'
                                 ORDER BY name');
 
 echo '<span class="tag_list hideoverlimit videos">
@@ -72,9 +72,9 @@ echo '<span class="tag_list hideoverlimit videos">
 
 foreach ($alltags as $key => $value) {
     echo '<li>
-                <a href="' . $CFG->wwwroot . '/local/video_directory/tag.php?action=add&tag=' . 
+                <a href="' . $CFG->wwwroot . '/local/video_directory/tag.php?action=add&tag=' .
                 urlencode($key) . '" class="label label-info ">+ ' . $key . '</a>
-          </li>'; 
+          </li>';
 }
 echo '</ul></span></div>';
 
@@ -85,9 +85,9 @@ if (is_array($SESSION->video_tags)) {
 
     foreach ($SESSION->video_tags as $key => $value) {
         echo '<li>
-                <a href="' . $CFG->wwwroot . '/local/video_directory/tag.php?action=remove&tag=' . 
+                <a href="' . $CFG->wwwroot . '/local/video_directory/tag.php?action=remove&tag=' .
                 urlencode($value) . '" class="label label-info "> &times; ' . $value . '</a>
-          </li>    '; 
+          </li>'; 
     }
     echo '</ul></span></div>';
 }
@@ -99,11 +99,12 @@ if (is_array($SESSION->video_tags)) {
     <thead>
         <tr>
 <?php
-$list_strings = array('actions', 'thumb', 'id', 'owner', 'orig_filename', 'filename', 'length', 'convert_status', 'private', 'streaming_url', 'tags');
+$liststrings = array('actions', 'thumb', 'id', 'owner', 'orig_filename', 'filename', 'length',
+                    'convert_status', 'private', 'streaming_url', 'tags');
 
-foreach($list_strings as $list_string) {
+foreach($liststrings as $liststring) {
 ?>
-            <th><?php echo get_string($list_string, 'local_video_directory') ?></th>
+            <th><?php echo get_string($liststring, 'local_video_directory') ?></th>
 <?php
 }
 ?>

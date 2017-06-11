@@ -25,7 +25,7 @@ defined('MOODLE_INTERNAL') || die();
 require_once("$CFG->libdir/formslib.php");
 
 
-$streamingUrl = $settings->streaming;
+$streamingurl = $settings->streaming;
 
 $id = optional_param('video_id', 0, PARAM_INT);
 
@@ -46,44 +46,45 @@ class simplehtml_form extends moodleform {
 
         if ($id != 0) {
             $video = $DB->get_record('local_video_directory', array("id" => $id));
-            $origFilename = $video->origFilename;
+            $origfilename = $video->origfilename;
         } else {
-            $origFilename = "";
+            $origfilename = "";
         }
         $mform = $this->_form;
 
-        $mform->addElement('text', 'origFilename', get_string('origFilename','local_video_directory')); // Add elements to your form
-        $mform->setType('origFilename', PARAM_RAW);
-        $mform->setDefault('origFilename',$origFilename );        //Default value
+        $mform->addElement('text', 'origfilename', get_string('origfilename', 'local_video_directory')); // Add elements to your form.
+        $mform->setType('origfilename', PARAM_RAW);
+        $mform->setDefault('origfilename', $origfilename ); // Default value.
 
-// For future implementation - map videos to courses.
-/*      $courses = enrol_get_my_courses();
+        // For future implementation - map videos to courses.
+        /*
+        $courses = enrol_get_my_courses();
         $names = array();
         $ids = array();
-        
+
         foreach ($courses as $course) {
             $names[] = $course->shortname;
             $ids[] = $course->id;
         }
-        
+
         $select = $mform->addElement('select', 'courses', get_string('courses'), $names, $ids);
         $select->setMultiple(true);
-*/            
+        */            
         $mform->addElement('hidden', 'id', $id);
         $mform->setType('id', PARAM_INT);
-            
-        $mform->addElement('tags', 'tags', get_string('tags'), array('itemtype' => 'local_video_directory', 'component' => 'local_video_directory'));
+
+        $mform->addElement('tags', 'tags', get_string('tags'),
+                    array('itemtype' => 'local_video_directory', 'component' => 'local_video_directory'));
         if ($id != 0) {
             $data = $DB->get_record('local_video_directory', array('id' => $id));
             $data->tags = core_tag_tag::get_item_tags_array('local_video_directory', 'local_video_directory', $id);
-            $mform->setDefault('tags',$data->tags);
+            $mform->setDefault('tags', $data->tags);
         }
-              
-        $buttonarray=array();
+
+        $buttonarray = array();
         $buttonarray[] =& $mform->createElement('submit', 'submitbutton', get_string('savechanges'));
         $buttonarray[] =& $mform->createElement('cancel', 'cancel', get_string('cancel'));
         $mform->addGroup($buttonarray, 'buttonar', '', array(' '), false);
-            
     }
 
     function validation($data, $files) {
@@ -92,11 +93,11 @@ class simplehtml_form extends moodleform {
 }
 
 $mform = new simplehtml_form();
- 
+
 if ($mform->is_cancelled()) {
     redirect($CFG->wwwroot . '/local/video_directory/list.php');
 } else if ($fromform = $mform->get_data()) {
-    $record = array("id" => $fromform->id, "origFilename" => $fromform->origFilename );
+    $record = array("id" => $fromform->id, "origfilename" => $fromform->origfilename );
     $update = $DB->update_record("local_video_directory", $record);
     $context = context_system::instance();
     core_tag_tag::set_item_tags('local_video_directory', 'local_video_directory', $fromform->id, $context, $fromform->tags);
@@ -104,10 +105,10 @@ if ($mform->is_cancelled()) {
 } else {
     echo $OUTPUT->header();
 
-    $video = $DB->get_record('local_video_directory',array("id" => $id));
+    $video = $DB->get_record('local_video_directory', array("id" => $id));
     echo '<video  width="655" height="279" controls preload="auto" poster="' . $video->thumb . '">
           <source src="play.php?video_id='. $id . '" type="video/mp4"">
-          </video>';    
+          </video>';
     $mform->display();
 }
 

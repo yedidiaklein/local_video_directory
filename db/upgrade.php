@@ -24,7 +24,7 @@ function xmldb_local_video_directory_upgrade($oldversion) {
     global $DB;
     $dbman = $DB->get_manager();
 
-if ($oldversion < 2017050400) {
+    if ($oldversion < 2017050400) {
         $table = new xmldb_table('local_video_directory');
         $field = new xmldb_field('subs', XMLDB_TYPE_INTEGER, '1', 0, XMLDB_NOTNULL, null, 0, 'length');
         if (!$dbman->field_exists($table, $field)) {
@@ -100,6 +100,6 @@ if ($oldversion < 2017050400) {
 
         // Video_directory savepoint reached.
         upgrade_plugin_savepoint(true, 2017040403, 'local', 'video_directory');
-       }
+    }
     return 1;
 }
