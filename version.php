@@ -22,9 +22,9 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-$plugin->version   = 2017050400;      // The current module version (Date: YYYYMMDDXX).
+$plugin->version   = 2017061100;      // The current module version (Date: YYYYMMDDXX).
 $plugin->requires  = 2016052300;      // Requires this Moodle version.
 $plugin->component = 'local_video_directory';// Full name of the plugin (used for diagnostics).
 $plugin->maturity = MATURITY_RC;
-$plugin->release = "0.92 (Build - 2017050400)";
+$plugin->release = "0.93 (Build - 2017061100)";
 $plugin->cron      = 1;
