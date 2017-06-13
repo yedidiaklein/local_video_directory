@@ -26,60 +26,50 @@ defined('MOODLE_INTERNAL') || die();
 require_once("$CFG->libdir/formslib.php");
 
 $PAGE->set_context(context_system::instance());
-$PAGE->set_heading(get_string('upload_subs','local_video_directory'));
-$PAGE->set_title(get_string('upload_subs','local_video_directory'));
+$PAGE->set_heading(get_string('upload_subs', 'local_video_directory'));
+$PAGE->set_title(get_string('upload_subs', 'local_video_directory'));
 $PAGE->set_url('/local/video_directory/upload_subs.php');
 $PAGE->set_pagelayout('standard');
 
-$PAGE->navbar->add(get_string('pluginname','local_video_directory'), new moodle_url('/local/video_directory/'));
-$PAGE->navbar->add(get_string('upload_subs','local_video_directory'));
+$PAGE->navbar->add(get_string('pluginname', 'local_video_directory'), new moodle_url('/local/video_directory/'));
+$PAGE->navbar->add(get_string('upload_subs', 'local_video_directory'));
 $PAGE->requires->css('/local/video_directory/style.css');
 
 class simplehtml_form extends moodleform {
     public function definition() {
-        global $CFG, $DB, $subsdir;
-        $id = required_param('id',PARAM_INT);
-
-        $mform = $this->_form;
-        if (file_exists($subsdir.$id.".vtt")) {
-            $subSize = local_video_directory_human_filesize(filesize($subsdir.$id.".vtt"));
-            $mform->addElement('html', '<div class="alert alert-info alert-block fade in">'.get_string('subs_exist_in_size','local_video_directory').
-            " ".$subSize. ' (<a href=subs.php?video_id=' . $id . '&download=1>Download</a> / <a href=delete_subs.php?video_id=' . $id . '>Delete</a>)</div>');
+    global $CFG, $DB, $subsdir;
+    $id = required_param('id', PARAM_INT);
+    $mform = $this->_form;
+    if (file_exists($subsdir.$id.".vtt")) {
+        $subsize = local_video_directory_human_filesize(filesize($subsdir.$id.".vtt"));
+        $mform->addElement('html', '<div class="alert alert-info alert-block fade in">'.get_string('subs_exist_in_size','local_video_directory').
+            " ".$subsize. ' (<a href=subs.php?video_id=' . $id
+            . '&download=1>Download</a> / <a href=delete_subs.php?video_id=' . $id
+            . '>Delete</a>)</div>');
         } else {
-            $mform->addElement('html', '<div class="alert alert-warning alert-block fade in">'.get_string('no_file','local_video_directory').'</div>');
+            $mform->addElement('html', '<div class="alert alert-warning alert-block fade in">'.get_string('no_file', 'local_video_directory').'</div>');
         }
 
         $mform->addElement('hidden', 'id', $id);
         $mform->setType('id', PARAM_INT);
 
         $mform->addElement('filepicker', 'userfile', get_string('file'), null, array('accepted_types' => '*'));
-        
-        $buttonarray=array();
+        $buttonarray = array();
         $buttonarray[] = $mform->createElement('submit', 'submitbutton', get_string('savechanges'));
         $buttonarray[] = $mform->createElement('cancel', 'cancel', get_string('cancel'));
         $mform->addGroup($buttonarray, 'buttonar', '', array(' '), false);
-            
     }
-    
+
     function validation($data, $files) {
         return array();
     }
 }
 
 $mform = new simplehtml_form();
- 
+
 if ($mform->is_cancelled()) {
     redirect($CFG->wwwroot . '/local/video_directory/list.php');
 } else if ($fromform = $mform->get_data()) {
-    //TODO :
-    // convert to vtt.
-    // supported formats:
-    // Subrip (.srt)
-    // WebVTT (.vtt)
-    // Substation Alpha (.ass)
-    // Youtube Subtitles (.sbv)
-    // JSON (TED.com) Subtitles (.json)
-    // [WIP] TTML (.dfxp)
     $name = $mform->get_new_filename('userfile');
     if (substr($name,-3) != "vtt") {
         if (substr($name,-3) == "srt") {
@@ -89,7 +79,7 @@ if ($mform->is_cancelled()) {
             $srt = file_get_contents($subsdir.$fromform->id.".srt");
             // Convert to vtt.
             $vtt = srt2vtt($srt);
-            file_put_contents($subsdir.$fromform->id.".vtt",$vtt);
+            file_put_contents($subsdir.$fromform->id.".vtt", $vtt);
             // Delete uploaded file.
             unlink($subsdir.$fromform->id.".srt");
         } else {
@@ -101,12 +91,11 @@ if ($mform->is_cancelled()) {
         $success = $mform->save_file('userfile', $subsdir.$fromform->id.".vtt");
     }
     $record = array("id" => $fromform->id, "subs" => 1);
-    $update = $DB->update_record("local_video_directory",$record);
+    $update = $DB->update_record("local_video_directory", $record);
     redirect($CFG->wwwroot . '/local/video_directory/list.php');
 } else {
     echo $OUTPUT->header();
-          
-    require 'menu.php';
+    require('menu.php');
     $mform->display();
 }
 

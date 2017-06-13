@@ -18,38 +18,34 @@
  * @copyright  2017 Yedidia Klein <yedidia@openapp.co.il>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
- 
+
 require_once('init.php');
 defined('MOODLE_INTERNAL') || die();
 
 require_once("$CFG->libdir/formslib.php");
 
 $PAGE->set_context(context_system::instance());
-$PAGE->set_heading(get_string('wget','local_video_directory'));
-$PAGE->set_title(get_string('wget','local_video_directory'));
+$PAGE->set_heading(get_string('wget', 'local_video_directory'));
+$PAGE->set_title(get_string('wget', 'local_video_directory'));
 $PAGE->set_url('/local/video_directory/wget.php');
 $PAGE->set_pagelayout('standard');
 
-$PAGE->navbar->add(get_string('pluginname','local_video_directory'), new moodle_url('/local/video_directory/'));
-$PAGE->navbar->add(get_string('wget','local_video_directory'));
+$PAGE->navbar->add(get_string('pluginname', 'local_video_directory'), new moodle_url('/local/video_directory/'));
+$PAGE->navbar->add(get_string('wget', 'local_video_directory'));
 $PAGE->requires->css('/local/video_directory/style.css');
 
 
 class simplehtml_form extends moodleform {
-    //Add elements to form
     public function definition() {
         global $CFG, $DB;
 
-            $mform = $this->_form; 
- 
-            $mform->addElement('text', 'url', get_string('wget','local_video_directory')); // Add elements to your form
-            $mform->setType('url', PARAM_URL);
-          
-            $buttonarray=array();
-            $buttonarray[] =& $mform->createElement('submit', 'submitbutton', get_string('savechanges'));
-            $buttonarray[] =& $mform->createElement('cancel', 'cancel', get_string('cancel'));
-            $mform->addGroup($buttonarray, 'buttonar', '', array(' '), false);
-            
+        $mform = $this->_form;
+        $mform->addElement('text', 'url', get_string('wget', 'local_video_directory'));
+        $mform->setType('url', PARAM_URL);
+        $buttonarray = array();
+        $buttonarray[] =& $mform->createElement('submit', 'submitbutton', get_string('savechanges'));
+        $buttonarray[] =& $mform->createElement('cancel', 'cancel', get_string('cancel'));
+        $mform->addGroup($buttonarray, 'buttonar', '', array(' '), false);
     }
 
     function validation($data, $files) {
@@ -58,20 +54,17 @@ class simplehtml_form extends moodleform {
 }
 
 $mform = new simplehtml_form();
- 
+
 if ($mform->is_cancelled()) {
     redirect($CFG->wwwroot . '/local/video_directory/list.php');
 } else if ($fromform = $mform->get_data()) {
-    $record = array("url" => $fromform->url,"owner_id" => $USER->id );
-    $update = $DB->insert_record("local_video_directory_wget",$record);
+    $record = array("url" => $fromform->url, "owner_id" => $USER->id );
+    $update = $DB->insert_record("local_video_directory_wget", $record);
     redirect($CFG->wwwroot . '/local/video_directory/mass.php');
 } else {
     echo $OUTPUT->header();
-
     include_once('menu.php');
-
-    echo get_string('url_download','local_video_directory').'<br>';
-          
+    echo get_string('url_download', 'local_video_directory').'<br>';
     $mform->display();
 }
 

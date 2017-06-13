@@ -1,6 +1,6 @@
 require.config({catchError:true});
 require(['jquery', 'jqueryui', 'datatables'], function($, jqueryui, datatables) {
-    $( document ).ready(function() {
+    $(document).ready(function() {
         var table = $("#video_table").DataTable({
             "ajax": {
                 "url": M.cfg.wwwroot + '/local/video_directory/ajax_list.php',
@@ -21,12 +21,12 @@ require(['jquery', 'jqueryui', 'datatables'], function($, jqueryui, datatables) 
                 {"data": "tags"}
             ]
         });
-        
-        $('#datatable_ajax_reload').click(function(){
+
+        $('#datatable_ajax_reload').click(function() {
             table.ajax.reload();
         });
 
-        $('#datatable_ajax_clear_tags').click(function(){
+        $('#datatable_ajax_clear_tags').click(function() {
             window.location = 'list.php';
         });
 
@@ -36,7 +36,8 @@ require(['jquery', 'jqueryui', 'datatables'], function($, jqueryui, datatables) 
             var id = data.pop();
             var status = this.type == 'checkbox' ? this.checked : null;
             var value = this.type == 'checkbox' ? null : this.value;
-            $.post(M.cfg.wwwroot + '/local/video_directory/ajax_edit.php', {field: field, id: id, value: value, status: status}, function (data){
+            $.post(M.cfg.wwwroot + '/local/video_directory/ajax_edit.php', 
+                {field: field, id: id, value: value, status: status}, function (data){
                 // do nothing.
             })
             .fail(function() {
@@ -61,7 +62,7 @@ var local_video_directory = {
         } else {
             video.appendChild(source);
         }
-        
+
         video.load();
         video.play();
     },
@@ -70,4 +71,4 @@ var local_video_directory = {
         document.getElementById('my-video').pause();
         document.getElementById('video_player').style.display = 'none';
     }
-}
+};
