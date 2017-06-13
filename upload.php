@@ -92,7 +92,7 @@ if ($mform->is_cancelled()) {
         $path = substr($file->contenthash, 0,2) . "/" . substr($file->contenthash, 2, 2)."/";
         copy($CFG->dataroot."/filedir/".$path.$file->contenthash, $uploaddir.$lastinsertid);
     }
-    redirect($CFG->wwwroot . '/local/video/list.php');
+    redirect($CFG->wwwroot . '/local/video_directory/list.php');
 } else {
     // Displays the form.
     echo $OUTPUT->header();
