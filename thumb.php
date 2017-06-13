@@ -19,11 +19,11 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-require_once 'init.php';
+require_once('init.php');
 defined('MOODLE_INTERNAL') || die();
 
-$id = required_param('id',PARAM_INT);
+$id = required_param('id', PARAM_INT);
 $second = optional_param('second', 0, PARAM_INT);
-$streaming_dir = $converted;
+$streamingdir = $converted;
 header("Content-type: image/png");
-readfile($streaming_dir . $id . ($second ? "-" . $second : '') . ".png");
+readfile($streamingdir . $id . ($second ? "-" . $second : '') . ".png");

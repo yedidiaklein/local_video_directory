@@ -18,22 +18,14 @@
  * @copyright  2017 Yedidia Klein <yedidia@openapp.co.il>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-// for subtitles conversion.
-//use Captioning;
-// use Captioning\Format\WebvttFile;
+// For subtitles conversion.
 
 include("Captioning/Format/SubripFile.php");
 include("Captioning/Format/File.php");
 
-
 try {
-    // Save uploaded file.
-    //$success = $mform->save_file('userfile', $subsdir.$fromform->id.".srt");
-    // Convert to vtt.
     $srt = new Captioning\Format\SubripFile("in.srt");
     $srt->convertTo('webvtt')->save("out.vtt");
-    // Delete uploaded file.
-    //unlink("in.srt");
 } catch(Exception $e) {
     echo "Error: ".$e->getMessage()."\n";
 }

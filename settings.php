@@ -23,7 +23,7 @@
  */
 defined('MOODLE_INTERNAL') || die();
 
-if ( $hassiteconfig ){
+if ($hassiteconfig) {
     $settings = new admin_settingpage( 'local_video_directory', 'Video System Settings' );
     $iswin = strtoupper(substr(PHP_OS, 0, 3)) === 'WIN';
 
@@ -87,7 +87,7 @@ if ( $hassiteconfig ){
         get_string('streamingurldesc', 'local_video_directory'),
         $CFG->wwwroot . '/streaming',
         PARAM_URL
- 
+
     )); 
  
     $settings->add( new admin_setting_configtext(
@@ -97,14 +97,14 @@ if ( $hassiteconfig ){
         '-strict -2 -c:v libx264 -crf 22 -c:a aac -movflags faststart -vf "scale=trunc(iw/2)*2:trunc(ih/2)*2"',
         PARAM_TEXT
      ));
-    
+
     $settings->add( new admin_setting_configtext(
         'local_video_directory/thumbnail_seconds',
         get_string('thumbnailseconds', 'local_video_directory'),
         get_string('thumbnailsecondsdesc', 'local_video_directory'),
         '5',
         PARAM_INT
-    )); 
+    ));
 
     $settings->add( new admin_setting_configtext(
         'local_video_directory/df',
@@ -112,7 +112,7 @@ if ( $hassiteconfig ){
         get_string('alertdiskspacedesc', 'local_video_directory'),
         '1000',
         PARAM_INT
-    )); 
+    ));
 
     $settings->add( new admin_setting_configtext(
         'local_video_directory/cohort',
@@ -120,14 +120,14 @@ if ( $hassiteconfig ){
         get_string('cohortalloweddesc', 'local_video_directory'),
         '1',
         PARAM_INT
-    )); 
+    ));
 
     $settings->add( new admin_setting_configcheckbox(
         'local_video_directory/multiresolution',
         get_string('multiresolution', 'local_video_directory'),
         get_string('multiresolutiondesc', 'local_video_directory'),
         '0'
-    )); 
+    ));
 
     $settings->add( new admin_setting_configtext(
         'local_video_directory/resolutions',
@@ -138,6 +138,6 @@ if ( $hassiteconfig ){
      ));
 
 
-    // Create 
+    // Create.
     $ADMIN->add( 'localplugins', $settings );
 }
