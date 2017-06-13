@@ -82,7 +82,8 @@ if ($mform->is_cancelled()) {
 } else if ($fromform = $mform->get_data()) {
 // In this case you process validated data. $mform->get_data() returns data posted in form.
   
-    $files = $DB->get_records_select('files',"itemid = $fromform->attachments and filename <> '.'",null,'contenthash,filename');
+    $files = $DB->get_records_select('files', "itemid = $fromform->attachments and filename <> '.'",
+			null, 'contenthash, filename');
     foreach ($files as $file) {
         $record = array('orig_filename' => $file->filename, 'owner_id' => $USER->id);
         if ((isset($fromform->private)) && ($fromform->private)) {
