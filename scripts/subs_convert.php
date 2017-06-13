@@ -14,11 +14,12 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 /**
+ * Converting subtitles.
+ *
  * @package    local_video_directory
  * @copyright  2017 Yedidia Klein <yedidia@openapp.co.il>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-// For subtitles conversion.
 
 include("Captioning/Format/SubripFile.php");
 include("Captioning/Format/File.php");

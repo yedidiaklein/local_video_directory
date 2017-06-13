@@ -14,6 +14,8 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 /**
+ * Video thumbnail selection page.
+ *
  * @package    local_video_directory
  * @copyright  2017 Yedidia Klein <yedidia@openapp.co.il>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
@@ -23,7 +25,6 @@ require_once('init.php');
 defined('MOODLE_INTERNAL') || die();
 
 require_once("$CFG->libdir/formslib.php");
-
 
 $ffmpeg = $settings->ffmpeg;
 $streamingurl = $settings->streaming.'/';

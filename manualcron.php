@@ -15,7 +15,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * You may localized strings in your plugin
+ * This script is usefull for running manually the cron of video conversion w/o running moodle cron.
  *
  * @package    local_video
  * @copyright  2016 OpenApp
@@ -26,7 +26,7 @@
 // use in this way : 
 // # su - www-data -s "/bin/bash" -c "php /var/www/html/moodle/local/video_directory/manualcron.php"
 // (this example assume web is running by www-data [debian/ubuntu] change to apache in redhat/centos).
-define('CLI_SCRIPT',1);
+define('CLI_SCRIPT', 1);
 require_once( __DIR__ . "/../../config.php");
 require('lib.php');
 

@@ -14,6 +14,8 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 /**
+ * Distribute subtitles to played video.
+ *
  * @package    local_video_directory
  * @copyright  2017 Yedidia Klein <yedidia@openapp.co.il>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
@@ -30,4 +32,3 @@ if ($download) {
     header('Content-Disposition: attachment; filename="' . $id . '.vtt"');
 }
 readfile($subsdir . $id . ($language ? "-" . $language : '') . ".vtt");
-
