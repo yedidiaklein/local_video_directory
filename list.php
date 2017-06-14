@@ -56,9 +56,9 @@ echo $OUTPUT->header();
 // Menu.
 require('menu.php');
 
-echo '<div id="tools"><button id="datatable_ajax_reload">' . get_string('reload', 'local_video_directory') . '</button>';
+echo '<div id="tools"><button id="datatable_ajax_reload" class="btn btn-default">' . get_string('reload', 'local_video_directory') . '</button>';
 
-echo '<button id="datatable_ajax_clear_tags">' . get_string('show_all', 'local_video_directory') . '</button>';
+echo ' <button id="datatable_ajax_clear_tags" class="btn btn-default">' . get_string('show_all', 'local_video_directory') . '</button>';
 
 echo '<div class="existing_tags">' . get_string('existing_tags', 'local_video_directory').':';
 // Find all movies tags.
@@ -117,7 +117,7 @@ foreach($liststrings as $liststring) {
 
 <div id='video_player' style='display:none'>
     <a href=# class='close' onclick='local_video_directory.close_player();'>
-        X <?php echo get_string('close', 'local_video_directory'); ?>
+        &times; <?php echo get_string('close', 'local_video_directory'); ?>
     </a>
     <br>
 

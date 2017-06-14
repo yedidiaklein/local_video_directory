@@ -87,7 +87,7 @@
 
 .existing_tags, .selected_tags {
     background-color: lightgrey;
-    padding: 14px 17px 1px;
+    padding: 2px 7px;
     margin: 1vw;
     border-radius: 10px;
     border: 2px solid gray;
@@ -106,22 +106,27 @@
 }
 
 .thumb:hover {
-    border-color: #60eaea;
+    border-color: #37bfbf;
 }
 
 .action_thumb {
     height: 2.2vw;
 }
 
-#page-local-video_directory-thumbs #fgroup_id_radioar fieldset>span {
+.thumbselectorelement {
     display: inline-block;
     border: 1px solid gray;
-    padding: 5px;
+    padding: 5px !important;
     border-radius: 8px;
     margin: 3px;
     width: 150px;
     height: 87px;
     vertical-align: top;
+    box-sizing: content-box;
+}
+
+.thumbselectorelement *{
+    box-sizing: content-box;
 }
 
 .dir-ltr .buttons {

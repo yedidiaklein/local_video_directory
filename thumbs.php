@@ -63,10 +63,10 @@ class simplehtml_form extends moodleform {
         $length = $length ? $length : '3:00:00'; // In case present but falseish.
         $length = strtotime("1970-01-01 $length UTC");
 
-        foreach ($seconds as $second) {
+        foreach ($seconds as $index => $second) {
             if ($second < $length) {
-                $radioarray[] = $mform->createElement('radio', 'thumb', $second, $second . ' '
-                    . get_string('seconds'), $second);
+                $radioarray[] = $mform->createElement('radio', 'thumb', '', $second . ' '
+                    . get_string('seconds') . "<div id='video_thumb_$second'></div>", $second);
             }
         }
 
