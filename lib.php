@@ -113,7 +113,19 @@ function local_video_directory_cron() {
         foreach ($wgets as $wget) {
             $record = array('id' => $wget->id, 'success' => 1);
             $update = $DB->update_record("local_video_directory_wget", $record);
-            exec($php . ' ' . $CFG->dirroot . '/local/video_directory/scripts/wget.php ' . base64_encode($wget->url) . ' &');
+//            exec($php . ' ' . $CFG->dirroot . '/local/video_directory/scripts/wget.php ' . base64_encode($wget->url) . ' &');
+            $filename = basename($wget->url);
+
+            file_put_contents($wgetdir . $filename, fopen($wget->url, 'r'));
+
+            // Move to mass directory once downloaded.
+            if (copy($wgetdir . $filename, $massdir . $filename)) {
+                unlink($wgetdir . $filename);
+                $sql = "UPDATE {local_video_directory_wget} SET success = 2 WHERE url = ?";
+                $DB->execute($sql, array($wget->url));
+            }
+            // Doing one download per cron.
+            break;
         }
     }
     if ($multiresolution) {
