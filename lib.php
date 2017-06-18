@@ -116,6 +116,8 @@ function local_video_directory_cron() {
 //            exec($php . ' ' . $CFG->dirroot . '/local/video_directory/scripts/wget.php ' . base64_encode($wget->url) . ' &');
             $filename = basename($wget->url);
 
+            echo "Downloading $wget->url to $wgetdir\n";
+            echo "Filename is $filename";
             file_put_contents($wgetdir . $filename, fopen($wget->url, 'r'));
 
             // Move to mass directory once downloaded.
