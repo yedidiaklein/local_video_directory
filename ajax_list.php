@@ -97,7 +97,7 @@ foreach ($videos as $video) {
         $video->id .'" title="subtitles upload" alt="subtitles upload">
             <img src="' . $CFG->wwwroot . '/local/video_directory/pix/subs';
 
-        if (!isset($video->subs)) {
+        if (!$video->subs) {
             $video->actions .= "_grey";
         }
 
