@@ -113,10 +113,9 @@ function local_video_directory_cron() {
         foreach ($wgets as $wget) {
             $record = array('id' => $wget->id, 'success' => 1);
             $update = $DB->update_record("local_video_directory_wget", $record);
-//            exec($php . ' ' . $CFG->dirroot . '/local/video_directory/scripts/wget.php ' . base64_encode($wget->url) . ' &');
             $filename = basename($wget->url);
 
-            echo "Downloading $wget->url to $wgetdir\n";
+            echo "Downloading $wget->url to $wgetdir";
             echo "Filename is $filename";
             file_put_contents($wgetdir . $filename, fopen($wget->url, 'r'));
 
