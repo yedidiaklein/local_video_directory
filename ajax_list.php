@@ -72,7 +72,7 @@ foreach ($videos as $video) {
     $thumbseconds = isset($thumbdata[1]) ? "&second=$thumbdata[1]" : '';
     $video->thumb = "<a href='$CFG->wwwroot/local/video_directory/thumbs.php?id=$video->id' title='" .
         get_string('clicktochangethumb', 'local_video_directory') .
-        "'>" . ($video->thumb ? "<img src='$CFG->wwwroot/local/video_directory/thumb.php?id=$thumbid$thumbseconds' 
+        "'>" . ($video->thumb ? "<img src='$CFG->wwwroot/local/video_directory/thumb.php?id=$thumbid$thumbseconds&mini=1' 
         class='thumb'>" : get_string('noimage', 'local_video_directory')) . "</a>";
 
     if (file_exists("$CFG->dataroot/videos/converted/$video->id.mp4")) {

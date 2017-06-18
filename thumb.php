@@ -26,6 +26,11 @@ defined('MOODLE_INTERNAL') || die();
 
 $id = required_param('id', PARAM_INT);
 $second = optional_param('second', 0, PARAM_INT);
+$mini = optional_param('mini', 0, PARAM_INT);
 $streamingdir = $converted;
 header("Content-type: image/png");
-readfile($streamingdir . $id . ($second ? "-" . $second : '') . ".png");
+if ($mini) {
+    readfile($streamingdir . $id . ($second ? "-" . $second : '') . "-mini.png");
+} else {
+    readfile($streamingdir . $id . ($second ? "-" . $second : '') . ".png");
+}

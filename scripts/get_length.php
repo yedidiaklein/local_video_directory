@@ -14,7 +14,7 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 /**
- * Get length of Videos.
+ * This script was created for old movies that didn't get legth.
  *
  * @package    local_video_directory
  * @copyright  2017 Yedidia Klein <yedidia@openapp.co.il>
