@@ -67,5 +67,13 @@ foreach ($dirs as $key => $value) {
     $$key = $dirs[$key];
 }
 
-// Check if streaming server exists and work
-$DB->get_records_sql('SELECT * FROM {local_video_directory} LIMIT 1');
+// Check if streaming server and symlink or settings exists and work.
+$first_video = $DB->get_records_sql('SELECT * FROM {local_video_directory} LIMIT 1');
+$url = $settings->streaming.'/'.$first_video[1]->id.'.mp4';
+$headers = get_headers($url);
+if (strstr($headers[0],"200")) {
+    $streamingurl = $settings->streaming;
+} else {
+    $streamingurl = FALSE;
+}
+

@@ -58,20 +58,6 @@ class simplehtml_form extends moodleform {
         $mform->setType('origfilename', PARAM_RAW);
         $mform->setDefault('origfilename', $origfilename ); // Default value.
 
-        // For future implementation - map videos to courses.
-        /*
-        $courses = enrol_get_my_courses();
-        $names = array();
-        $ids = array();
-
-        foreach ($courses as $course) {
-            $names[] = $course->shortname;
-            $ids[] = $course->id;
-        }
-
-        $select = $mform->addElement('select', 'courses', get_string('courses'), $names, $ids);
-        $select->setMultiple(true);
-        */            
         $mform->addElement('hidden', 'id', $id);
         $mform->setType('id', PARAM_INT);
 
@@ -108,8 +94,9 @@ if ($mform->is_cancelled()) {
     echo $OUTPUT->header();
 
     $video = $DB->get_record('local_video_directory', array("id" => $id));
-    echo '<video  width="655" height="279" controls preload="auto" poster="' . $video->thumb . '">
-          <source src="play.php?video_id='. $id . '" type="video/mp4"">
+    echo '<video  width="655" controls preload="auto" 
+            poster="' . $CFG->wwwroot . '/local/video_directory/thumb.php?id=' . str_replace("-", "&second=", $video->thumb) . '">
+            <source src="play.php?video_id='. $id . '" type="video/mp4"">
           </video>';
     $mform->display();
 }

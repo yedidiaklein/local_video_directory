@@ -106,7 +106,10 @@ foreach ($videos as $video) {
         ' . $playbutton;
     }
 
-    $video->streaming_url = '<a target="_blank" href="' . $video->streaming_url .'" >' . $video->streaming_url . '</a><br>';
+    if ($streamingurl) {
+        $video->streaming_url = '<a target="_blank" href="' . $streamingurl . '/' . $video->id . '.mp4">'
+                                . $streamingurl . '/' . $video->id . '.mp4</a><br>';
+    }
     $video->streaming_url .= '<a target="_blank" href="play.php?video_id=' . $video->id . '" >'.
         $CFG->wwwroot . '/local/video_directory/play.php?video_id=' .
         $video->id . '</a>';
