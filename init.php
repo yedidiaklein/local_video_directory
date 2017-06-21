@@ -66,3 +66,6 @@ foreach ($dirs as $key => $value) {
     }
     $$key = $dirs[$key];
 }
+
+// Check if streaming server exists and work
+$DB->get_records_sql('SELECT * FROM {local_video_directory} LIMIT 1');

@@ -48,13 +48,13 @@ class simplehtml_form extends moodleform {
 
         if ($id != 0) {
             $video = $DB->get_record('local_video_directory', array("id" => $id));
-            $origfilename = $video->origfilename;
+            $origfilename = $video->orig_filename;
         } else {
             $origfilename = "";
         }
         $mform = $this->_form;
 
-        $mform->addElement('text', 'origfilename', get_string('origfilename', 'local_video_directory')); // Add elements to your form.
+        $mform->addElement('text', 'origfilename', get_string('filename', 'local_video_directory')); // Add elements to your form.
         $mform->setType('origfilename', PARAM_RAW);
         $mform->setDefault('origfilename', $origfilename ); // Default value.
 
@@ -99,7 +99,7 @@ $mform = new simplehtml_form();
 if ($mform->is_cancelled()) {
     redirect($CFG->wwwroot . '/local/video_directory/list.php');
 } else if ($fromform = $mform->get_data()) {
-    $record = array("id" => $fromform->id, "origfilename" => $fromform->origfilename );
+    $record = array("id" => $fromform->id, "orig_filename" => $fromform->origfilename );
     $update = $DB->update_record("local_video_directory", $record);
     $context = context_system::instance();
     core_tag_tag::set_item_tags('local_video_directory', 'local_video_directory', $fromform->id, $context, $fromform->tags);
