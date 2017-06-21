@@ -76,4 +76,3 @@ if (strstr($headers[0],"200")) {
 } else {
     $streamingurl = FALSE;
 }
-

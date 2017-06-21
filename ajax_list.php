@@ -76,8 +76,13 @@ foreach ($videos as $video) {
         class='thumb'>" : get_string('noimage', 'local_video_directory')) . "</a>";
 
     if (file_exists("$CFG->dataroot/videos/converted/$video->id.mp4")) {
-        $playbutton = '<img class="play_video action_thumb" onclick="local_video_directory.play(\'play.php?video_id=' .
-        $video->id . '\')" " src="' . $CFG->wwwroot . '/local/video_directory/pix/play.svg">';
+        if ($streamingurl) {
+            $playbutton = '<img class="play_video action_thumb" onclick="local_video_directory.play(\'' . $streamingurl . "/" .
+            $video->id . '.mp4\')" " src="' . $CFG->wwwroot . '/local/video_directory/pix/play.svg">';
+        } else {
+            $playbutton = '<img class="play_video action_thumb" onclick="local_video_directory.play(\'play.php?video_id=' .
+            $video->id . '\')" " src="' . $CFG->wwwroot . '/local/video_directory/pix/play.svg">';
+        }
     } else {
         $playbutton = '';
         $video->convert_status .= '<br>' . get_string('awaitingconversion', 'local_video_directory');
