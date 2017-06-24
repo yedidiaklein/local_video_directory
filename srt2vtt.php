@@ -20,15 +20,15 @@
  * @copyright  2017 Yedidia Klein <yedidia@openapp.co.il>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
- 
+
 defined('MOODLE_INTERNAL') || die();
 
 function srt2vtt($srt) {
-// Default configuration.
+    // Default configuration.
     $srt2vttconf = array(
         "appendCopyrightInfo" => false,
         "autoConvertEncoding" => true,
-        "sourceEncodingList" => array('ISO-8859-1', 'Windows-1255', 'ISO-8859-8', 'UTF-8' ), 
+        "sourceEncodingList" => array('ISO-8859-1', 'Windows-1255', 'ISO-8859-8', 'UTF-8' ),
         "debug" => true,
     );
     if (file_exists("srt2vtt.conf.php")) {
@@ -37,29 +37,31 @@ function srt2vtt($srt) {
     try {
         if (isset($srt)) {
             // Convert to utf.
-            $charset = mb_detect_encoding($srt,"Windows-1255, ISO-8859-8, UTF-8");
-            $srt = iconv($charset,"UTF-8",$srt);
+            $charset = mb_detect_encoding($srt, "Windows-1255, ISO-8859-8, UTF-8");
+            $srt = iconv($charset, "UTF-8", $srt);
             // Break to lines.
-            $subtitleLines = explode ("\n", $srt);
+            $subtitlelines = explode ("\n", $srt);
 
-            if (empty($subtitleLines)) throw new Exception(_("Subtitle file empty"));
+            if (empty($subtitlelines)) {
+                throw new Exception(_("Subtitle file empty"));
+            }
             // Prepare the result.
 
             $result = "WEBVTT\n\n\n";
-            define('SRT_STATE_subnumBER', 0);
+            define('SRT_STATE_SUBNUMBER', 0);
             define('SRT_STATE_TIME', 1);
             define('SRT_STATE_TEXT', 2);
             define('SRT_STATE_BLANK', 3);
 
             $subs = array();
-            $state = SRT_STATE_subnumBER;
+            $state = SRT_STATE_SUBNUMBER;
             $subnum = 0;
             $subtext = '';
             $subtime = '';
 
-            foreach($subtitleLines as $line) {
+            foreach ($subtitlelines as $line) {
                 switch($state) {
-                    case SRT_STATE_subnumBER:
+                    case SRT_STATE_SUBNUMBER:
                         $subnum = trim($line);
                         $state = SRT_STATE_TIME;
                     break;
@@ -76,7 +78,7 @@ function srt2vtt($srt) {
                             list($sub->startTime, $sub->stopTime) = explode(' --> ', $subtime);
                             $sub->text = $subtext;
                             $subtext = '';
-                            $state = SRT_STATE_subnumBER;
+                            $state = SRT_STATE_SUBNUMBER;
                             $subs[] = $sub;
                         } else {
                             $subtext .= trim($line)."\n";
@@ -91,8 +93,6 @@ function srt2vtt($srt) {
                 $result .= $sub->text."\n\n";
             }
 
-
-            //header('Content-type: text/plain; charset=utf-8');
             return $result;
 
         } else {

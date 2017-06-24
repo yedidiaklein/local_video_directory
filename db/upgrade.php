@@ -102,5 +102,26 @@ function xmldb_local_video_directory_upgrade($oldversion) {
         upgrade_plugin_savepoint(true, 2017050400, 'local', 'video_directory');
     }
 
+    if ($oldversion < 2017062200) {
+        // Define table local_video_vers to be created.
+        $table = new xmldb_table('local_video_directory_vers');
+
+        // Adding fields to table local_video_directory_multi.
+        $table->add_field('id', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, XMLDB_SEQUENCE, null);
+        $table->add_field('file_id', XMLDB_TYPE_INTEGER, '20', null, XMLDB_NOTNULL, null, null);
+        $table->add_field('filename', XMLDB_TYPE_CHAR, '40', null, XMLDB_NOTNULL, null, null);
+        $table->add_field('datecreated', XMLDB_TYPE_INTEGER, '20', null, null, null, null);
+
+        // Adding keys to table local_video_directory_multi.
+        $table->add_key('primary', XMLDB_KEY_PRIMARY, array('id'));
+
+        // Conditionally launch create table for local_video_directory_multi.
+        if (!$dbman->table_exists($table)) {
+            $dbman->create_table($table);
+        }
+
+        upgrade_plugin_savepoint(true, 2017062200, 'local', 'video_directory');
+    }
+
     return 1;
 }

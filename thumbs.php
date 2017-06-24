@@ -116,7 +116,7 @@ if ($mform->is_cancelled()) {
 
     // Delete orig thumb.
     $file = $converted . $id . '.png';
-    
+
     if (file_exists($file)) {
         unlink($file);
     }

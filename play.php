@@ -24,7 +24,7 @@
 require_once('init.php');
 defined('MOODLE_INTERNAL') || die();
 
-$id = required_param('video_id', PARAM_INT);
+$id = required_param('video_id', PARAM_RAW);
 
 $file = "$converted$id.mp4";
 

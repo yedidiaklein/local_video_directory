@@ -88,8 +88,8 @@ if ($hassiteconfig) {
         $CFG->wwwroot . '/streaming',
         PARAM_URL
 
-    )); 
- 
+    ));
+
     $settings->add( new admin_setting_configtext(
         'local_video_directory/ffmpeg_settings',
         get_string('ffmpegparameters', 'local_video_directory'),

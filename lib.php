@@ -30,8 +30,8 @@ function local_video_directory_cron() {
     $ffmpeg = $settings->ffmpeg;
     $streamingurl = $settings->streaming.'/';
     $ffprobe = $settings->ffprobe;
-    $ffmpegsettings = $settings->ffmpegsettings;
-    $thumbnailseconds = $settings->thumbnailseconds;
+    $ffmpegsettings = $settings->ffmpeg_settings;
+    $thumbnailseconds = $settings->thumbnail_seconds;
     $php = $settings->php;
     $multiresolution = $settings->multiresolution;
     $resolutions = $settings->resolutions;
@@ -48,6 +48,19 @@ function local_video_directory_cron() {
         // Update convert_status to 2 (Converting....).
         $record = array("id" => $video->id, "convert_status" => "2");
         $update = $DB->update_record("local_video_directory", $record);
+        // If we have a previous version - save the version before encoding.
+        if (file_exists($streamingdir . $video->id . ".mp4")) {
+            $time = time();
+            $newfilename = $video->id . "_" . $time . ".mp4";
+            rename($streamingdir . $video->id . ".mp4", $streamingdir . $newfilename);
+            // Delete Thumbs.
+            array_map('unlink', glob($streamingdir . $video->id . "*.png"));
+            // Delete Multi resolutions
+            array_map('unlink', glob($multidir . $video->id . "_*.mp4"));
+            // Write to version table.
+            $record = array('datecreated' => $time, 'file_id' => $video->id, 'filename' => $newfilename);
+            $insert = $DB->insert_record('local_video_directory_vers', $record);
+        }
         $convert = '"' . $ffmpeg . '" -i ' . $origdir . $video->id . ' ' . $ffmpegsettings . ' ' .
                 $streamingdir . $video->id . ".mp4";
         exec($convert);
@@ -61,19 +74,21 @@ function local_video_directory_cron() {
                 $timing = "00:00:05";
             }
 
-            $thumb = '"' . $ffmpeg . '" -i ' . $origdir . $video->id . " -ss " . $timing . " -vframes 1 " . $streamingdir . $video->id . ".png";
-            $thumbmini = '"' . $ffmpeg . '" -i ' . $origdir . $video->id . " -ss " . $timing . " -vframes 1 -vf scale=100:-1 " . $streamingdir . $video->id . "-mini.png";
+            $thumb = '"' . $ffmpeg . '" -i ' . $origdir . $video->id .
+                    " -ss " . $timing . " -vframes 1 " . $streamingdir . $video->id . ".png";
+            $thumbmini = '"' . $ffmpeg . '" -i ' . $origdir . $video->id .
+                    " -ss " . $timing . " -vframes 1 -vf scale=100:-1 " . $streamingdir . $video->id . "-mini.png";
 
             exec($thumb);
             exec($thumbmini);
 
             // Get video length.
-            $lengthcmd = $ffprobe ." -v error -show_entries format=duration -sexagesimal -of default=noprint_wrappers=1:nokey=1 " . $streamingdir . $video->id . ".mp4";
+            $lengthcmd = $ffprobe ." -v error -show_entries format=duration -sexagesimal -of default=noprint_wrappers=1:nokey=1 " .
+                                    $streamingdir . $video->id . ".mp4";
             $lengthoutput = exec( $lengthcmd );
             // Remove data after .
             $arraylength = explode(".", $lengthoutput);
             $length = $arraylength[0];
-
 
             $metadata = array();
             $metafields = array("height" => "stream=height", "width" => "stream=width", "size" => "format=size");
@@ -206,9 +221,9 @@ function create_dash($id, $converted, $dashdir, $ffmpeg, $resolutions) {
 
     // Multi resolutions for dash-ing.
     // first take care of current resolution.
-    $cmd = $ffmpeg . " -i " . $converted . $id . ".mp4" . 
-    " -strict -2 -c:v libx264 -crf 22 -c:a aac -movflags faststart -x264opts 'keyint=24:min-keyint=24:no-scenecut' " . 
-    " " . $dashdir . $id . "_" . $video->height . ".mp4";
+    $cmd = $ffmpeg . " -i " . $converted . $id . ".mp4" .
+        " -strict -2 -c:v libx264 -crf 22 -c:a aac -movflags faststart -x264opts 'keyint=24:min-keyint=24:no-scenecut' " .
+        " " . $dashdir . $id . "_" . $video->height . ".mp4";
     exec($cmd);
     $record=array("video_id" => $id,
                   "height" => $video->height,
@@ -222,7 +237,7 @@ function create_dash($id, $converted, $dashdir, $ffmpeg, $resolutions) {
     foreach ($resolutions as $resolution) {
         if (($resolution < $video->height) && (is_numeric($resolution))) {
             $cmd = $ffmpeg . " -i " . $converted . $id . ".mp4" .
-            " -strict -2 -c:v libx264 -crf 22 -c:a aac -movflags faststart -x264opts 'keyint=24:min-keyint=24:no-scenecut' -vf scale=-2:" . 
+            " -strict -2 -c:v libx264 -crf 22 -c:a aac -movflags faststart -x264opts 'keyint=24:min-keyint=24:no-scenecut' -vf scale=-2:" .
             $resolution . " " . $dashdir . $id . "_" . $resolution . ".mp4";
             exec($cmd);
             $record = array("video_id" => $id,

@@ -42,8 +42,8 @@ class simplehtml_form extends moodleform {
         $mform = $this->_form;
 
         $mform->addElement('html', '<table class="generaltable">');
-        $mform->addElement('html', '<tr><th style="width:10%">' .get_string('choose', 'local_video_directory'). '</th><th>' 
-                                . get_string('filename', 'local_video_directory') . '</th><th>' 
+        $mform->addElement('html', '<tr><th style="width:10%">' .get_string('choose', 'local_video_directory'). '</th><th>'
+                                . get_string('filename', 'local_video_directory') . '</th><th>'
                                 . get_string('size', 'local_video_directory') . '</th>'
                                 . '<th>' . get_string('download_status', 'local_video_directory') . '</th></tr>');
 
@@ -64,7 +64,6 @@ class simplehtml_form extends moodleform {
             $mform->addElement('html', '</td><td>' . get_string('wget_' . $wget->success, 'local_video_directory') . '</td></tr>');
         }
 
-
         $files = listdir($massdir);
         foreach ($files as $entry) {
             $entry = str_replace($massdir, "", $entry);
@@ -75,7 +74,7 @@ class simplehtml_form extends moodleform {
             $mform->addElement('html', '<td>' . $entry.'</td><td>' .
                     local_video_directory_human_filesize(filesize($massdir."/".$entry)).'</td></tr>');
         }
-            
+
         $mform->addElement('html', '</table>');
         $mform->addElement('tags', 'tags', get_string('tags'),
             array('itemtype' => 'local_video_directory', 'component' => 'local_video_directory'));
@@ -108,7 +107,7 @@ if ($mform->is_cancelled()) {
 
             if ($directory != "/") {
                 // Remove / at start and end.
-                $directory = preg_replace(array("/^\//","/\/$/"), "", $directory);
+                $directory = preg_replace(array("/^\//", "/\/$/"), "", $directory);
                 $directory = explode("/", $directory);
                 if (is_array($fromform->tags)) {
                     $tags = array_merge($fromform->tags, $directory);

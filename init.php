@@ -31,7 +31,7 @@ $iswin = strtoupper(substr(PHP_OS, 0, 3)) === 'WIN';
 
 foreach ($shellcomponents as $sc) {
     if (isset($settings->$sc)) {
-        $settings->$sc = ($iswin && isset($settings->{$sc . 'drive'}) && preg_match('~^[a-z]$~', 
+        $settings->$sc = ($iswin && isset($settings->{$sc . 'drive'}) && preg_match('~^[a-z]$~',
         $settings->{$sc . 'drive'}) ? $settings->{$sc . 'drive'} .
         ":" . (strpos($settings->$sc, '/') === 0 ? '' : '/') : '') .
         ($iswin ? str_replace('/', DIRECTORY_SEPARATOR, $settings->$sc) : $settings->$sc);
@@ -68,7 +68,7 @@ foreach ($dirs as $key => $value) {
 }
 
 // Check if streaming server and symlink or settings exists and work.
-$first_video = $DB->get_records_sql('SELECT * FROM {local_video_directory} LIMIT 1');
+$first_video = $DB->get_records('local_video_directory', array());
 $url = $settings->streaming.'/'.$first_video[1]->id.'.mp4';
 $headers = get_headers($url);
 if (strstr($headers[0],"200")) {

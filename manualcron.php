@@ -23,7 +23,7 @@
  */
 
 // This script is usefull for running manually the cron of video conversion w/o running moodle cron
-// use in this way : 
+// use in this way :
 // # su - www-data -s "/bin/bash" -c "php /var/www/html/moodle/local/video_directory/manualcron.php"
 // (this example assume web is running by www-data [debian/ubuntu] change to apache in redhat/centos).
 define('CLI_SCRIPT', 1);

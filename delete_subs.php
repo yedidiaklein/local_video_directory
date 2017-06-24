@@ -14,7 +14,7 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 /**
- * Edit video details.
+ * Delete video.
  *
  * @package    local_video_directory
  * @copyright  2017 Yedidia Klein <yedidia@openapp.co.il>
@@ -26,7 +26,6 @@ defined('MOODLE_INTERNAL') || die();
 
 require_once("$CFG->libdir/formslib.php");
 
-
 $streamingurl = $settings->streaming;
 
 $id = optional_param('video_id', 0, PARAM_INT);
@@ -36,42 +35,27 @@ $PAGE->set_heading(get_string('edit', 'local_video_directory'));
 $PAGE->set_title(get_string('edit', 'local_video_directory'));
 $PAGE->set_url('/local/video_directory/edit.php');
 $PAGE->set_pagelayout('standard');
-
 $PAGE->navbar->add(get_string('pluginname', 'local_video_directory'), new moodle_url('/local/video_directory/'));
 $PAGE->navbar->add(get_string('edit', 'local_video_directory'));
-
 class simplehtml_form extends moodleform {
+    // Add elements to form.
     public function definition() {
         global $CFG, $DB;
-
         $id = optional_param('video_id', 0, PARAM_INT);
-
-        if ($id != 0) {
-            $video = $DB->get_record('local_video_directory', array("id" => $id));
-            $origfilename = $video->orig_filename;
-        } else {
-            $origfilename = "";
-        }
         $mform = $this->_form;
-
-        $mform->addElement('text', 'origfilename', get_string('filename', 'local_video_directory'));
-        $mform->setType('origfilename', PARAM_RAW);
-        $mform->setDefault('origfilename', $origfilename ); // Default value.
-
+        if ($id != 0) {
+            $video = $DB->get_record('local_video_directory', array('id' => $id));
+            $mform->addElement('html', $video->orig_filename);
+            $mform->addElement('hidden', 'thumb', $video->thumb);
+        } else {
+            $mform->addElement('hidden', 'thumb', "");
+        }
+        $mform->setType('thumb', PARAM_RAW);
         $mform->addElement('hidden', 'id', $id);
         $mform->setType('id', PARAM_INT);
-
-        $mform->addElement('tags', 'tags', get_string('tags'),
-                    array('itemtype' => 'local_video_directory', 'component' => 'local_video_directory'));
-        if ($id != 0) {
-            $data = $DB->get_record('local_video_directory', array('id' => $id));
-            $data->tags = core_tag_tag::get_item_tags_array('local_video_directory', 'local_video_directory', $id);
-            $mform->setDefault('tags', $data->tags);
-        }
-
         $buttonarray = array();
-        $buttonarray[] =& $mform->createElement('submit', 'submitbutton', get_string('savechanges'));
-        $buttonarray[] =& $mform->createElement('cancel', 'cancel', get_string('cancel'));
+        $buttonarray[] =& $mform->createElement('submit', 'submitbutton', get_string('yes'));
+        $buttonarray[] =& $mform->createElement('cancel', 'cancel', get_string('no'));
         $mform->addGroup($buttonarray, 'buttonar', '', array(' '), false);
     }
 
@@ -85,25 +69,22 @@ $mform = new simplehtml_form();
 if ($mform->is_cancelled()) {
     redirect($CFG->wwwroot . '/local/video_directory/list.php');
 } else if ($fromform = $mform->get_data()) {
-    $record = array("id" => $fromform->id, "orig_filename" => $fromform->origfilename );
-    $update = $DB->update_record("local_video_directory", $record);
-    $context = context_system::instance();
-    core_tag_tag::set_item_tags('local_video_directory', 'local_video_directory', $fromform->id, $context, $fromform->tags);
-    redirect($CFG->wwwroot . '/local/video_directory/list.php');
+    $record = array("id" => $fromform->id,
+                    "subs" => 0);
+    $update = $DB->update_record('local_video_directory', $record);
+
+    // Delete files.
+    $subfile = $subsdir . $fromform->id . '.vtt';
+
+    if (file_exists($subfile)) {
+        unlink($subfile);
+    }
+
+    redirect($CFG->wwwroot . '/local/video_directory/list.php', get_string('subs_deleted', 'local_video_directory'));
 } else {
     echo $OUTPUT->header();
-
-    $video = $DB->get_record('local_video_directory', array("id" => $id));
-    echo '<video  width="655" controls preload="auto" 
-            poster="' . $CFG->wwwroot . '/local/video_directory/thumb.php?id=' . str_replace("-", "&second=", $video->thumb) . '">
-            <source src="play.php?video_id='. $id . '" type="video/mp4"">
-          </video>';
+    echo get_string("are_you_sure_subs", 'local_video_directory');
     $mform->display();
-    echo "<a href=upload.php?video_id=" . $id . ">" . get_string('upload_new_version', 'local_video_directory') . "</a><br>";
-    $versions = $DB->get_records("local_video_directory_vers", array("file_id" => $id));
-    if ($versions) {
-        echo "<a href=versions.php?id=" . $id . ">" . get_string('versions', 'local_video_directory') . "</a>";
-    }
 }
 
 echo $OUTPUT->footer();

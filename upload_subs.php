@@ -39,17 +39,19 @@ $PAGE->requires->css('/local/video_directory/style.css');
 
 class simplehtml_form extends moodleform {
     public function definition() {
-    global $CFG, $DB, $subsdir;
-    $id = required_param('id', PARAM_INT);
-    $mform = $this->_form;
-    if (file_exists($subsdir.$id.".vtt")) {
-        $subsize = local_video_directory_human_filesize(filesize($subsdir.$id.".vtt"));
-        $mform->addElement('html', '<div class="alert alert-info alert-block fade in">'.get_string('subs_exist_in_size','local_video_directory').
-            " ".$subsize. ' (<a href=subs.php?video_id=' . $id
-            . '&download=1>Download</a> / <a href=delete_subs.php?video_id=' . $id
-            . '>Delete</a>)</div>');
+        global $CFG, $DB, $subsdir;
+        $id = required_param('id', PARAM_INT);
+        $mform = $this->_form;
+        if (file_exists($subsdir.$id.".vtt")) {
+            $subsize = local_video_directory_human_filesize(filesize($subsdir.$id.".vtt"));
+            $mform->addElement('html', '<div class="alert alert-info alert-block fade in">'.
+                                get_string('subs_exist_in_size', 'local_video_directory').
+                " ".$subsize. ' (<a href=subs.php?video_id=' . $id
+                . '&download=1>Download</a> / <a href=delete_subs.php?video_id=' . $id
+                . '>Delete</a>)</div>');
         } else {
-            $mform->addElement('html', '<div class="alert alert-warning alert-block fade in">'.get_string('no_file', 'local_video_directory').'</div>');
+            $mform->addElement('html', '<div class="alert alert-warning alert-block fade in">'.
+                                get_string('no_file', 'local_video_directory').'</div>');
         }
 
         $mform->addElement('hidden', 'id', $id);
@@ -73,12 +75,12 @@ if ($mform->is_cancelled()) {
     redirect($CFG->wwwroot . '/local/video_directory/list.php');
 } else if ($fromform = $mform->get_data()) {
     $name = $mform->get_new_filename('userfile');
-    if (substr($name,-3) != "vtt") {
-        if (substr($name,-3) == "srt") {
+    if (substr($name, -3) != "vtt") {
+        if (substr($name, -3) == "srt") {
             include("srt2vtt.php");
             // Save uploaded file.
-            $success = $mform->save_file('userfile', $subsdir.$fromform->id.".srt");
-            $srt = file_get_contents($subsdir.$fromform->id.".srt");
+            $success = $mform->save_file('userfile', $subsdir.$fromform->id . ".srt");
+            $srt = file_get_contents($subsdir . $fromform->id . ".srt");
             // Convert to vtt.
             $vtt = srt2vtt($srt);
             file_put_contents($subsdir.$fromform->id.".vtt", $vtt);

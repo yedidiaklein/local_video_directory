@@ -56,13 +56,15 @@ echo $OUTPUT->header();
 // Menu.
 require('menu.php');
 
-echo '<div id="tools"><button id="datatable_ajax_reload" class="btn btn-default">' . get_string('reload', 'local_video_directory') . '</button>';
+echo '<div id="tools"><button id="datatable_ajax_reload" class="btn btn-default">' .
+        get_string('reload', 'local_video_directory') . '</button>';
 
-echo ' <button id="datatable_ajax_clear_tags" class="btn btn-default">' . get_string('show_all', 'local_video_directory') . '</button>';
+echo ' <button id="datatable_ajax_clear_tags" class="btn btn-default">' .
+        get_string('show_all', 'local_video_directory') . '</button>';
 
 echo '<div class="existing_tags">' . get_string('existing_tags', 'local_video_directory').':';
 // Find all movies tags.
-$alltags = $DB->get_records_sql('SELECT DISTINCT name 
+$alltags = $DB->get_records_sql('SELECT DISTINCT name
                                 FROM {tag_instance} ti
                                 LEFT JOIN {tag} t
                                 ON ti.tagid=t.id
@@ -89,7 +91,7 @@ if (is_array($SESSION->video_tags)) {
         echo '<li>
                 <a href="' . $CFG->wwwroot . '/local/video_directory/tag.php?action=remove&tag=' .
                 urlencode($value) . '" class="label label-info "> &times; ' . $value . '</a>
-          </li>'; 
+          </li>';
     }
     echo '</ul></span></div>';
 }
@@ -104,10 +106,8 @@ if (is_array($SESSION->video_tags)) {
 $liststrings = array('actions', 'thumb', 'id', 'owner', 'orig_filename', 'filename', 'length',
                     'convert_status', 'private', 'streaming_url', 'tags');
 
-foreach($liststrings as $liststring) {
-?>
-            <th><?php echo get_string($liststring, 'local_video_directory') ?></th>
-<?php
+foreach ($liststrings as $liststring) {
+            echo '<th>' . get_string($liststring, 'local_video_directory') . '</th>';
 }
 ?>
         </tr>

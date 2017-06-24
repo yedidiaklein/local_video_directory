@@ -37,6 +37,6 @@ if ($value != "") {
     $record = array("id" => $id, "private" => (int)$status);
 }
 
-if ($update = $DB->update_record("local_video_directory",$record)) {
+if ($update = $DB->update_record("local_video_directory", $record)) {
     echo '1';
 }

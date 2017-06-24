@@ -27,8 +27,6 @@ defined('MOODLE_INTERNAL') || die();
 require_once("$CFG->libdir/formslib.php");
 require_once($CFG->dirroot."/repository/lib.php");
 
-$streamingurl = $settings->streaming;
-
 $PAGE->set_context(context_system::instance());
 $PAGE->set_heading(get_string('upload', 'local_video_directory'));
 $PAGE->set_title(get_string('upload', 'local_video_directory'));
@@ -39,17 +37,30 @@ $PAGE->requires->css('/local/video_directory/style.css');
 $PAGE->set_context(context_system::instance());
 $context = context_user::instance($USER->id);
 
-
 class simplehtml_form extends moodleform {
     // Add elements to form.
     public function definition() {
-        global $CFG, $DB, $context; 
-        $mform = $this->_form; // Don't forget the underscore! 
+        global $CFG, $DB, $context;
+
+        $id = optional_param('video_id', 0, PARAM_INT);
+
+        $mform = $this->_form; // Don't forget the underscore!
+
+        if ($id) {
+            $video = $DB->get_record('local_video_directory', array("id" => $id));
+            if ($video->convert_status < 3) {
+                redirect($CFG->wwwroot . '/local/video_directory/list.php',
+                        get_string('cant_upload_or_restore_while_converting', 'local_video_directory'));
+            }
+            $mform->addElement('html', '<h3>' . get_string('upload_new_version', 'local_video_directory')
+                                . " - " . get_string('id', 'local_video_directory') . " " . $id . "</h3>");
+        }
+
         $mform->addElement('checkbox', 'private', get_string('private', 'local_video_directory'));
-        $mform->setDefault('private','checked');
+        $mform->setDefault('private', 'checked');
         $mform->addElement('filemanager', 'attachments', get_string('file', 'moodle'), null,
                     array('subdirs' => 3, 'maxfiles' => 50,
-                          'accepted_types' => array('audio','video'), 'return_types'=> FILE_INTERNAL | FILE_EXTERNAL));
+                          'accepted_types' => array('audio', 'video'), 'return_types'=> FILE_INTERNAL | FILE_EXTERNAL));
 
         if (empty($entry->id)) {
                $entry = new stdClass;
@@ -61,6 +72,10 @@ class simplehtml_form extends moodleform {
                         array('subdirs' => 3, 'maxfiles' => 50));
 
         $entry->attachments = $draftitemid;
+        
+        $mform->addElement('hidden', 'id', $id);
+        $mform->setType('id', PARAM_INT);
+
         $buttonarray = array();
         $buttonarray[] =& $mform->createElement('submit', 'submitbutton', get_string('savechanges'));
         $buttonarray[] =& $mform->createElement('cancel', 'cancel', get_string('cancel'));
@@ -89,11 +104,18 @@ if ($mform->is_cancelled()) {
         if ((isset($fromform->private)) && ($fromform->private)) {
             $record['private'] = 1;
         }
-        $lastinsertid = $DB->insert_record('local_video_directory', $record);
-        $path = substr($file->contenthash, 0,2) . "/" . substr($file->contenthash, 2, 2)."/";
-        copy($CFG->dataroot."/filedir/".$path.$file->contenthash, $uploaddir.$lastinsertid);
+        if ($fromform->id == 0) {
+            $lastinsertid = $DB->insert_record('local_video_directory', $record);
+        } else {
+            $lastinsertid = $fromform->id;
+            $record['id'] = $fromform->id;
+            $record['convert_status'] = 1;
+            $DB->update_record('local_video_directory', $record);
+        }
+        $path = substr($file->contenthash, 0, 2) . "/" . substr($file->contenthash, 2, 2) . "/";
+        copy($CFG->dataroot . "/filedir/" . $path . $file->contenthash, $uploaddir . $lastinsertid);
     }
-    redirect($CFG->wwwroot . '/local/video_directory/list.php');
+    redirect($CFG->wwwroot . '/local/video_directory/list.php', get_string('file_uploaded', 'local_video_directory'));
 } else {
     // Displays the form.
     echo $OUTPUT->header();
