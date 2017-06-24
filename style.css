@@ -103,6 +103,7 @@
     margin: 0 auto;
     border: 3px solid teal;
     border-radius: 5px;
+    max-width: 5vw;
 }
 
 .thumb:hover {
