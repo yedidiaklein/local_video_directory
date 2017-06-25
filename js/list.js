@@ -13,7 +13,6 @@ require(['jquery', 'jqueryui', 'datatables'], function($, jqueryui, datatables) 
                 {"data": "id"},
                 {"data": "name"},
                 {"data": "orig_filename"},
-                {"data": "filename"},
                 {"data": "length"},
                 {"data": "convert_status"},
                 {"data": "private"},

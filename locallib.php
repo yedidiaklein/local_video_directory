@@ -39,3 +39,13 @@ function local_video_directory_get_tagged_pages($tag, $exclusivemode = false, $f
                 $query, $params, $page * $perpage, $perpage + 1);
     return 1;
 }
+
+function local_video_edit_right($videoid) {
+    global $DB, $CFG, $USER;
+    $video = $DB->get_record("local_video_directory", array('id' => $videoid));
+    if ((is_siteadmin($USER) || $video->owner_id == $USER->id)) {
+        return 1;
+    } else {
+        redirect($CFG->wwwroot . '/local/video_directory/list.php', get_string('accessdenied', 'admin'));
+    }
+}

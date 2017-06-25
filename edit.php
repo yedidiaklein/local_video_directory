@@ -25,10 +25,7 @@ require_once('init.php');
 defined('MOODLE_INTERNAL') || die();
 
 require_once("$CFG->libdir/formslib.php");
-
-
 $streamingurl = $settings->streaming;
-
 $id = optional_param('video_id', 0, PARAM_INT);
 
 $PAGE->set_context(context_system::instance());
@@ -85,6 +82,11 @@ $mform = new simplehtml_form();
 if ($mform->is_cancelled()) {
     redirect($CFG->wwwroot . '/local/video_directory/list.php');
 } else if ($fromform = $mform->get_data()) {
+
+    // Check that user has rights to edit this video.
+    require('locallib.php');
+    local_video_edit_right($fromform->id);
+
     $record = array("id" => $fromform->id, "orig_filename" => $fromform->origfilename );
     $update = $DB->update_record("local_video_directory", $record);
     $context = context_system::instance();

@@ -48,8 +48,6 @@ $versions = $DB->get_records('local_video_directory_vers', array('file_id' => $i
 echo "<table><tr><th>" . get_string('date') . "</th><th>" . get_string('view') .
         "</th><th>" . get_string('restore') . "</th></tr>";
 
-setlocale(LC_TIME, get_string('locale', 'langconfig'));
-
 foreach ($versions as $version) {
     echo '<tr><td>' . strftime("%A, %d %B %Y %H:%M", $version->datecreated) . '</td><td>
     <img class="play_video action_thumb" onclick="local_video_directory.play(\'play.php?video_id=' .

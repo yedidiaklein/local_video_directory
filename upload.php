@@ -104,9 +104,15 @@ if ($mform->is_cancelled()) {
         if ((isset($fromform->private)) && ($fromform->private)) {
             $record['private'] = 1;
         }
+        // New video.
         if ($fromform->id == 0) {
             $lastinsertid = $DB->insert_record('local_video_directory', $record);
+        // Uploading new video on existing ID
         } else {
+            // Check that user has rights to edit this video.
+            require('locallib.php');
+            local_video_edit_right($fromform->id);
+
             $lastinsertid = $fromform->id;
             $record['id'] = $fromform->id;
             $record['convert_status'] = 1;

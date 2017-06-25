@@ -62,6 +62,8 @@ if (isset($SESSION->video_tags) && is_array($SESSION->video_tags)) {
 }
 
 foreach ($videos as $video) {
+    // Do not show filename.
+    unset($video->filename);
     if (is_numeric($video->convert_status)) {
         $video->convert_status = get_string('state_' . $video->convert_status, 'local_video_directory');
     }
@@ -76,6 +78,16 @@ foreach ($videos as $video) {
         get_string('clicktochangethumb', 'local_video_directory') .
         "'>" . ($video->thumb ? "<img src='$CFG->wwwroot/local/video_directory/thumb.php?id=$thumbid$thumbseconds&mini=1 '
         class='thumb'>" : get_string('noimage', 'local_video_directory')) . "</a>";
+
+    $versions = $DB->get_records('local_video_directory_vers', array('file_id' => $video->id));
+    $versionsbutton = '<a href="' . $CFG->wwwroot . '/local/video_directory/versions.php?id=' .
+            $video->id . '" title="' . get_string('versions', 'local_video_directory') .
+            '" alt="' . get_string('versions', 'local_video_directory') . '">
+            <img src="' . $CFG->wwwroot . '/local/video_directory/pix/synchronize';
+    if (!$versions) {
+        $versionsbutton .= '_grey';
+    }
+    $versionsbutton .= '.svg" class="action_thumb"></a>';
 
     if (file_exists("$CFG->dataroot/videos/converted/$video->id.mp4")) {
         $alt = 'title="' . get_string('play', 'local_video_directory') . '"
@@ -116,7 +128,7 @@ foreach ($videos as $video) {
 
         $video->actions .= '.svg" class="action_thumb">
         </a>
-        ' . $playbutton;
+        ' . $versionsbutton . $playbutton;
     }
 
     if ($streamingurl) {
@@ -137,9 +149,9 @@ foreach ($videos as $video) {
     if (($video->owner_id != $USER->id) && !is_siteadmin($USER)) {
          $video->private = '';
     } else {
-        $video->private = '<input type="checkbox" class="checkbox ajax_edit" id="private_' . $video->id . '" ' . $checked . '>';
-        $video->orig_filename = "<input type='text' class='hidden_input ajax_edit' id='orig_filename_" .
-            $video->id . "' value='" . htmlspecialchars($video->orig_filename, ENT_QUOTES). "'>";
+        $video->private = "<p style='display: none'>" . $video->private . '</p><input type="checkbox" class="checkbox ajax_edit" id="private_' . $video->id . '" ' . $checked . '>';
+        $video->orig_filename = "<p style='display: none'>" . htmlspecialchars($video->orig_filename, ENT_QUOTES) . "</p><input type='text' class='hidden_input ajax_edit' id='orig_filename_" .
+            $video->id . "' value='" . htmlspecialchars($video->orig_filename, ENT_QUOTES) . "'>";
     }
 
     $videolist[] = $video;

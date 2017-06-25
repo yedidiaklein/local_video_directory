@@ -46,7 +46,7 @@ $PAGE->requires->css('/local/video_directory/style.css');
 
 
 // Table headers.
-$PAGE->requires->strings_for_js(array('id', 'filename', 'private', 'streaming_url', 'owner', 'orig_filename', 'convert_status'),
+$PAGE->requires->strings_for_js(array('id', 'private', 'streaming_url', 'owner', 'orig_filename', 'convert_status'),
     'local_video_directory');
 
 echo $OUTPUT->header();
@@ -101,7 +101,7 @@ if (is_array($SESSION->video_tags)) {
     <thead>
         <tr>
 <?php
-$liststrings = array('actions', 'thumb', 'id', 'owner', 'orig_filename', 'filename', 'length',
+$liststrings = array('actions', 'thumb', 'id', 'owner', 'orig_filename', 'length',
                     'convert_status', 'private', 'streaming_url', 'tags');
 
 foreach ($liststrings as $liststring) {
