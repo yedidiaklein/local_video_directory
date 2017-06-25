@@ -49,6 +49,7 @@ $string['mass'] = 'Uploaded Files';
 $string['noimage'] = 'No image';
 $string['orig_filename'] = 'Description';
 $string['owner'] = 'Owner';
+$string['play'] = 'Play';
 $string['player'] = 'Player View';
 $string['private'] = 'Private';
 $string['reload'] = 'Reload';

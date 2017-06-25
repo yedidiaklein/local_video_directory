@@ -50,6 +50,7 @@ $string['noimage'] = 'אין תמונה';
 $string['orig_filename'] = 'תיאור';
 $string['owner'] = 'בעלים';
 $string['player'] = 'תצוגת נגן';
+$string['play'] = 'נגן';
 $string['private'] = 'פרטי';
 $string['reload'] = 'ריענון';
 $string['selected_tags'] = 'תגים שנבחרו';

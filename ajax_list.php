@@ -78,12 +78,14 @@ foreach ($videos as $video) {
         class='thumb'>" : get_string('noimage', 'local_video_directory')) . "</a>";
 
     if (file_exists("$CFG->dataroot/videos/converted/$video->id.mp4")) {
+        $alt = 'title="' . get_string('play', 'local_video_directory') . '"
+            alt="' . get_string('play', 'local_video_directory') . '"';
         if ($streamingurl) {
             $playbutton = '<img class="play_video action_thumb" onclick="local_video_directory.play(\'' . $streamingurl . "/" .
-            $video->id . '.mp4\')" " src="' . $CFG->wwwroot . '/local/video_directory/pix/play.svg">';
+            $video->id . '.mp4\')" " src="' . $CFG->wwwroot . '/local/video_directory/pix/play.svg"' . $alt . '>';
         } else {
             $playbutton = '<img class="play_video action_thumb" onclick="local_video_directory.play(\'play.php?video_id=' .
-            $video->id . '\')" " src="' . $CFG->wwwroot . '/local/video_directory/pix/play.svg">';
+            $video->id . '\')" " src="' . $CFG->wwwroot . '/local/video_directory/pix/play.svg"' . $alt . '>';
         }
     } else {
         $playbutton = '';
@@ -94,14 +96,18 @@ foreach ($videos as $video) {
         $video->actions = $playbutton;
     } else {
         $video->actions = '
-        <a href="' . $CFG->wwwroot . '/local/video_directory/delete.php?video_id=' . $video->id . '" title="delete" alt="delete">
+        <a href="' . $CFG->wwwroot . '/local/video_directory/delete.php?video_id=' .
+            $video->id . '" title="' . get_string('delete') .
+            '" alt="' . get_string('delete') . '">
             <img src="' . $CFG->wwwroot . '/local/video_directory/pix/delete.svg" class="action_thumb">
         </a>
-        <a href="' . $CFG->wwwroot . '/local/video_directory/edit.php?video_id=' . $video->id .'" title="edit" alt="edit">
+        <a href="' . $CFG->wwwroot . '/local/video_directory/edit.php?video_id=' . $video->id .
+            '" title="' . get_string('edit') . '" alt="' . get_string('edit') . '">
             <img src="' . $CFG->wwwroot . '/local/video_directory/pix/pencil.svg" class="action_thumb">
         </a>
         <a href="' . $CFG->wwwroot . '/local/video_directory/upload_subs.php?id=' .
-        $video->id .'" title="subtitles upload" alt="subtitles upload">
+            $video->id .'" title="' . get_string('upload_subs', 'local_video_directory') . '"
+            alt="' . get_string('upload_subs', 'local_video_directory') . '">
             <img src="' . $CFG->wwwroot . '/local/video_directory/pix/subs';
 
         if (!$video->subs) {
