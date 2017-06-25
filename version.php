@@ -28,5 +28,5 @@ $plugin->version = 2017062200;      // The current module version (Date: YYYYMMD
 $plugin->requires = 2016052300;      // Requires this Moodle version.
 $plugin->component = 'local_video_directory';// Full name of the plugin (used for diagnostics).
 $plugin->maturity = MATURITY_RC;
-$plugin->release = "0.94 (Build - 2017062200)";
+$plugin->release = "0.95 (Build - 2017062200)";
 $plugin->cron = 1;
