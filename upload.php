@@ -21,11 +21,24 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-require_once('init.php');
+require_once( __DIR__ . '/../../config.php');
 defined('MOODLE_INTERNAL') || die();
+require_once('locallib.php');
 
 require_once("$CFG->libdir/formslib.php");
 require_once($CFG->dirroot."/repository/lib.php");
+
+$settings = get_settings();
+if (!CLI_SCRIPT) {
+    require_login();
+
+    // Check if user belong to the cohort or is admin.
+    require_once($CFG->dirroot.'/cohort/lib.php');
+
+    if (!cohort_is_member($settings->cohort, $USER->id) && !is_siteadmin($USER)) {
+        die("Access Denied. You must be a member of the designated cohort. Please see your site admin.");
+    }
+}
 
 $PAGE->set_context(context_system::instance());
 $PAGE->set_heading(get_string('upload', 'local_video_directory'));
@@ -37,7 +50,7 @@ $PAGE->requires->css('/local/video_directory/style.css');
 $PAGE->set_context(context_system::instance());
 $context = context_user::instance($USER->id);
 
-class simplehtml_form extends moodleform {
+class upload_form extends moodleform {
     // Add elements to form.
     public function definition() {
         global $CFG, $DB, $context;
@@ -60,7 +73,7 @@ class simplehtml_form extends moodleform {
         $mform->setDefault('private', 'checked');
         $mform->addElement('filemanager', 'attachments', get_string('file', 'moodle'), null,
                     array('subdirs' => 3, 'maxfiles' => 50,
-                          'accepted_types' => array('audio', 'video'), 'return_types'=> FILE_INTERNAL | FILE_EXTERNAL));
+                          'accepted_types' => array('audio' , 'video'), 'return_types' => FILE_INTERNAL | FILE_EXTERNAL));
 
         if (empty($entry->id)) {
                $entry = new stdClass;
@@ -72,7 +85,7 @@ class simplehtml_form extends moodleform {
                         array('subdirs' => 3, 'maxfiles' => 50));
 
         $entry->attachments = $draftitemid;
-        
+
         $mform->addElement('hidden', 'id', $id);
         $mform->setType('id', PARAM_INT);
 
@@ -82,23 +95,23 @@ class simplehtml_form extends moodleform {
         $mform->addGroup($buttonarray, 'buttonar', '', array(' '), false);
     }
     // Custom validation should be added here.
-    function validation($data, $files) {
+    public function validation($data, $files) {
         return array();
     }
 }
 
-// Instantiate simplehtml_form. 
-$mform = new simplehtml_form();
- 
+// Instantiate upload_form.
+$mform = new upload_form();
+
 // Form processing and displaying is done here.
 if ($mform->is_cancelled()) {
     // Handle form cancel operation, if cancel button is present on form.
     redirect($CFG->wwwroot . '/local/video_directory/list.php');
 } else if ($fromform = $mform->get_data()) {
-// In this case you process validated data. $mform->get_data() returns data posted in form.
-  
+    // In this case you process validated data. $mform->get_data() returns data posted in form.
+    $dirs = get_directories();
     $files = $DB->get_records_select('files', "itemid = $fromform->attachments and filename <> '.'",
-			null, 'contenthash, filename');
+                null , 'contenthash , filename');
     foreach ($files as $file) {
         $record = array('orig_filename' => $file->filename, 'owner_id' => $USER->id);
         if ((isset($fromform->private)) && ($fromform->private)) {
@@ -107,7 +120,7 @@ if ($mform->is_cancelled()) {
         // New video.
         if ($fromform->id == 0) {
             $lastinsertid = $DB->insert_record('local_video_directory', $record);
-        // Uploading new video on existing ID
+            // Uploading new video on existing ID.
         } else {
             // Check that user has rights to edit this video.
             require('locallib.php');
@@ -119,7 +132,7 @@ if ($mform->is_cancelled()) {
             $DB->update_record('local_video_directory', $record);
         }
         $path = substr($file->contenthash, 0, 2) . "/" . substr($file->contenthash, 2, 2) . "/";
-        copy($CFG->dataroot . "/filedir/" . $path . $file->contenthash, $uploaddir . $lastinsertid);
+        copy($CFG->dataroot . "/filedir/" . $path . $file->contenthash, $dirs['uploaddir'] . $lastinsertid);
     }
     redirect($CFG->wwwroot . '/local/video_directory/list.php', get_string('file_uploaded', 'local_video_directory'));
 } else {

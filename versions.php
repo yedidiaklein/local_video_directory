@@ -21,8 +21,22 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-require_once('init.php');
+require_once( __DIR__ . '/../../config.php');
 defined('MOODLE_INTERNAL') || die();
+require_once('locallib.php');
+
+$settings = get_settings();
+
+if (!CLI_SCRIPT) {
+    require_login();
+
+    // Check if user belong to the cohort or is admin.
+    require_once($CFG->dirroot.'/cohort/lib.php');
+
+    if (!cohort_is_member($settings->cohort, $USER->id) && !is_siteadmin($USER)) {
+        die("Access Denied. You must be a member of the designated cohort. Please see your site admin.");
+    }
+}
 
 $PAGE->set_context(context_system::instance());
 $PAGE->set_heading(get_string('versions', 'local_video_directory'));
@@ -51,9 +65,10 @@ echo "<table><tr><th>" . get_string('date') . "</th><th>" . get_string('view') .
 foreach ($versions as $version) {
     echo '<tr><td>' . strftime("%A, %d %B %Y %H:%M", $version->datecreated) . '</td><td>
     <img class="play_video action_thumb" onclick="local_video_directory.play(\'play.php?video_id=' .
-            $version->file_id . "_" . $version->datecreated . '\')" " src="' . $CFG->wwwroot . '/local/video_directory/pix/play.svg">
-            </td><td><a href="restore.php?id=' . $id . '&restore=' . $version->datecreated . '"><img class="play_video action_thumb" 
-            src="' . $CFG->wwwroot . '/local/video_directory/pix/synchronize.svg"></a></td></tr>'; 
+            $version->file_id . "_" . $version->datecreated . '\')" " src="' . $CFG->wwwroot
+            . '/local/video_directory/pix/play.svg"></td><td><a href="restore.php?id='
+            . $id . '&restore=' . $version->datecreated . '"><img class="play_video action_thumb"
+            src="' . $CFG->wwwroot . '/local/video_directory/pix/synchronize.svg"></a></td></tr>';
 }
 echo "</table>";
 

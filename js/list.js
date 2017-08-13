@@ -35,10 +35,10 @@ require(['jquery', 'jqueryui', 'datatables'], function($, jqueryui, datatables) 
             var id = data.pop();
             var status = this.type == 'checkbox' ? this.checked : null;
             var value = this.type == 'checkbox' ? null : this.value;
-            $.post(M.cfg.wwwroot + '/local/video_directory/ajax_edit.php', 
+            $.post(M.cfg.wwwroot + '/local/video_directory/ajax_edit.php',
                 {field: field, id: id, value: value, status: status}, function (data){
-                // do nothing.
-            })
+                     // Do nothing.
+                })
             .fail(function() {
                 alert("error");
             });

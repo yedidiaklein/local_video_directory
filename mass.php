@@ -21,10 +21,23 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-require_once('init.php');
+require_once( __DIR__ . '/../../config.php');
 defined('MOODLE_INTERNAL') || die();
 require_once("$CFG->libdir/formslib.php");
 require_once('locallib.php');
+
+$settings = get_settings();
+
+if (!CLI_SCRIPT) {
+    require_login();
+
+    // Check if user belong to the cohort or is admin.
+    require_once($CFG->dirroot.'/cohort/lib.php');
+
+    if (!cohort_is_member($settings->cohort, $USER->id) && !is_siteadmin($USER)) {
+        die("Access Denied. You must be a member of the designated cohort. Please see your site admin.");
+    }
+}
 
 $PAGE->set_context(context_system::instance());
 $PAGE->set_heading(get_string('mass', 'local_video_directory'));
@@ -35,9 +48,10 @@ $PAGE->set_pagelayout('standard');
 $PAGE->navbar->add(get_string('pluginname', 'local_video_directory'), new moodle_url('/local/video_directory/'));
 $PAGE->navbar->add(get_string('mass', 'local_video_directory'));
 
-class simplehtml_form extends moodleform {
+
+class mass_form extends moodleform {
     public function definition() {
-        global $CFG, $DB, $USER, $massdir, $wgetdir;
+        global $CFG, $DB, $USER;
 
         $mform = $this->_form;
 
@@ -58,21 +72,23 @@ class simplehtml_form extends moodleform {
             $mform->addElement('html', '<td>' . $wget->url.'</td><td>');
 
             if ($wget->success == 1) {
-                $mform->addElement('html', local_video_directory_human_filesize(filesize($wgetdir.$filename)));
+                $mform->addElement('html', local_video_directory_human_filesize(filesize($dirs['wgetdir'].$filename)));
             }
 
             $mform->addElement('html', '</td><td>' . get_string('wget_' . $wget->success, 'local_video_directory') . '</td></tr>');
         }
 
-        $files = listdir($massdir);
+        $dirs = get_directories();
+
+        $files = listdir($dirs['massdir']);
         foreach ($files as $entry) {
-            $entry = str_replace($massdir, "", $entry);
+            $entry = str_replace($dirs['massdir'], "", $entry);
             $mform->addElement('html', '<tr><td>');
             $mform->addElement('checkbox', base64_encode($entry), "");
             $mform->setDefault(base64_encode($entry), 'checked');
             $mform->addElement('html', '</td>');
             $mform->addElement('html', '<td>' . $entry.'</td><td>' .
-                    local_video_directory_human_filesize(filesize($massdir."/".$entry)).'</td></tr>');
+                    local_video_directory_human_filesize(filesize($dirs['massdir']."/".$entry)).'</td></tr>');
         }
 
         $mform->addElement('html', '</table>');
@@ -85,12 +101,12 @@ class simplehtml_form extends moodleform {
         $mform->addGroup($buttonarray, 'buttonar', '', array(' '), false);
     }
 
-    function validation($data, $files) {
+    public function validation($data, $files) {
         return array();
     }
 }
 
-$mform = new simplehtml_form();
+$mform = new mass_form();
 
 if ($mform->is_cancelled()) {
     redirect($CFG->wwwroot . '/local/video_directory/list.php');
@@ -117,14 +133,14 @@ if ($mform->is_cancelled()) {
             }
             $record = array('orig_filename' => $basename, 'owner_id' => $USER->id, 'private' => 1 );
             $lastinsertid = $DB->insert_record('local_video_directory', $record);
-            $copied = copy($massdir . '/' . $filename , $uploaddir . $lastinsertid);
+            $copied = copy($dirs['massdir'] . '/' . $filename , $dirs['uploaddir'] . $lastinsertid);
             if ($copied) {
-                unlink($massdir . '/' . $filename);
+                unlink($dirs['massdir'] . '/' . $filename);
             }
             core_tag_tag::set_item_tags('local_video_directory', 'local_video_directory', $lastinsertid, $context, $tags);
         }
     }
-    removeemptysubfolders($massdir);
+    removeemptysubfolders($dirs['massdir']);
     redirect($CFG->wwwroot . '/local/video_directory/list.php');
 } else {
     $PAGE->requires->css('/local/video_directory/style.css');
@@ -160,12 +176,12 @@ function listdir($startdir='.') {
 }
 
 function removeemptysubfolders($path) {
-    global $massdir;
+    global $dirs;
     $empty = true;
     foreach (glob($path.DIRECTORY_SEPARATOR."*") as $file) {
         $empty &= is_dir($file) && removeemptysubfolders($file);
     }
-    if ($path != $massdir) {
+    if ($path != $dirs['massdir']) {
         return $empty && rmdir($path);
     } else {
         return $empty;

@@ -22,12 +22,27 @@
  */
 
 define('CLI_SCRIPT', 1);
+require_once( __DIR__ . '/../../config.php');
+require_once('locallib.php');
+defined('MOODLE_INTERNAL') || die();
 
-require_once( __DIR__ . '/../init.php');
+$settings = get_settings();
 
-$origdir = $uploaddir;
-$streamingdir = $converted;
-$ffprobe = $settings->ffprobe;
+if (!CLI_SCRIPT) {
+    require_login();
+
+    // Check if user belong to the cohort or is admin.
+    require_once($CFG->dirroot.'/cohort/lib.php');
+
+    if (!cohort_is_member($settings->cohort, $USER->id) && !is_siteadmin($USER)) {
+        die("Access Denied. You must be a member of the designated cohort. Please see your site admin.");
+    }
+}
+
+$dirs = get_directories();
+$origdir = $dirs['uploaddir'];
+$streamingdir = $dirs['converted'];
+$ffprobe = get_setting()->ffprobe;
 $videos = $DB->get_records('local_video_directory', array('length' => null));
 
 foreach ($videos as $video) {

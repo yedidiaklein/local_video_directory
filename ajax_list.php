@@ -20,8 +20,23 @@
  * @copyright  2017 Yedidia Klein <yedidia@openapp.co.il>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-require_once('init.php');
+
+require_once( __DIR__ . '/../../config.php');
+require_once('locallib.php');
 defined('MOODLE_INTERNAL') || die();
+
+$settings = get_settings();
+
+if (!CLI_SCRIPT) {
+    require_login();
+
+    // Check if user belong to the cohort or is admin.
+    require_once($CFG->dirroot.'/cohort/lib.php');
+
+    if (!cohort_is_member($settings->cohort, $USER->id) && !is_siteadmin($USER)) {
+        die("Access Denied. You must be a member of the designated cohort. Please see your site admin.");
+    }
+}
 
 $PAGE->set_context(context_system::instance());
 
@@ -51,11 +66,11 @@ if (isset($SESSION->video_tags) && is_array($SESSION->video_tags)) {
 } else {
     if (is_siteadmin($USER)) {
         $videos = $DB->get_records_sql('SELECT v.*, ' . $DB->sql_concat_join("' '", array("firstname", "lastname")) .
-                                        ' AS name FROM {local_video_directory} v 
+                                        ' AS name FROM {local_video_directory} v
                                         LEFT JOIN {user} u on v.owner_id = u.id');
     } else {
         $videos = $DB->get_records_sql('SELECT v.*, ' . $DB->sql_concat_join("' '", array("firstname", "lastname")) .
-                                        ' AS name FROM {local_video_directory} v 
+                                                ' AS name FROM {local_video_directory} v
                                         LEFT JOIN {user} u on v.owner_id = u.id WHERE owner_id =' . $USER->id .
                                         ' OR (private IS NULL OR private = 0)');
     }
@@ -92,8 +107,9 @@ foreach ($videos as $video) {
     if (file_exists("$CFG->dataroot/videos/converted/$video->id.mp4")) {
         $alt = 'title="' . get_string('play', 'local_video_directory') . '"
             alt="' . get_string('play', 'local_video_directory') . '"';
-        if ($streamingurl) {
-            $playbutton = '<img class="play_video action_thumb" onclick="local_video_directory.play(\'' . $streamingurl . "/" .
+        if (get_streaming_server_url()) {
+            $playbutton = '<img class="play_video action_thumb" onclick="local_video_directory
+                        .play(\'' . get_streaming_server_url() . "/" .
             $video->id . '.mp4\')" " src="' . $CFG->wwwroot . '/local/video_directory/pix/play.svg"' . $alt . '>';
         } else {
             $playbutton = '<img class="play_video action_thumb" onclick="local_video_directory.play(\'play.php?video_id=' .
@@ -131,9 +147,9 @@ foreach ($videos as $video) {
         ' . $versionsbutton . $playbutton;
     }
 
-    if ($streamingurl) {
-        $video->streaming_url = '<a target="_blank" href="' . $streamingurl . '/' . $video->id . '.mp4">'
-                                . $streamingurl . '/' . $video->id . '.mp4</a><br>';
+    if (get_streaming_server_url()) {
+        $video->streaming_url = '<a target="_blank" href="' . get_streaming_server_url() . '/' . $video->id . '.mp4">'
+                                . get_streaming_server_url() . '/' . $video->id . '.mp4</a><br>';
     }
     $video->streaming_url .= '<a target="_blank" href="play.php?video_id=' . $video->id . '" >'.
         $CFG->wwwroot . '/local/video_directory/play.php?video_id=' .
@@ -149,9 +165,11 @@ foreach ($videos as $video) {
     if (($video->owner_id != $USER->id) && !is_siteadmin($USER)) {
          $video->private = '';
     } else {
-        $video->private = "<p style='display: none'>" . $video->private . '</p><input type="checkbox" class="checkbox ajax_edit" id="private_' . $video->id . '" ' . $checked . '>';
-        $video->orig_filename = "<p style='display: none'>" . htmlspecialchars($video->orig_filename, ENT_QUOTES) . "</p><input type='text' class='hidden_input ajax_edit' id='orig_filename_" .
-            $video->id . "' value='" . htmlspecialchars($video->orig_filename, ENT_QUOTES) . "'>";
+        $video->private = "<p style='display: none'>" . $video->private . '</p><input type="checkbox"
+                             class="checkbox ajax_edit" id="private_' . $video->id . '" ' . $checked . '>';
+        $video->orig_filename = "<p style='display: none'>" . htmlspecialchars($video->orig_filename, ENT_QUOTES)
+                                 . "</p><input type='text' class='hidden_input ajax_edit' id='orig_filename_" .
+        $video->id . "' value='" . htmlspecialchars($video->orig_filename, ENT_QUOTES) . "'>";
     }
 
     $videolist[] = $video;

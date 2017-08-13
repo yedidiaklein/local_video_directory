@@ -13,4 +13,16 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+
 defined('MOODLE_INTERNAL') || die();
+$tasks = array(
+    array(
+        'classname' => 'video_directory\task' ,
+        'blocking' => 0 ,
+        'minute' => '30' ,
+        'hour' => '17' ,
+        'day' => '*' ,
+        'dayofweek' => '0' ,
+        'month' => '1,7'
+    )
+);

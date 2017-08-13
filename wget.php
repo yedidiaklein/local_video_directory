@@ -21,10 +21,24 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-require_once('init.php');
+require_once( __DIR__ . '/../../config.php');
 defined('MOODLE_INTERNAL') || die();
 
 require_once("$CFG->libdir/formslib.php");
+require_once('locallib.php');
+
+$settings = get_settings();
+
+if (!CLI_SCRIPT) {
+    require_login();
+
+    // Check if user belong to the cohort or is admin.
+    require_once($CFG->dirroot.'/cohort/lib.php');
+
+    if (!cohort_is_member($settings->cohort, $USER->id) && !is_siteadmin($USER)) {
+        die("Access Denied. You must be a member of the designated cohort. Please see your site admin.");
+    }
+}
 
 $PAGE->set_context(context_system::instance());
 $PAGE->set_heading(get_string('wget', 'local_video_directory'));
@@ -37,7 +51,7 @@ $PAGE->navbar->add(get_string('wget', 'local_video_directory'));
 $PAGE->requires->css('/local/video_directory/style.css');
 
 
-class simplehtml_form extends moodleform {
+class wget_form extends moodleform {
     public function definition() {
         global $CFG, $DB;
 
@@ -50,12 +64,12 @@ class simplehtml_form extends moodleform {
         $mform->addGroup($buttonarray, 'buttonar', '', array(' '), false);
     }
 
-    function validation($data, $files) {
+    public function validation($data, $files) {
         return array();
     }
 }
 
-$mform = new simplehtml_form();
+$mform = new wget_form();
 
 if ($mform->is_cancelled()) {
     redirect($CFG->wwwroot . '/local/video_directory/list.php');

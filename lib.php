@@ -20,12 +20,16 @@
  * @copyright  2017 Yedidia Klein <yedidia@openapp.co.il>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
+require_once( __DIR__ . '/../../config.php');
+require_once('locallib.php');
 defined('MOODLE_INTERNAL') || die();
 
 function local_video_directory_cron() {
     global $CFG, $DB;
 
     include_once( $CFG->dirroot . "/local/video_directory/init.php");
+    $settings = get_settings();
+    $dirs = get_directories();
 
     $ffmpeg = $settings->ffmpeg;
     $streamingurl = $settings->streaming.'/';
@@ -35,12 +39,12 @@ function local_video_directory_cron() {
     $php = $settings->php;
     $multiresolution = $settings->multiresolution;
     $resolutions = $settings->resolutions;
-    $origdir = $uploaddir;
-    $streamingdir = $converted;
+    $origdir = $dirs['uploaddir'];
+    $streamingdir = $dirs['converted'];
 
     // Check if we've to convert videos.
     $videos = $DB->get_records('local_video_directory', array("convert_status" => 1));
-    // Move all video that have to be converted to Waiting.. state (4) just to make sure that there is not 
+    // Move all video that have to be converted to Waiting.. state (4) just to make sure that there is not
     // multiple cron that converts same files.
     $wait = $DB->execute('UPDATE {local_video_directory} SET convert_status = 4 WHERE convert_status = 1');
 
@@ -55,8 +59,8 @@ function local_video_directory_cron() {
             rename($streamingdir . $video->id . ".mp4", $streamingdir . $newfilename);
             // Delete Thumbs.
             array_map('unlink', glob($streamingdir . $video->id . "*.png"));
-            // Delete Multi resolutions
-            array_map('unlink', glob($multidir . $video->id . "_*.mp4"));
+            // Delete Multi resolutions.
+            array_map('unlink', glob($dirs['multidir'] . $video->id . "_*.mp4"));
             // Write to version table.
             $record = array('datecreated' => $time, 'file_id' => $video->id, 'filename' => $newfilename);
             $insert = $DB->insert_record('local_video_directory_vers', $record);
@@ -94,7 +98,7 @@ function local_video_directory_cron() {
             $metafields = array("height" => "stream=height", "width" => "stream=width", "size" => "format=size");
             foreach ($metafields as $key => $value) {
                 $metadata[$key] = exec($ffprobe . " -v error -show_entries " . $value .
-                    " -of default=noprint_wrappers=1:nokey=1 " . $streamingdir . $video->id . ".mp4"); 
+                    " -of default=noprint_wrappers=1:nokey=1 " . $streamingdir . $video->id . ".mp4");
             }
 
             // Update that converted and streaming URL.
@@ -130,13 +134,13 @@ function local_video_directory_cron() {
             $update = $DB->update_record("local_video_directory_wget", $record);
             $filename = basename($wget->url);
 
-            echo "Downloading $wget->url to $wgetdir";
+            echo "Downloading $wget->url to" . $dirs['wgetdir'];
             echo "Filename is $filename";
-            file_put_contents($wgetdir . $filename, fopen($wget->url, 'r'));
+            file_put_contents($dirs['wgetdir'] . $filename, fopen($wget->url, 'r'));
 
             // Move to mass directory once downloaded.
-            if (copy($wgetdir . $filename, $massdir . $filename)) {
-                unlink($wgetdir . $filename);
+            if (copy($dirs['wgetdir'] . $filename, $dirs['massdir'] . $filename)) {
+                unlink($dirs['wgetdir'] . $filename);
                 $sql = "UPDATE {local_video_directory_wget} SET success = 2 WHERE url = ?";
                 $DB->execute($sql, array($wget->url));
             }
@@ -148,7 +152,7 @@ function local_video_directory_cron() {
         // Create multi resolutions streams.
         $videos = $DB->get_records("local_video_directory", array('convert_status' => 3));
         foreach ($videos as $video) {
-            create_dash($video->id, $converted, $multidir, $ffmpeg, $resolutions);
+            create_dash($video->id, $dirs['converted'], $dirs['multidir'], $ffmpeg, $resolutions);
         }
     }
 }
@@ -184,11 +188,11 @@ function local_video_directory_extend_settings_navigation($settingsnav, $context
             'local_video_directory_list',
             new pix_icon('f/avi-24', $strlist)
         );
-        
+
         if ($PAGE->url->compare($url, URL_MATCH_BASE)) {
             $listnode->make_active();
         }
-        
+
         $strupload = get_string('upload', 'local_video_directory');
         $urlupload = new moodle_url('/local/video_directory/upload.php', array('id' => $PAGE->course->id));
         $uploadnode = navigation_node::create(
@@ -213,7 +217,7 @@ function create_dash($id, $converted, $dashdir, $ffmpeg, $resolutions) {
     global $DB, $CFG;
 
     include_once( $CFG->dirroot . "/local/video_directory/init.php");
-    
+
     // Update state to 6 - creating dash streams.
     $DB->update_record("local_video_directory", array('id' => $id, 'convert_status' => 6));
 
@@ -225,7 +229,7 @@ function create_dash($id, $converted, $dashdir, $ffmpeg, $resolutions) {
         " -strict -2 -c:v libx264 -crf 22 -c:a aac -movflags faststart -x264opts 'keyint=24:min-keyint=24:no-scenecut' " .
         " " . $dashdir . $id . "_" . $video->height . ".mp4";
     exec($cmd);
-    $record=array("video_id" => $id,
+    $record = array("video_id" => $id,
                   "height" => $video->height,
                   "filename" => $id . "_" . $video->height . ".mp4",
                   "datecreated" => time(),
@@ -237,8 +241,8 @@ function create_dash($id, $converted, $dashdir, $ffmpeg, $resolutions) {
     foreach ($resolutions as $resolution) {
         if (($resolution < $video->height) && (is_numeric($resolution))) {
             $cmd = $ffmpeg . " -i " . $converted . $id . ".mp4" .
-            " -strict -2 -c:v libx264 -crf 22 -c:a aac -movflags faststart -x264opts 'keyint=24:min-keyint=24:no-scenecut' -vf scale=-2:" .
-            $resolution . " " . $dashdir . $id . "_" . $resolution . ".mp4";
+            " -strict -2 -c:v libx264 -crf 22 -c:a aac -movflags faststart -x264opts 'keyint=24:min-keyint=24:no-scenecut' -vf
+            scale=-2:" . $resolution . " " . $dashdir . $id . "_" . $resolution . ".mp4";
             exec($cmd);
             $record = array("video_id" => $id,
                           "height" => $resolution,
@@ -252,3 +256,4 @@ function create_dash($id, $converted, $dashdir, $ffmpeg, $resolutions) {
     $DB->update_record("local_video_directory", array('id' => $id, 'convert_status' => 7));
 
 }
+

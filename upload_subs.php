@@ -21,11 +21,24 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-require_once('init.php');
-require_once('locallib.php');
+require_once( __DIR__ . '/../../config.php');
 defined('MOODLE_INTERNAL') || die();
+require_once('locallib.php');
 
 require_once("$CFG->libdir/formslib.php");
+
+$settings = get_settings();
+
+if (!CLI_SCRIPT) {
+    require_login();
+
+    // Check if user belong to the cohort or is admin.
+    require_once($CFG->dirroot.'/cohort/lib.php');
+
+    if (!cohort_is_member($settings->cohort, $USER->id) && !is_siteadmin($USER)) {
+        die("Access Denied. You must be a member of the designated cohort. Please see your site admin.");
+    }
+}
 
 $PAGE->set_context(context_system::instance());
 $PAGE->set_heading(get_string('upload_subs', 'local_video_directory'));
@@ -36,14 +49,15 @@ $PAGE->set_pagelayout('standard');
 $PAGE->navbar->add(get_string('pluginname', 'local_video_directory'), new moodle_url('/local/video_directory/'));
 $PAGE->navbar->add(get_string('upload_subs', 'local_video_directory'));
 $PAGE->requires->css('/local/video_directory/style.css');
+$dirs = get_directories();
 
-class simplehtml_form extends moodleform {
+class upload_subs_form extends moodleform {
     public function definition() {
-        global $CFG, $DB, $subsdir;
+        global $CFG, $DB;
         $id = required_param('id', PARAM_INT);
         $mform = $this->_form;
-        if (file_exists($subsdir.$id.".vtt")) {
-            $subsize = local_video_directory_human_filesize(filesize($subsdir.$id.".vtt"));
+        if (file_exists($dirs['subsdir'].$id.".vtt")) {
+            $subsize = local_video_directory_human_filesize(filesize($dirs['subsdir'].$id.".vtt"));
             $mform->addElement('html', '<div class="alert alert-info alert-block fade in">'.
                                 get_string('subs_exist_in_size', 'local_video_directory').
                 " ".$subsize. ' (<a href=subs.php?video_id=' . $id
@@ -64,12 +78,12 @@ class simplehtml_form extends moodleform {
         $mform->addGroup($buttonarray, 'buttonar', '', array(' '), false);
     }
 
-    function validation($data, $files) {
+    public function validation($data, $files) {
         return array();
     }
 }
 
-$mform = new simplehtml_form();
+$mform = new upload_subs_form();
 
 if ($mform->is_cancelled()) {
     redirect($CFG->wwwroot . '/local/video_directory/list.php');
@@ -79,20 +93,20 @@ if ($mform->is_cancelled()) {
         if (substr($name, -3) == "srt") {
             include("srt2vtt.php");
             // Save uploaded file.
-            $success = $mform->save_file('userfile', $subsdir.$fromform->id . ".srt");
-            $srt = file_get_contents($subsdir . $fromform->id . ".srt");
+            $success = $mform->save_file('userfile', $dirs['subsdir'].$fromform->id . ".srt");
+            $srt = file_get_contents($dirs['subsdir'] . $fromform->id . ".srt");
             // Convert to vtt.
             $vtt = srt2vtt($srt);
-            file_put_contents($subsdir.$fromform->id.".vtt", $vtt);
+            file_put_contents($dirs['subsdir'].$fromform->id.".vtt", $vtt);
             // Delete uploaded file.
-            unlink($subsdir.$fromform->id.".srt");
+            unlink($dirs['subsdir'].$fromform->id.".srt");
         } else {
             // Should be better, strings and error on list page.
             echo "This file type is not supported";
             redirect($CFG->wwwroot . '/local/video_directory/list.php');
         }
     } else {
-        $success = $mform->save_file('userfile', $subsdir.$fromform->id.".vtt");
+        $success = $mform->save_file('userfile', $dirs['subsdir'].$fromform->id.".vtt");
     }
     $record = array("id" => $fromform->id, "subs" => 1);
     $update = $DB->update_record("local_video_directory", $record);

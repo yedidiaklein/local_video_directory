@@ -21,11 +21,25 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-require_once('init.php');
+require_once( __DIR__ . '/../../config.php');
+require_once('locallib.php');
 defined('MOODLE_INTERNAL') || die();
 
+$settings = get_settings();
+
+if (!CLI_SCRIPT) {
+    require_login();
+
+    // Check if user belong to the cohort or is admin.
+    require_once($CFG->dirroot.'/cohort/lib.php');
+
+    if (!cohort_is_member($settings->cohort, $USER->id) && !is_siteadmin($USER)) {
+        die("Access Denied. You must be a member of the designated cohort. Please see your site admin.");
+    }
+}
+
 require_once("$CFG->libdir/formslib.php");
-$streamingurl = $settings->streaming;
+$streamingurl = get_settings()->streaming;
 $id = optional_param('video_id', 0, PARAM_INT);
 
 $PAGE->set_context(context_system::instance());
@@ -37,7 +51,7 @@ $PAGE->set_pagelayout('standard');
 $PAGE->navbar->add(get_string('pluginname', 'local_video_directory'), new moodle_url('/local/video_directory/'));
 $PAGE->navbar->add(get_string('edit', 'local_video_directory'));
 
-class simplehtml_form extends moodleform {
+class edit_form extends moodleform {
     public function definition() {
         global $CFG, $DB;
 
@@ -72,12 +86,12 @@ class simplehtml_form extends moodleform {
         $mform->addGroup($buttonarray, 'buttonar', '', array(' '), false);
     }
 
-    function validation($data, $files) {
+    public function validation($data, $files) {
         return array();
     }
 }
 
-$mform = new simplehtml_form();
+$mform = new edit_form();
 
 if ($mform->is_cancelled()) {
     redirect($CFG->wwwroot . '/local/video_directory/list.php');
@@ -96,7 +110,7 @@ if ($mform->is_cancelled()) {
     echo $OUTPUT->header();
 
     $video = $DB->get_record('local_video_directory', array("id" => $id));
-    echo '<video  width="655" controls preload="auto" 
+    echo '<video  width="655" controls preload="auto"
             poster="' . $CFG->wwwroot . '/local/video_directory/thumb.php?id=' . str_replace("-", "&second=", $video->thumb) . '">
             <source src="play.php?video_id='. $id . '" type="video/mp4"">
           </video>';

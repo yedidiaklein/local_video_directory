@@ -21,7 +21,23 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+require_once( __DIR__ . '/../../config.php');
 require_once('locallib.php');
+defined('MOODLE_INTERNAL') || die();
+
+$settings = get_settings();
+
+if (!CLI_SCRIPT) {
+    require_login();
+
+    // Check if user belong to the cohort or is admin.
+    require_once($CFG->dirroot.'/cohort/lib.php');
+
+    if (!cohort_is_member($settings->cohort, $USER->id) && !is_siteadmin($USER)) {
+        die("Access Denied. You must be a member of the designated cohort. Please see your site admin.");
+    }
+}
+
 $selected = basename($_SERVER['SCRIPT_NAME']);
 $settings = get_config('local_video_directory');
 ?>

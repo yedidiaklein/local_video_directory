@@ -23,7 +23,9 @@
 
 // This file is icluded on all module files and has global variables that are needed all over.
 
+
 require_once( __DIR__ . '/../../config.php');
+defined('MOODLE_INTERNAL') || die();
 
 $settings = get_config('local_video_directory');
 $shellcomponents = array('ffmpeg', 'ffprobe', 'php');
@@ -43,7 +45,7 @@ if (!CLI_SCRIPT) {
 
     // Check if user belong to the cohort or is admin.
     require_once($CFG->dirroot.'/cohort/lib.php');
-    
+
     if (!cohort_is_member($settings->cohort, $USER->id) && !is_siteadmin($USER)) {
         die("Access Denied. You must be a member of the designated cohort. Please see your site admin.");
     }
@@ -68,11 +70,13 @@ foreach ($dirs as $key => $value) {
 }
 
 // Check if streaming server and symlink or settings exists and work.
-$first_video = $DB->get_records('local_video_directory', array());
-$url = $settings->streaming.'/'.$first_video[1]->id.'.mp4';
-$headers = get_headers($url);
-if (strstr($headers[0],"200")) {
-    $streamingurl = $settings->streaming;
-} else {
-    $streamingurl = FALSE;
+$firstvideo = $DB->get_records('local_video_directory', array());
+if ($firstvideo) {
+    $url = $settings->streaming.'/'.current($firstvideo)->id.'.mp4';
+    $headers = get_headers($url);
+    if (strstr($headers[0] , "200")) {
+        $streamingurl = $settings->streaming;
+    } else {
+        $streamingurl = false;
+    }
 }
