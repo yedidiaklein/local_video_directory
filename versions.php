@@ -33,9 +33,16 @@ if (!CLI_SCRIPT) {
     // Check if user belong to the cohort or is admin.
     require_once($CFG->dirroot.'/cohort/lib.php');
 
-    if (!cohort_is_member($settings->cohort, $USER->id) && !is_siteadmin($USER)) {
+    // Check if user have permissionss.
+    $context = context_system::instance();
+
+    if (!has_capability('local/video_directory:video', $context) && !is_siteadmin($USER)) {
         die("Access Denied. You must be a member of the designated cohort. Please see your site admin.");
     }
+
+    // if (!cohort_is_member($settings->cohort, $USER->id) && !is_siteadmin($USER)) {
+    // die("Access Denied. You must be a member of the designated cohort. Please see your site admin.");
+    // }
 }
 
 $PAGE->set_context(context_system::instance());
@@ -73,12 +80,12 @@ foreach ($versions as $version) {
 echo "</table>";
 
 ?>
-<div id='video_player' style='display:none'>
+<div id='video_player' class="video-player" style='display:none'>
     <a href=# class='close' onclick='local_video_directory.close_player();'>
         &times; <?php echo get_string('close', 'local_video_directory'); ?>
     </a>
     <br>
-    <video id="my-video" controls preload="auto"></video>
+    <video id="my-video" class="my-video" controls preload="auto"></video>
 </div>
 
 <?php

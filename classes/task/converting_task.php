@@ -14,22 +14,24 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
-namespace video_directory\task;
-require_once( __DIR__ . '/../../config.php');
-require_once('locallib.php');
+namespace local_video_directory\task;
+require_once( __DIR__ . '/../../../../config.php');
 defined('MOODLE_INTERNAL') || die();
 
-class local_video_directory extends \core\task\scheduled_task {
+class converting_task extends \core\task\scheduled_task {
     public function get_name() {
         // Shown in admin screens.
         return get_string('pluginname', 'local_video_directory');
     }
-
+    
     public function execute() {
         global $CFG , $DB;
+        require_once($CFG->dirroot . '/local/video_directory/locallib.php');
+        require_once($CFG->dirroot . '/local/video_directory/lib.php');
+        
         $dirs = get_directories();
 
-        include_once( $CFG->dirroot . "/local/video_directory/init.php");
+        // include_once( $CFG->dirroot . "/local/video_directory/init.php");
         $settings = get_settings();
         $streamingurl = $settings->streaming.'/';
         $ffmpeg = $settings->ffmpeg;
@@ -40,7 +42,7 @@ class local_video_directory extends \core\task\scheduled_task {
         $multiresolution = $settings->multiresolution;
         $resolutions = $settings->resolutions;
         $origdir = $dirs['uploaddir'];
-        $streamingdir = $converted;
+        $streamingdir = $dirs['converted'];
 
         // Check if we've to convert videos.
         $videos = $DB->get_records('local_video_directory' , array("convert_status" => 1));
@@ -152,7 +154,7 @@ class local_video_directory extends \core\task\scheduled_task {
             // Create multi resolutions streams.
             $videos = $DB->get_records("local_video_directory", array('convert_status' => 3));
             foreach ($videos as $video) {
-                create_dash($video->id, $converted, $dirs['multidir'], $ffmpeg, $resolutions);
+                create_dash($video->id, $dirs['converted'], $dirs['multidir'], $ffmpeg, $resolutions);
             }
         }
 

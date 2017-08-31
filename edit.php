@@ -33,9 +33,16 @@ if (!CLI_SCRIPT) {
     // Check if user belong to the cohort or is admin.
     require_once($CFG->dirroot.'/cohort/lib.php');
 
-    if (!cohort_is_member($settings->cohort, $USER->id) && !is_siteadmin($USER)) {
+    // Check if user have permissionss.
+    $context = context_system::instance();
+
+    if (!has_capability('local/video_directory:video', $context) && !is_siteadmin($USER)) {
         die("Access Denied. You must be a member of the designated cohort. Please see your site admin.");
     }
+
+    // if (!cohort_is_member($settings->cohort, $USER->id) && !is_siteadmin($USER)) {
+    // die("Access Denied. You must be a member of the designated cohort. Please see your site admin.");
+    // }
 }
 
 require_once("$CFG->libdir/formslib.php");
@@ -98,7 +105,6 @@ if ($mform->is_cancelled()) {
 } else if ($fromform = $mform->get_data()) {
 
     // Check that user has rights to edit this video.
-    require('locallib.php');
     local_video_edit_right($fromform->id);
 
     $record = array("id" => $fromform->id, "orig_filename" => $fromform->origfilename );

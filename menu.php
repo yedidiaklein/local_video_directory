@@ -33,9 +33,16 @@ if (!CLI_SCRIPT) {
     // Check if user belong to the cohort or is admin.
     require_once($CFG->dirroot.'/cohort/lib.php');
 
-    if (!cohort_is_member($settings->cohort, $USER->id) && !is_siteadmin($USER)) {
+    // Check if user have permissionss.
+    $context = context_system::instance();
+
+    if (!has_capability('local/video_directory:video', $context) && !is_siteadmin($USER)) {
         die("Access Denied. You must be a member of the designated cohort. Please see your site admin.");
     }
+
+    // if (!cohort_is_member($settings->cohort, $USER->id) && !is_siteadmin($USER)) {
+    // die("Access Denied. You must be a member of the designated cohort. Please see your site admin.");
+    // }
 }
 
 $selected = basename($_SERVER['SCRIPT_NAME']);
@@ -45,15 +52,16 @@ $settings = get_config('local_video_directory');
     <?php echo get_string('freedisk', 'local_video_directory') .
      ' : ' . local_video_directory_human_filesize(disk_free_space($CFG->dataroot), 2, $settings->df) ?>
 </div>
-<ul id='videomenu'>
+<ul id='videomenu' class='nav nav-tabs' role="tablist">
 <?php
 $menu = array('list', 'upload', 'mass', 'wget');
 
 foreach ($menu as $item) {
     if ($item . '.php' == $selected) {
-        echo '<li id="selected"><a href="' . $item . '.php">' . get_string($item, 'local_video_directory') . '</a></li>';
+        echo '<li id="selected"  class="nav-item">
+        <a class="nav-link active" href="' . $item . '.php">' . get_string($item, 'local_video_directory') . '</a></li>';
     } else {
-        echo '<li><a href="' . $item . '.php">' . get_string($item, 'local_video_directory') . '</a></li>';
+        echo '<li class="nav-item" ><a class="nav-link" href="' . $item . '.php">' . get_string($item, 'local_video_directory') . '</a></li>';
     }
 }
 ?>

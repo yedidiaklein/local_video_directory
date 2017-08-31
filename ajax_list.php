@@ -26,16 +26,21 @@ require_once('locallib.php');
 defined('MOODLE_INTERNAL') || die();
 
 $settings = get_settings();
-
+$dirs = get_directories();
 if (!CLI_SCRIPT) {
     require_login();
 
     // Check if user belong to the cohort or is admin.
-    require_once($CFG->dirroot.'/cohort/lib.php');
+    // require_once($CFG->dirroot.'/cohort/lib.php');
 
-    if (!cohort_is_member($settings->cohort, $USER->id) && !is_siteadmin($USER)) {
+    // Check if user have permissionss.
+    $context = context_system::instance();
+    if (!has_capability('local/video_directory:video', $context) && !is_siteadmin($USER)) {
         die("Access Denied. You must be a member of the designated cohort. Please see your site admin.");
     }
+    // if (!cohort_is_member($settings->cohort, $USER->id) && !is_siteadmin($USER)) {
+    // die("Access Denied. You must be a member of the designated cohort. Please see your site admin.");
+    // }
 }
 
 $PAGE->set_context(context_system::instance());
@@ -56,7 +61,7 @@ if (isset($SESSION->video_tags) && is_array($SESSION->video_tags)) {
     } else {
         $videos = $DB->get_records_sql('SELECT v.*, ' . $DB->sql_concat_join("' '", array("firstname", "lastname")) . ' AS name
                                                 FROM {local_video_directory} v
-                                                LEFT JOIN {user} u on v.owner_id = u.id
+                                                LEFT JOIN {user} u on v.owner_id = u.idsudo apt install vlc
                                                 LEFT JOIN {tag_instance} ti on v.id=ti.itemid
                                                 LEFT JOIN {tag} t on ti.tagid=t.id
                                                 WHERE ti.itemtype = \'local_video_directory\' AND t.name IN (' . $list . ')
@@ -98,22 +103,22 @@ foreach ($videos as $video) {
     $versionsbutton = '<a href="' . $CFG->wwwroot . '/local/video_directory/versions.php?id=' .
             $video->id . '" title="' . get_string('versions', 'local_video_directory') .
             '" alt="' . get_string('versions', 'local_video_directory') . '">
-            <img src="' . $CFG->wwwroot . '/local/video_directory/pix/synchronize';
+            <img src="' . $CFG->wwwroot . '/local/video_directory/pix/new_version';
     if (!$versions) {
-        $versionsbutton .= '_grey';
+        // $versionsbutton .= '_grey';
     }
-    $versionsbutton .= '.svg" class="action_thumb"></a>';
+    $versionsbutton .= '.png" class="action_thumb"></a>';
 
-    if (file_exists("$CFG->dataroot/videos/converted/$video->id.mp4")) {
+    if (file_exists( $dirs['converted'] . $video->id . ".mp4")) {
         $alt = 'title="' . get_string('play', 'local_video_directory') . '"
             alt="' . get_string('play', 'local_video_directory') . '"';
         if (get_streaming_server_url()) {
             $playbutton = '<img class="play_video action_thumb" onclick="local_video_directory
                         .play(\'' . get_streaming_server_url() . "/" .
-            $video->id . '.mp4\')" " src="' . $CFG->wwwroot . '/local/video_directory/pix/play.svg"' . $alt . '>';
+            $video->id . '.mp4\')" " src="' . $CFG->wwwroot . '/local/video_directory/pix/new_play.png"' . $alt . '>';
         } else {
             $playbutton = '<img class="play_video action_thumb" onclick="local_video_directory.play(\'play.php?video_id=' .
-            $video->id . '\')" " src="' . $CFG->wwwroot . '/local/video_directory/pix/play.svg"' . $alt . '>';
+            $video->id . '\')" " src="' . $CFG->wwwroot . '/local/video_directory/pix/new_play.png"' . $alt . '>';
         }
     } else {
         $playbutton = '';
@@ -127,22 +132,22 @@ foreach ($videos as $video) {
         <a href="' . $CFG->wwwroot . '/local/video_directory/delete.php?video_id=' .
             $video->id . '" title="' . get_string('delete') .
             '" alt="' . get_string('delete') . '">
-            <img src="' . $CFG->wwwroot . '/local/video_directory/pix/delete.svg" class="action_thumb">
+            <img src="' . $CFG->wwwroot . '/local/video_directory/pix/new_delete.png" class="action_thumb">
         </a>
         <a href="' . $CFG->wwwroot . '/local/video_directory/edit.php?video_id=' . $video->id .
             '" title="' . get_string('edit') . '" alt="' . get_string('edit') . '">
-            <img src="' . $CFG->wwwroot . '/local/video_directory/pix/pencil.svg" class="action_thumb">
+            <img src="' . $CFG->wwwroot . '/local/video_directory/pix/new_settings.png" class="action_thumb">
         </a>
         <a href="' . $CFG->wwwroot . '/local/video_directory/upload_subs.php?id=' .
             $video->id .'" title="' . get_string('upload_subs', 'local_video_directory') . '"
             alt="' . get_string('upload_subs', 'local_video_directory') . '">
-            <img src="' . $CFG->wwwroot . '/local/video_directory/pix/subs';
+            <img src="' . $CFG->wwwroot . '/local/video_directory/pix/new_sub';
 
         if (!$video->subs) {
-            $video->actions .= "_grey";
+            // $video->actions .= "_grey";
         }
 
-        $video->actions .= '.svg" class="action_thumb">
+        $video->actions .= '.png" class="action_thumb">
         </a>
         ' . $versionsbutton . $playbutton;
     }

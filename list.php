@@ -32,9 +32,15 @@ if (!CLI_SCRIPT) {
     // Check if user belong to the cohort or is admin.
     require_once($CFG->dirroot.'/cohort/lib.php');
 
-    if (!cohort_is_member($settings->cohort, $USER->id) && !is_siteadmin($USER)) {
+    // Check if user have permissionss.
+    $context = context_system::instance();
+    if (!has_capability('local/video_directory:video', $context) && !is_siteadmin($USER)) {
         die("Access Denied. You must be a member of the designated cohort. Please see your site admin.");
     }
+
+    // if (!cohort_is_member($settings->cohort, $USER->id) && !is_siteadmin($USER)) {
+    // die("Access Denied. You must be a member of the designated cohort. Please see your site admin.");
+    // }
 }
 
 $tags = optional_param('tag', 0, PARAM_RAW);
@@ -67,7 +73,7 @@ echo $OUTPUT->header();
 // Menu.
 require('menu.php');
 
-echo '<div id="tools"><button id="datatable_ajax_reload" class="btn btn-default">' .
+echo '<div id="tools" class="tools"><button id="datatable_ajax_reload" class="btn btn-default">' .
         get_string('reload', 'local_video_directory') . '</button>';
 
 echo ' <button id="datatable_ajax_clear_tags" class="btn btn-default">' .
@@ -110,7 +116,7 @@ if (is_array($SESSION->video_tags)) {
 ?>
 
 </div>
-<table id="video_table" class="display" cellspacing="0">
+<table id="video_table" class="video-table display" cellspacing="0">
     <thead>
         <tr>
 <?php
@@ -126,13 +132,13 @@ foreach ($liststrings as $liststring) {
     <tbody></tbody>
 </table>
 
-<div id='video_player' style='display:none'>
+<div id='video_player' class="video-player" style='display:none'>
     <a href=# class='close' onclick='local_video_directory.close_player();'>
         &times; <?php echo get_string('close', 'local_video_directory'); ?>
     </a>
     <br>
 
-    <video id="my-video" controls preload="auto"></video>
+    <video id="my-video" class="my-video" controls preload="auto"></video>
 
 </div>
 

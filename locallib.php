@@ -90,16 +90,16 @@ function get_settings() {
 function get_directories() {
     global $CFG;
     // Directories for this plugin.
-    $dirs = array('uploaddir' => DIRECTORY_SEPARATOR . 'local_video_directory_vidoes' . DIRECTORY_SEPARATOR,
-                'converted' => DIRECTORY_SEPARATOR . 'local_video_directory_vidoes'
+    $dirs = array('uploaddir' => DIRECTORY_SEPARATOR . 'local_video_directory_videos' . DIRECTORY_SEPARATOR,
+                'converted' => DIRECTORY_SEPARATOR . 'local_video_directory_videos'
                     . DIRECTORY_SEPARATOR . 'converted' . DIRECTORY_SEPARATOR,
-                'massdir' => DIRECTORY_SEPARATOR . 'local_video_directory_vidoes'
+                'massdir' => DIRECTORY_SEPARATOR . 'local_video_directory_videos'
                     . DIRECTORY_SEPARATOR . 'mass' . DIRECTORY_SEPARATOR,
-                'wgetdir' => DIRECTORY_SEPARATOR . 'local_video_directory_vidoes'
+                'wgetdir' => DIRECTORY_SEPARATOR . 'local_video_directory_videos'
                     . DIRECTORY_SEPARATOR . 'wget' . DIRECTORY_SEPARATOR,
-                'multidir' => DIRECTORY_SEPARATOR . 'local_video_directory_vidoes'
+                'multidir' => DIRECTORY_SEPARATOR . 'local_video_directory_videos'
                     . DIRECTORY_SEPARATOR . 'multi' . DIRECTORY_SEPARATOR,
-                'subsdir' => DIRECTORY_SEPARATOR . 'local_video_directory_vidoes'
+                'subsdir' => DIRECTORY_SEPARATOR . 'local_video_directory_videos'
                     . DIRECTORY_SEPARATOR . 'subs' . DIRECTORY_SEPARATOR);
 
     foreach ($dirs as $key => $value) {

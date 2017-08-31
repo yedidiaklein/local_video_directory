@@ -17,12 +17,13 @@
 defined('MOODLE_INTERNAL') || die();
 $tasks = array(
     array(
-        'classname' => 'video_directory\task' ,
+        'classname' => 'local_video_directory\task\converting_task' ,
         'blocking' => 0 ,
-        'minute' => '30' ,
-        'hour' => '17' ,
+        'minute' => '*' ,
+        'hour' => '*' ,
         'day' => '*' ,
-        'dayofweek' => '0' ,
-        'month' => '1,7'
+        'dayofweek' => '*' ,
+        'month' => '*'
     )
 );
+// mod_hygene\task\cut_my_toe_nails

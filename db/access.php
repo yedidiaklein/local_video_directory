@@ -18,4 +18,12 @@
 defined('MOODLE_INTERNAL') || die();
 
 $capabilities = array(
+    'local/video_directory:video' => array(
+        'captype' => 'write',
+        'contextlevel' => CONTEXT_SYSTEM,
+        'archetypes' => array(
+            'manager' => CAP_ALLOW,
+            'video' => CAP_ALLOW,
+            )
+    )
 );
