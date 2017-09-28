@@ -103,9 +103,9 @@ foreach ($videos as $video) {
     $versionsbutton = '<a href="' . $CFG->wwwroot . '/local/video_directory/versions.php?id=' .
             $video->id . '" title="' . get_string('versions', 'local_video_directory') .
             '" alt="' . get_string('versions', 'local_video_directory') . '">
-            <img src="' . $CFG->wwwroot . '/local/video_directory/pix/new_version';
+            <img src="' . $CFG->wwwroot . '/local/video_directory/pix/version';
     if (!$versions) {
-        // $versionsbutton .= '_grey';
+         $versionsbutton .= '_grey';
     }
     $versionsbutton .= '.png" class="action_thumb"></a>';
 
@@ -115,10 +115,10 @@ foreach ($videos as $video) {
         if (get_streaming_server_url()) {
             $playbutton = '<img class="play_video action_thumb" onclick="local_video_directory
                         .play(\'' . get_streaming_server_url() . "/" .
-            $video->id . '.mp4\')" " src="' . $CFG->wwwroot . '/local/video_directory/pix/new_play.png"' . $alt . '>';
+            $video->id . '.mp4\')" " src="' . $CFG->wwwroot . '/local/video_directory/pix/play.png"' . $alt . '>';
         } else {
             $playbutton = '<img class="play_video action_thumb" onclick="local_video_directory.play(\'play.php?video_id=' .
-            $video->id . '\')" " src="' . $CFG->wwwroot . '/local/video_directory/pix/new_play.png"' . $alt . '>';
+            $video->id . '\')" " src="' . $CFG->wwwroot . '/local/video_directory/pix/play.png"' . $alt . '>';
         }
     } else {
         $playbutton = '';
@@ -132,19 +132,19 @@ foreach ($videos as $video) {
         <a href="' . $CFG->wwwroot . '/local/video_directory/delete.php?video_id=' .
             $video->id . '" title="' . get_string('delete') .
             '" alt="' . get_string('delete') . '">
-            <img src="' . $CFG->wwwroot . '/local/video_directory/pix/new_delete.png" class="action_thumb">
+            <img src="' . $CFG->wwwroot . '/local/video_directory/pix/delete.png" class="action_thumb">
         </a>
         <a href="' . $CFG->wwwroot . '/local/video_directory/edit.php?video_id=' . $video->id .
             '" title="' . get_string('edit') . '" alt="' . get_string('edit') . '">
-            <img src="' . $CFG->wwwroot . '/local/video_directory/pix/new_settings.png" class="action_thumb">
+            <img src="' . $CFG->wwwroot . '/local/video_directory/pix/settings.png" class="action_thumb">
         </a>
         <a href="' . $CFG->wwwroot . '/local/video_directory/upload_subs.php?id=' .
             $video->id .'" title="' . get_string('upload_subs', 'local_video_directory') . '"
             alt="' . get_string('upload_subs', 'local_video_directory') . '">
-            <img src="' . $CFG->wwwroot . '/local/video_directory/pix/new_sub';
+            <img src="' . $CFG->wwwroot . '/local/video_directory/pix/subs';
 
         if (!$video->subs) {
-            // $video->actions .= "_grey";
+             $video->actions .= "_grey";
         }
 
         $video->actions .= '.png" class="action_thumb">

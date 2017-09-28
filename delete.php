@@ -48,6 +48,7 @@ if (!CLI_SCRIPT) {
 require_once("$CFG->libdir/formslib.php");
 
 $streamingurl = get_settings()->streaming;
+$dirs = get_directories();
 
 $id = optional_param('video_id', 0, PARAM_INT);
 

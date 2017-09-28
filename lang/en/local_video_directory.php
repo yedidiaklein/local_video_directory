@@ -23,6 +23,8 @@
  */
 $string['pluginname'] = 'Video Directory';
 
+$string['video_directory:video'] = 'use local video directory';
+
 $string['actions'] = 'Actions';
 $string['agree'] = 'Agree to proceed';
 $string['are_you_sure'] = 'Are you sure you want to delete this video ?';

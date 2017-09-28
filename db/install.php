@@ -13,17 +13,24 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
-
-
+/**
+ * @package    local_video_directory
+ * @copyright  2017 Yedidia Klein <yedidia@openapp.co.il>
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
 defined('MOODLE_INTERNAL') || die();
 
-$capabilities = array(
-    'local/video_directory:video' => array(
-        'captype' => 'write',
-        'contextlevel' => CONTEXT_SYSTEM,
-        'archetypes' => array(
-            'manager' => CAP_ALLOW,
-         //   'local_video_directory' => CAP_ALLOW,
-            )
-    )
-);
+require_once( __DIR__ . '/../../../config.php');
+require_once($CFG->dirroot.'/lib/accesslib.php');
+$role = $DB->get_record('role', array('shortname'=>'local_video_directory'));
+if(empty($role)) {
+    $roleid = create_role('local_video_directory','local_video_directory','video system roll');
+    if(is_int($roleid)) {
+        $contextsids = array(CONTEXT_SYSTEM);
+        set_role_contextlevels($roleid,$contextsids);
+    }
+}
+
+function xmldb_local_video_directory_install() {
+
+}

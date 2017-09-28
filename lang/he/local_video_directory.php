@@ -23,6 +23,8 @@
  */
 $string['pluginname'] = 'ספריית וידאו';
 
+$string['video_directory:video'] = 'שימוש ברכיב ספריית וידאו';
+
 $string['actions'] = 'פעולות';
 $string['agree'] = 'אישור ביצוע';
 $string['are_you_sure'] = 'האם למחוק את הסרט ?';
