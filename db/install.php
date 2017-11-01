@@ -22,12 +22,12 @@ defined('MOODLE_INTERNAL') || die();
 
 require_once( __DIR__ . '/../../../config.php');
 require_once($CFG->dirroot.'/lib/accesslib.php');
-$role = $DB->get_record('role', array('shortname'=>'local_video_directory'));
-if(empty($role)) {
-    $roleid = create_role('local_video_directory','local_video_directory','video system roll');
-    if(is_int($roleid)) {
+$role = $DB->get_record('role', array('shortname' => 'local_video_directory'));
+if (empty($role)) {
+    $roleid = create_role('local_video_directory', 'local_video_directory', 'video system roll');
+    if (is_int($roleid)) {
         $contextsids = array(CONTEXT_SYSTEM);
-        set_role_contextlevels($roleid,$contextsids);
+        set_role_contextlevels($roleid, $contextsids);
     }
 }
 

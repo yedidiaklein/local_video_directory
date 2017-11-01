@@ -69,7 +69,7 @@ function get_streaming_server_url() {
     return $streamingurl;
 }
 
-// Get settings and make directories if they are not exist.
+// Returns settings.
 function get_settings() {
 
     $settings = get_config('local_video_directory');

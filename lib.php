@@ -225,7 +225,7 @@ function create_dash($id, $converted, $dashdir, $ffmpeg, $resolutions) {
 
     // Multi resolutions for dash-ing.
     // first take care of current resolution.
-    $cmd = " -y -i " . escapeshellarg($converted . $id . ".mp4") . 
+    $cmd = " -y -i " . escapeshellarg($converted . $id . ".mp4") .
         " -strict -2 -c:v libx264 -crf 22 -c:a aac -movflags faststart -x264opts " . escapeshellarg("keyint=24:min-keyint=24:no-scenecut") .
         " " . escapeshellarg($dashdir . $id . "_" . $video->height . ".mp4");
 
@@ -241,9 +241,9 @@ function create_dash($id, $converted, $dashdir, $ffmpeg, $resolutions) {
 
     foreach ($resolutions as $resolution) {
         if (($resolution < $video->height) && (is_numeric($resolution))) {
-            $cmd = " -y -i " . escapeshellarg($converted . $id . ".mp4") . 
+            $cmd = " -y -i " . escapeshellarg($converted . $id . ".mp4") .
             " -strict -2 -c:v libx264 -crf 22 -c:a aac -movflags faststart -x264opts " . escapeshellarg("keyint=24:min-keyint=24:no-scenecut") .
-            " " . escapeshellarg($dashdir . $id . "_" . $resolution . ".mp4");
+            " -vf " . escapeshellarg( "scale=-2:" . $resolution) ." " . escapeshellarg($dashdir . $id . "_" . $resolution . ".mp4");
             exec($ffmpeg . $cmd);
             $record = array("video_id" => $id,
                           "height" => $resolution,

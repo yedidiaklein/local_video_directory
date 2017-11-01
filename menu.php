@@ -61,7 +61,8 @@ foreach ($menu as $item) {
         echo '<li id="selected"  class="nav-item">
         <a class="nav-link active" href="' . $item . '.php">' . get_string($item, 'local_video_directory') . '</a></li>';
     } else {
-        echo '<li class="nav-item" ><a class="nav-link" href="' . $item . '.php">' . get_string($item, 'local_video_directory') . '</a></li>';
+        echo '<li class="nav-item" ><a class="nav-link" href="' . $item . '.php">'
+        . get_string($item, 'local_video_directory') . '</a></li>';
     }
 }
 ?>

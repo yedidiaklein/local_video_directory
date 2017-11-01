@@ -23,12 +23,12 @@ class converting_task extends \core\task\scheduled_task {
         // Shown in admin screens.
         return get_string('pluginname', 'local_video_directory');
     }
-    
+
     public function execute() {
         global $CFG , $DB;
         require_once($CFG->dirroot . '/local/video_directory/locallib.php');
         require_once($CFG->dirroot . '/local/video_directory/lib.php');
-        
+
         $dirs = get_directories();
 
         // include_once( $CFG->dirroot . "/local/video_directory/init.php");
