@@ -130,7 +130,7 @@ if ($mform->is_cancelled()) {
             // Uploading new video on existing ID.
         } else {
             // Check that user has rights to edit this video.
-            require('locallib.php');
+            // require('locallib.php');
             local_video_edit_right($fromform->id);
 
             $lastinsertid = $fromform->id;
