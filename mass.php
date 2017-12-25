@@ -27,6 +27,8 @@ require_once("$CFG->libdir/formslib.php");
 require_once('locallib.php');
 
 $settings = get_settings();
+$dirs = get_directories();
+
 
 if (!CLI_SCRIPT) {
     require_login();
