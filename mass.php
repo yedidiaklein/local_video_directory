@@ -181,7 +181,7 @@ function listdir($startdir='.') {
 }
 
 function removeemptysubfolders($path) {
-    global $dirs;
+    $dirs = get_directories();
     $empty = true;
     foreach (glob($path.DIRECTORY_SEPARATOR."*") as $file) {
         $empty &= is_dir($file) && removeemptysubfolders($file);
