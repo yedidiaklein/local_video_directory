@@ -70,7 +70,7 @@ class mass_form extends moodleform {
                                 . '<th>' . get_string('download_status', 'local_video_directory') . '</th></tr>');
 
         // Files in download queue.
-        $wgets = $DB->get_records_sql('SELECT * FROM {local_video_directory_wget} WHERE success <> 3 AND owner_id= ?', array($USER->id));
+        $wgets = $DB->get_records_sql('SELECT * FROM {local_video_directory_wget} WHERE success <> 4 AND owner_id= ?', array($USER->id));
         $dirs = get_directories();
 
         foreach ($wgets as $wget) {
