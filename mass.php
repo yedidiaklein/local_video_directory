@@ -78,7 +78,7 @@ class mass_form extends moodleform {
             $mform->addElement('html', '<td>' . $wget->url.'</td><td>');
 
             if ($wget->success == 1) {
-                $mform->addElement('html', local_video_directory_human_filesize(filesize($dirs['wgetdir'].$filename)));
+                $mform->addElement('html', local_video_directory_human_filesize(@filesize($dirs['wgetdir'].$filename)));
             }
 
             $mform->addElement('html', '</td><td>' . get_string('wget_' . $wget->success, 'local_video_directory') . '</td></tr>');
