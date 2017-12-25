@@ -120,8 +120,8 @@ foreach ($videos as $video) {
         $video->convert_status .= '<br>' . get_string('awaitingconversion', 'local_video_directory');
     }
 
-    $video->thumb = ($video->thumb ? "<img src='$CFG->wwwroot/local/video_directory/thumb.php?id=$thumbid$thumbseconds&mini=1 '
-        class='thumb' " . $playbutton ." >" : get_string('noimage', 'local_video_directory'));
+    $video->thumb = "<div class='video-thumbnail'>" . ($video->thumb ? "<img src='$CFG->wwwroot/local/video_directory/thumb.php?id=$thumbid$thumbseconds&mini=1 '
+        class='thumb' " . $playbutton ." >" : get_string('noimage', 'local_video_directory')) . "</div>";
 
     if (($video->owner_id != $USER->id) && !is_siteadmin($USER)) {
         $video->actions = '';
