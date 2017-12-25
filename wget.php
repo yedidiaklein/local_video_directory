@@ -81,7 +81,7 @@ $mform = new wget_form();
 if ($mform->is_cancelled()) {
     redirect($CFG->wwwroot . '/local/video_directory/list.php');
 } else if ($fromform = $mform->get_data()) {
-    $record = array("url" => $fromform->url, "owner_id" => $USER->id , "status" => 0);
+    $record = array("url" => $fromform->url, "owner_id" => $USER->id , "success" => 0);
     $update = $DB->insert_record("local_video_directory_wget", $record);
     redirect($CFG->wwwroot . '/local/video_directory/mass.php');
 } else {
