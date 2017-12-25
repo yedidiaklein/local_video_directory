@@ -160,10 +160,10 @@ function local_video_directory_extend_settings_navigation($settingsnav, $context
     global $CFG, $PAGE, $USER;
 
     if ($settingnode = $settingsnav->find('courseadmin', navigation_node::TYPE_COURSE)) {
-        require_once($CFG->dirroot.'/cohort/lib.php');
         $settings = get_config('local_video_directory');
 
-        if (!cohort_is_member($settings->cohort, $USER->id) && !is_siteadmin($USER)) {
+        $context = context_system::instance();
+        if (!has_capability('local/video_directory:video', $context) && !is_siteadmin($USER)) {
             return;
         }
 
