@@ -27,7 +27,6 @@ defined('MOODLE_INTERNAL') || die();
 function local_video_directory_cron() {
     global $CFG, $DB;
 
-    include_once( $CFG->dirroot . "/local/video_directory/init.php");
     $settings = get_settings();
     $dirs = get_directories();
 

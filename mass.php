@@ -69,6 +69,7 @@ class mass_form extends moodleform {
 
         // Files in download queue.
         $wgets = $DB->get_records_sql('SELECT * FROM {local_video_directory_wget} WHERE owner_id= ?', array($USER->id));
+        $dirs = get_directories();
 
         foreach ($wgets as $wget) {
             $mform->addElement('html', '<tr><td>');
@@ -83,8 +84,6 @@ class mass_form extends moodleform {
 
             $mform->addElement('html', '</td><td>' . get_string('wget_' . $wget->success, 'local_video_directory') . '</td></tr>');
         }
-
-        $dirs = get_directories();
 
         $files = listdir($dirs['massdir']);
         foreach ($files as $entry) {
