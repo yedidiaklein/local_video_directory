@@ -38,6 +38,11 @@ if (!CLI_SCRIPT) {
 }
 
 $tags = optional_param('tag', 0, PARAM_RAW);
+$tc = optional_param('tc', 0, PARAM_INT);
+
+if ($tc == 1) {
+    redirect($CFG->wwwroot . "/local/video_directory/tag.php?action=add&tag=".$tags);
+}
 
 if ($tags == '') {
     $SESSION->video_tags = ' - ';
