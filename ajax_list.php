@@ -94,10 +94,13 @@ foreach ($videos as $video) {
     $thumbdata = explode('-', $video->thumb);
     $thumbid = $thumbdata[0];
     $thumbseconds = isset($thumbdata[1]) ? "&second=$thumbdata[1]" : '';
+
     $video->thumb = "<a href='$CFG->wwwroot/local/video_directory/thumbs.php?id=$video->id' title='" .
         get_string('clicktochangethumb', 'local_video_directory') .
         "'>" . ($video->thumb ? "<img src='$CFG->wwwroot/local/video_directory/thumb.php?id=$thumbid$thumbseconds&mini=1 '
         class='thumb'>" : get_string('noimage', 'local_video_directory')) . "</a>";
+
+    //$video->thumb = 
 
     $versions = $DB->get_records('local_video_directory_vers', array('file_id' => $video->id));
     $versionsbutton = '<a href="' . $CFG->wwwroot . '/local/video_directory/versions.php?id=' .
@@ -108,6 +111,8 @@ foreach ($videos as $video) {
          $versionsbutton .= '_grey';
     }
     $versionsbutton .= '.png" class="action_thumb"></a>';
+
+
 
     if (file_exists( $dirs['converted'] . $video->id . ".mp4")) {
         $alt = 'title="' . get_string('play', 'local_video_directory') . '"
@@ -125,6 +130,8 @@ foreach ($videos as $video) {
         $video->convert_status .= '<br>' . get_string('awaitingconversion', 'local_video_directory');
     }
 
+
+
     if (($video->owner_id != $USER->id) && !is_siteadmin($USER)) {
         $video->actions = $playbutton;
     } else {
@@ -137,6 +144,10 @@ foreach ($videos as $video) {
         <a href="' . $CFG->wwwroot . '/local/video_directory/edit.php?video_id=' . $video->id .
             '" title="' . get_string('edit') . '" alt="' . get_string('edit') . '">
             <img src="' . $CFG->wwwroot . '/local/video_directory/pix/settings.png" class="action_thumb">
+        </a>
+        <a href="' . $CFG->wwwroot . '/local/video_directory/thumbs.php?id=' . $video->id .
+            '" title="' . get_string('clicktochangethumb','local_video_directory') . '" alt="' . get_string('clicktochangethumb','local_video_directory') . '">
+            <img src="' . $CFG->wwwroot . '/local/video_directory/pix/camera.png" class="action_thumb">
         </a>
         <a href="' . $CFG->wwwroot . '/local/video_directory/upload_subs.php?id=' .
             $video->id .'" title="' . get_string('upload_subs', 'local_video_directory') . '"
