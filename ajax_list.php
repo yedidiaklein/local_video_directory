@@ -138,7 +138,8 @@ foreach ($videos as $video) {
         </a>
         <a href="' . $CFG->wwwroot . '/local/video_directory/thumbs.php?id=' . $video->id .
             '" title="' . get_string('clicktochangethumb','local_video_directory') . '" alt="' . get_string('clicktochangethumb','local_video_directory') . '">
-            <img src="' . $CFG->wwwroot . '/local/video_directory/pix/camera.png" class="action_thumb">
+            <i class="fa fa-camera" aria-hidden="true"></i>
+<!--img src="' . $CFG->wwwroot . '/local/video_directory/pix/camera.png" class="action_thumb"-->
         </a>
         <a href="' . $CFG->wwwroot . '/local/video_directory/upload_subs.php?id=' .
             $video->id .'" title="' . get_string('upload_subs', 'local_video_directory') . '"
