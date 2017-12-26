@@ -130,16 +130,15 @@ foreach ($videos as $video) {
         <a href="' . $CFG->wwwroot . '/local/video_directory/delete.php?video_id=' .
             $video->id . '" title="' . get_string('delete') .
             '" alt="' . get_string('delete') . '">
-            <img src="' . $CFG->wwwroot . '/local/video_directory/pix/delete.png" class="action_thumb">
+            <i class="fa fa-eraser" aria-hidden="true"></i>
         </a>
         <a href="' . $CFG->wwwroot . '/local/video_directory/edit.php?video_id=' . $video->id .
             '" title="' . get_string('edit') . '" alt="' . get_string('edit') . '">
-            <img src="' . $CFG->wwwroot . '/local/video_directory/pix/settings.png" class="action_thumb">
+            <i class="fa fa-wrench" aria-hidden="true"></i>
         </a>
         <a href="' . $CFG->wwwroot . '/local/video_directory/thumbs.php?id=' . $video->id .
             '" title="' . get_string('clicktochangethumb','local_video_directory') . '" alt="' . get_string('clicktochangethumb','local_video_directory') . '">
             <i class="fa fa-camera" aria-hidden="true"></i>
-<!--img src="' . $CFG->wwwroot . '/local/video_directory/pix/camera.png" class="action_thumb"-->
         </a>
         <a href="' . $CFG->wwwroot . '/local/video_directory/upload_subs.php?id=' .
             $video->id .'" title="' . get_string('upload_subs', 'local_video_directory') . '"
