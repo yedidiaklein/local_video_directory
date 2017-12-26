@@ -352,3 +352,11 @@ input.hidden_input:focus, input.hidden_input:hover {
 .video-thumbnail:hover:before {
     color: #eee;
 }
+
+#video_table i {
+    font-size: 30px;
+}
+
+.grey {
+    color: grey;
+}
