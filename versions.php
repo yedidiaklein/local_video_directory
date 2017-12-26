@@ -89,5 +89,6 @@ echo "</table>";
 </div>
 
 <?php
+echo "<br><br><a href=upload.php?video_id=" . $id . ">" . get_string('upload_new_version', 'local_video_directory') . "</a><br>";
 
 echo $OUTPUT->footer();
