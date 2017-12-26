@@ -99,11 +99,11 @@ foreach ($videos as $video) {
     $versionsbutton = '<a href="' . $CFG->wwwroot . '/local/video_directory/versions.php?id=' .
             $video->id . '" title="' . get_string('versions', 'local_video_directory') .
             '" alt="' . get_string('versions', 'local_video_directory') . '">
-            <img src="' . $CFG->wwwroot . '/local/video_directory/pix/version';
+            <i class="fa fa-clock-o" aria-hidden="true" ';
     if (!$versions) {
-         $versionsbutton .= '_grey';
+         $versionsbutton .= ' class="grey"';
     }
-    $versionsbutton .= '.png" class="action_thumb"></a>';
+    $versionsbutton .= '></i></a>';
 
     if (file_exists( $dirs['converted'] . $video->id . ".mp4")) {
         $alt = 'title="' . get_string('play', 'local_video_directory') . '"
@@ -143,13 +143,13 @@ foreach ($videos as $video) {
         <a href="' . $CFG->wwwroot . '/local/video_directory/upload_subs.php?id=' .
             $video->id .'" title="' . get_string('upload_subs', 'local_video_directory') . '"
             alt="' . get_string('upload_subs', 'local_video_directory') . '">
-            <img src="' . $CFG->wwwroot . '/local/video_directory/pix/subs';
+            <i class="fa fa-align-center" aria-hidden="true" ';
 
         if (!$video->subs) {
-             $video->actions .= "_grey";
+             $video->actions .= "class ='grey'";
         }
 
-        $video->actions .= '.png" class="action_thumb">
+        $video->actions .= '></i>
         </a>
         ' . $versionsbutton;
     }
