@@ -59,6 +59,11 @@ $PAGE->set_pagelayout('base');
 $PAGE->requires->js(new moodle_url('https://cdn.datatables.net/1.10.7/js/jquery.dataTables.min.js'));
 $PAGE->requires->css(new moodle_url('https://cdn.datatables.net/1.10.7/css/jquery.dataTables.min.css'));
 
+// include font awesome in case of moodle 32 and older
+if ($CFG->branch < 33) {
+    $PAGE->requires->css(new moodle_url('https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css'));
+}
+
 $PAGE->requires->js('/local/video_directory/js/list.js');
 $PAGE->requires->css('/local/video_directory/style.css');
 
