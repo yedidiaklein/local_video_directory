@@ -53,7 +53,7 @@ $streamingurl = $settings->streaming.'/';
 $streamingdir = $dirs['converted'];
 
 $id = optional_param('id', 0, PARAM_INT);
-$seconds = array(3, 7, 12, 20, 60, 120);
+$seconds = array(1, 3, 7, 12, 20, 60, 120);
 
 require_login();
 
