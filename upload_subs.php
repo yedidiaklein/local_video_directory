@@ -63,6 +63,7 @@ class upload_subs_form extends moodleform {
         global $CFG, $DB;
         $id = required_param('id', PARAM_INT);
         $mform = $this->_form;
+        $dirs = get_directories();
         if (file_exists($dirs['subsdir'].$id.".vtt")) {
             $subsize = local_video_directory_human_filesize(filesize($dirs['subsdir'].$id.".vtt"));
             $mform->addElement('html', '<div class="alert alert-info alert-block fade in">'.
@@ -99,6 +100,7 @@ if ($mform->is_cancelled()) {
     if (substr($name, -3) != "vtt") {
         if (substr($name, -3) == "srt") {
             include("srt2vtt.php");
+            $dirs = get_directories();
             // Save uploaded file.
             $success = $mform->save_file('userfile', $dirs['subsdir'].$fromform->id . ".srt");
             $srt = file_get_contents($dirs['subsdir'] . $fromform->id . ".srt");
