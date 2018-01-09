@@ -61,7 +61,7 @@ if (isset($SESSION->video_tags) && is_array($SESSION->video_tags)) {
     } else {
         $videos = $DB->get_records_sql('SELECT v.*, ' . $DB->sql_concat_join("' '", array("firstname", "lastname")) . ' AS name
                                                 FROM {local_video_directory} v
-                                                LEFT JOIN {user} u on v.owner_id = u.idsudo apt install vlc
+                                                LEFT JOIN {user} u on v.owner_id = u.id
                                                 LEFT JOIN {tag_instance} ti on v.id=ti.itemid
                                                 LEFT JOIN {tag} t on ti.tagid=t.id
                                                 WHERE ti.itemtype = \'local_video_directory\' AND t.name IN (' . $list . ')
