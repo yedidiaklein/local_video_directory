@@ -30,17 +30,11 @@ $dirs = get_directories();
 if (!CLI_SCRIPT) {
     require_login();
 
-    // Check if user belong to the cohort or is admin.
-    // require_once($CFG->dirroot.'/cohort/lib.php');
-
     // Check if user have permissionss.
     $context = context_system::instance();
     if (!has_capability('local/video_directory:video', $context) && !is_siteadmin($USER)) {
         die("Access Denied. You must be a member of the designated cohort. Please see your site admin.");
     }
-    // if (!cohort_is_member($settings->cohort, $USER->id) && !is_siteadmin($USER)) {
-    // die("Access Denied. You must be a member of the designated cohort. Please see your site admin.");
-    // }
 }
 
 $PAGE->set_context(context_system::instance());
@@ -50,35 +44,9 @@ $videolist = array();
 if (isset($SESSION->video_tags) && is_array($SESSION->video_tags)) {
     $list = implode("', '", $SESSION->video_tags);
     $list = "'" . $list . "'";
-    if (is_siteadmin($USER)) {
-        $videos = $DB->get_records_sql('SELECT v.*, ' . $DB->sql_concat_join("' '", array("firstname", "lastname")) . ' AS name
-                                                FROM {local_video_directory} v
-                                                LEFT JOIN {user} u on v.owner_id = u.id
-                                                LEFT JOIN {tag_instance} ti on v.id=ti.itemid
-                                                LEFT JOIN {tag} t on ti.tagid=t.id
-                                                WHERE ti.itemtype = \'local_video_directory\' AND t.name IN (' . $list . ')
-                                                GROUP by id');
-    } else {
-        $videos = $DB->get_records_sql('SELECT v.*, ' . $DB->sql_concat_join("' '", array("firstname", "lastname")) . ' AS name
-                                                FROM {local_video_directory} v
-                                                LEFT JOIN {user} u on v.owner_id = u.id
-                                                LEFT JOIN {tag_instance} ti on v.id=ti.itemid
-                                                LEFT JOIN {tag} t on ti.tagid=t.id
-                                                WHERE ti.itemtype = \'local_video_directory\' AND t.name IN (' . $list . ')
-                                                AND (owner_id =' . $USER->id . ' OR (private IS NULL OR private = 0))
-                                                GROUP by id');
-    }
+    $videos = local_video_directory_get_videos_by_tags($list);
 } else {
-    if (is_siteadmin($USER)) {
-        $videos = $DB->get_records_sql('SELECT v.*, ' . $DB->sql_concat_join("' '", array("firstname", "lastname")) .
-                                        ' AS name FROM {local_video_directory} v
-                                        LEFT JOIN {user} u on v.owner_id = u.id');
-    } else {
-        $videos = $DB->get_records_sql('SELECT v.*, ' . $DB->sql_concat_join("' '", array("firstname", "lastname")) .
-                                                ' AS name FROM {local_video_directory} v
-                                        LEFT JOIN {user} u on v.owner_id = u.id WHERE owner_id =' . $USER->id .
-                                        ' OR (private IS NULL OR private = 0)');
-    }
+    $videos = local_video_directory_get_videos();
 }
 
 foreach ($videos as $video) {
@@ -90,10 +58,12 @@ foreach ($videos as $video) {
 
     $video->tags = str_replace('/tag/index.php', '/local/video_directory/list.php',
     $OUTPUT->tag_list(core_tag_tag::get_item_tags('local_video_directory', 'local_video_directory', $video->id), "", 'videos'));
-    $video->thumb = str_replace(".png", "-mini.png", $video->thumb);
-    $thumbdata = explode('-', $video->thumb);
-    $thumbid = $thumbdata[0];
-    $thumbseconds = isset($thumbdata[1]) ? "&second=$thumbdata[1]" : '';
+
+
+//    $video->thumb = str_replace(".png", "-mini.png", $video->thumb);
+//    $thumbdata = explode('-', $video->thumb);
+//    $thumbid = $thumbdata[0];
+//    $thumbseconds = isset($thumbdata[1]) ? "&second=$thumbdata[1]" : '';
 
     $versions = $DB->get_records('local_video_directory_vers', array('file_id' => $video->id));
     $versionsbutton = '<a href="' . $CFG->wwwroot . '/local/video_directory/versions.php?id=' .
@@ -105,23 +75,27 @@ foreach ($videos as $video) {
     }
     $versionsbutton .= '" aria-hidden="true" ></i></a>';
 
-    if (file_exists( $dirs['converted'] . $video->id . ".mp4")) {
-        $alt = 'title="' . get_string('play', 'local_video_directory') . '"
-            alt="' . get_string('play', 'local_video_directory') . '"';
-        if (get_streaming_server_url()) {
-            $playbutton = ' onclick="local_video_directory.play(\'' . get_streaming_server_url() . "/" .
-                        $video->id . '.mp4\')" "';
-        } else {
-            $playbutton = ' onclick="local_video_directory.play(\'play.php?video_id=' .
-            $video->id . '\')" " ';
-        }
-    } else {
-        $playbutton = '';
+//    if (file_exists( $dirs['converted'] . $video->id . ".mp4")) {
+//        $alt = 'title="' . get_string('play', 'local_video_directory') . '"
+//            alt="' . get_string('play', 'local_video_directory') . '"';
+//        if (get_streaming_server_url()) {
+//            $playbutton = ' onclick="local_video_directory.play(\'' . get_streaming_server_url() . "/" .
+//                        $video->id . '.mp4\')" "';
+//        } else {
+//            $playbutton = ' onclick="local_video_directory.play(\'play.php?video_id=' .
+//            $video->id . '\')" " ';
+//        }
+//    } else {
+//        $playbutton = '';
+    if (!file_exists( $dirs['converted'] . $video->id . ".mp4")) {
         $video->convert_status .= '<br>' . get_string('awaitingconversion', 'local_video_directory');
     }
+//    }
 
-    $video->thumb = "<div class='video-thumbnail' " . $playbutton . ">" . ($video->thumb ? "<img src='$CFG->wwwroot/local/video_directory/thumb.php?id=$thumbid$thumbseconds&mini=1 '
-        class='thumb' " . $playbutton ." >" : get_string('noimage', 'local_video_directory')) . "</div>";
+//    $video->thumb = "<div class='video-thumbnail' " . $playbutton . ">" . ($video->thumb ? "<img src='$CFG->wwwroot/local/video_directory/thumb.php?id=$thumbid$thumbseconds&mini=1 '
+//        class='thumb' " . $playbutton ." >" : get_string('noimage', 'local_video_directory')) . "</div>";
+
+    $video->thumb = local_video_get_thumbnail_url($video->thumb, $video->id);
 
     if (($video->owner_id != $USER->id) && !is_siteadmin($USER)) {
         $video->actions = '';

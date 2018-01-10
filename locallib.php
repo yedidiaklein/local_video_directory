@@ -35,10 +35,30 @@ function local_video_directory_human_filesize($bytes, $decimals = 2, $red = 0) {
 }
 
 function local_video_directory_get_tagged_pages($tag, $exclusivemode = false, $fromctx = 0, $ctx = 0, $rec = 1, $page = 0) {
-    global $CFG;
-    $builder = new core_tag_index_builder('local_video_directory', 'local_video_directory',
-                $query, $params, $page * $perpage, $perpage + 1);
-    return 1;
+    global $CFG,$OUTPUT,$PAGE;
+
+    // include font awesome in case of moodle 32 and older
+    if ($CFG->branch < 33) {
+        $PAGE->requires->css(new moodle_url('https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css'));
+    }
+    $perpage=10;
+    $query='';
+    $builder = new core_tag_index_builder('local_video_directory', 'local_video_directory', $query, "", $page * $perpage, $perpage + 1);
+    $tagfeed = new core_tag\output\tagfeed();
+
+    $videos = local_video_directory_get_videos_by_tags("",$tag->id);
+
+    foreach ($videos as $video) {
+        $thumb = local_video_get_thumbnail_url($video->thumb, $video->id);
+        $tagfeed->add('<i class="fa fa-file-video-o" aria-hidden="true" style="font-size: xx-large;"></i>', 
+                        '<a href="' . $CFG->wwwroot .'/local/video_directory/list.php?tag=' . $tag->name . '">' . $thumb . $video->orig_filename . '</a>', 
+                        '<b>' . get_string('owner','local_video_directory') . ': </b>' . $video->name . '<br><br>');        
+    }
+    $content = $OUTPUT->render_from_template('core_tag/tagfeed', $tagfeed->export_for_template($OUTPUT));
+
+    $totalpages=1; // CALCULATE !!!
+    return new core_tag\output\tagindex($tag, 'local_video_directory', 'local_video_directory', $content,
+                                        $exclusivemode, $fromctx, $ctx, $rec, $page, $totalpages);
 }
 
 function local_video_edit_right($videoid) {
@@ -113,3 +133,73 @@ function get_directories() {
     return $dirs;
 }
 
+function local_video_directory_get_videos_by_tags($list, $tagid=0) {
+    global $USER, $DB;
+    if ($list != "") {
+        $and = ' AND t.name IN (' . $list . ') ';
+    } else if (is_numeric($tagid)) {
+        $and = ' AND t.id =' . $tagid . ' ';
+    }
+    if (is_siteadmin($USER)) {
+        $videos = $DB->get_records_sql('SELECT v.*, ' . $DB->sql_concat_join("' '", array("firstname", "lastname")) . ' AS name
+                                                FROM {local_video_directory} v
+                                                LEFT JOIN {user} u on v.owner_id = u.id
+                                                LEFT JOIN {tag_instance} ti on v.id=ti.itemid
+                                                LEFT JOIN {tag} t on ti.tagid=t.id
+                                                WHERE ti.itemtype = \'local_video_directory\' ' . $and .
+                                                'GROUP by id');
+    } else {
+        $videos = $DB->get_records_sql('SELECT v.*, ' . $DB->sql_concat_join("' '", array("firstname", "lastname")) . ' AS name
+                                                FROM {local_video_directory} v
+                                                LEFT JOIN {user} u on v.owner_id = u.id
+                                                LEFT JOIN {tag_instance} ti on v.id=ti.itemid
+                                                LEFT JOIN {tag} t on ti.tagid=t.id
+                                                WHERE ti.itemtype = \'local_video_directory\' ' . $and . 
+                                                'AND (owner_id =' . $USER->id . ' OR (private IS NULL OR private = 0))
+                                                GROUP by id');
+    }
+    return $videos;
+}
+
+function local_video_directory_get_videos() {
+    global $USER, $DB;
+    if (is_siteadmin($USER)) {
+        $videos = $DB->get_records_sql('SELECT v.*, ' . $DB->sql_concat_join("' '", array("firstname", "lastname")) .
+                                    ' AS name FROM {local_video_directory} v
+                                    LEFT JOIN {user} u on v.owner_id = u.id');
+    } else {
+        $videos = $DB->get_records_sql('SELECT v.*, ' . $DB->sql_concat_join("' '", array("firstname", "lastname")) .
+                                            ' AS name FROM {local_video_directory} v
+                                    LEFT JOIN {user} u on v.owner_id = u.id WHERE owner_id =' . $USER->id .
+                                    ' OR (private IS NULL OR private = 0)');
+    }
+    return $videos;
+}   
+
+function local_video_get_thumbnail_url($thumb, $videoid) {
+    global $CFG;
+    $dirs = get_directories();
+    $thumb = str_replace(".png", "-mini.png", $thumb);
+    $thumbdata = explode('-', $thumb);
+    $thumbid = $thumbdata[0];
+    $thumbseconds = isset($thumbdata[1]) ? "&second=$thumbdata[1]" : '';
+
+    if (file_exists( $dirs['converted'] . $videoid . ".mp4")) {
+        $alt = 'title="' . get_string('play', 'local_video_directory') . '"
+            alt="' . get_string('play', 'local_video_directory') . '"';
+        if (get_streaming_server_url()) {
+            $playbutton = ' onclick="local_video_directory.play(\'' . get_streaming_server_url() . "/" .
+                        $videoid . '.mp4\')" "';
+        } else {
+            $playbutton = ' onclick="local_video_directory.play(\'play.php?video_id=' .
+            $videoid . '\')" " ';
+        }
+    } else {
+        $playbutton = '';
+    }
+
+    $thumb = "<div class='video-thumbnail' " . $playbutton . ">" . ($thumb ? "<img src='$CFG->wwwroot/local/video_directory/thumb.php?id=$thumbid$thumbseconds&mini=1 '
+        class='thumb' " . $playbutton ." >" : get_string('noimage', 'local_video_directory')) . "</div>";
+
+    return $thumb;
+}
