@@ -360,3 +360,8 @@ input.hidden_input:focus, input.hidden_input:hover {
 .grey {
     color: grey;
 }
+
+.local_video_directory-intag-title {
+    vertical-align: middle;
+    margin: 10px;
+}

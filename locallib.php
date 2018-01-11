@@ -36,6 +36,7 @@ function local_video_directory_human_filesize($bytes, $decimals = 2, $red = 0) {
 
 function local_video_directory_get_tagged_pages($tag, $exclusivemode = false, $fromctx = 0, $ctx = 0, $rec = 1, $page = 0) {
     global $CFG,$OUTPUT,$PAGE;
+    $PAGE->requires->css(new moodle_url($CFG->wwwroot . '/local/video_directory/style.css'));
 
     // include font awesome in case of moodle 32 and older
     if ($CFG->branch < 33) {
@@ -51,12 +52,13 @@ function local_video_directory_get_tagged_pages($tag, $exclusivemode = false, $f
     foreach ($videos as $video) {
         $thumb = local_video_get_thumbnail_url($video->thumb, $video->id);
         $tagfeed->add('<i class="fa fa-file-video-o" aria-hidden="true" style="font-size: xx-large;"></i>', 
-                        '<a href="' . $CFG->wwwroot .'/local/video_directory/list.php?tag=' . $tag->name . '">' . $thumb . $video->orig_filename . '</a>', 
+                        '<a href="' . $CFG->wwwroot .'/local/video_directory/list.php?tag=' . rawurlencode($tag->name) . '">' . 
+                        $thumb . '<span class="local_video_directory-intag-title">' . $video->orig_filename . '</span></a>', 
                         '<b>' . get_string('owner','local_video_directory') . ': </b>' . $video->name . '<br><br>');        
     }
     $content = $OUTPUT->render_from_template('core_tag/tagfeed', $tagfeed->export_for_template($OUTPUT));
 
-    $totalpages=1; // CALCULATE !!!
+    $totalpages = ceil(count($videos) / $perpage); 
     return new core_tag\output\tagindex($tag, 'local_video_directory', 'local_video_directory', $content,
                                         $exclusivemode, $fromctx, $ctx, $rec, $page, $totalpages);
 }

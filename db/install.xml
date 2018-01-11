@@ -15,7 +15,7 @@
         <FIELD NAME="streaming_url" TYPE="char" LENGTH="1000" NOTNULL="false" SEQUENCE="false"/>
         <FIELD NAME="length" TYPE="char" LENGTH="8" NOTNULL="false" SEQUENCE="false"/>
         <FIELD NAME="width" TYPE="char" LENGTH="8" NOTNULL="false" SEQUENCE="false"/>
-        <FIELD NAME="size" TYPE="char" LENGTH="8" NOTNULL="false" SEQUENCE="false"/>
+        <FIELD NAME="size" TYPE="int" LENGTH="20" NOTNULL="false" SEQUENCE="false"/>
         <FIELD NAME="timecreated" TYPE="char" LENGTH="13" NOTNULL="false" SEQUENCE="false"/>
         <FIELD NAME="timemodified" TYPE="char" LENGTH="13" NOTNULL="false" SEQUENCE="false"/>
         <FIELD NAME="height" TYPE="int" LENGTH="13" NOTNULL="false" SEQUENCE="false"/>

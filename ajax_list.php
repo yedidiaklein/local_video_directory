@@ -33,7 +33,8 @@ if (!CLI_SCRIPT) {
     // Check if user have permissionss.
     $context = context_system::instance();
     if (!has_capability('local/video_directory:video', $context) && !is_siteadmin($USER)) {
-        die("Access Denied. You must be a member of the designated cohort. Please see your site admin.");
+        // TODO : write nice errors.
+        die("Access Denied. Please see your site admin.");
     }
 }
 
@@ -59,12 +60,6 @@ foreach ($videos as $video) {
     $video->tags = str_replace('/tag/index.php', '/local/video_directory/list.php',
     $OUTPUT->tag_list(core_tag_tag::get_item_tags('local_video_directory', 'local_video_directory', $video->id), "", 'videos'));
 
-
-//    $video->thumb = str_replace(".png", "-mini.png", $video->thumb);
-//    $thumbdata = explode('-', $video->thumb);
-//    $thumbid = $thumbdata[0];
-//    $thumbseconds = isset($thumbdata[1]) ? "&second=$thumbdata[1]" : '';
-
     $versions = $DB->get_records('local_video_directory_vers', array('file_id' => $video->id));
     $versionsbutton = '<a href="' . $CFG->wwwroot . '/local/video_directory/versions.php?id=' .
             $video->id . '" title="' . get_string('versions', 'local_video_directory') .
@@ -75,25 +70,9 @@ foreach ($videos as $video) {
     }
     $versionsbutton .= '" aria-hidden="true" ></i></a>';
 
-//    if (file_exists( $dirs['converted'] . $video->id . ".mp4")) {
-//        $alt = 'title="' . get_string('play', 'local_video_directory') . '"
-//            alt="' . get_string('play', 'local_video_directory') . '"';
-//        if (get_streaming_server_url()) {
-//            $playbutton = ' onclick="local_video_directory.play(\'' . get_streaming_server_url() . "/" .
-//                        $video->id . '.mp4\')" "';
-//        } else {
-//            $playbutton = ' onclick="local_video_directory.play(\'play.php?video_id=' .
-//            $video->id . '\')" " ';
-//        }
-//    } else {
-//        $playbutton = '';
     if (!file_exists( $dirs['converted'] . $video->id . ".mp4")) {
         $video->convert_status .= '<br>' . get_string('awaitingconversion', 'local_video_directory');
     }
-//    }
-
-//    $video->thumb = "<div class='video-thumbnail' " . $playbutton . ">" . ($video->thumb ? "<img src='$CFG->wwwroot/local/video_directory/thumb.php?id=$thumbid$thumbseconds&mini=1 '
-//        class='thumb' " . $playbutton ." >" : get_string('noimage', 'local_video_directory')) . "</div>";
 
     $video->thumb = local_video_get_thumbnail_url($video->thumb, $video->id);
 
