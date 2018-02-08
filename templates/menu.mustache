@@ -1,0 +1,18 @@
+<div class="alert alert-default alert-block" role="alert">
+    {{#str}}freedisk, local_video_directory {{/str}}: {{{size}}}
+</div>
+
+
+<ul id='videomenu' class='nav nav-tabs' role="tablist">
+{{#menu}}
+    {{#selected}}
+        <li id="selected"  class="nav-item">
+        <a class="nav-link active" href="{{name}}.php">  {{str}}</a></li>
+    {{/selected}}
+    {{^selected}}
+        <li class="nav-item" ><a class="nav-link" href="{{name}}.php">
+        {{str}}</a></li>
+    {{/selected}}
+{{/menu}}
+</ul>
+<br>

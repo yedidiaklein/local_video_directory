@@ -23,7 +23,6 @@ $capabilities = array(
         'contextlevel' => CONTEXT_SYSTEM,
         'archetypes' => array(
             'manager' => CAP_ALLOW,
-         // 'local_video_directory' => CAP_ALLOW,
             )
     )
 );

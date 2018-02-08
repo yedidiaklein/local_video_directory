@@ -32,8 +32,6 @@ $settings = get_settings();
 if (!CLI_SCRIPT) {
     require_login();
 
-    // Check if user belong to the cohort or is admin.
-    require_once($CFG->dirroot.'/cohort/lib.php');
 
     // Check if user have permissionss.
     $context = context_system::instance();
@@ -42,9 +40,6 @@ if (!CLI_SCRIPT) {
         die("Access Denied. You must be a member of the designated cohort. Please see your site admin.");
     }
 
-    // if (!cohort_is_member($settings->cohort, $USER->id) && !is_siteadmin($USER)) {
-    // die("Access Denied. You must be a member of the designated cohort. Please see your site admin.");
-    // }
 }
 
 $PAGE->set_context(context_system::instance());
@@ -56,11 +51,11 @@ $PAGE->set_pagelayout('standard');
 $PAGE->navbar->add(get_string('pluginname', 'local_video_directory'), new moodle_url('/local/video_directory/'));
 $PAGE->navbar->add(get_string('upload_subs', 'local_video_directory'));
 $PAGE->requires->css('/local/video_directory/style.css');
-$dirs = get_directories();
 
 class upload_subs_form extends moodleform {
     public function definition() {
         global $CFG, $DB;
+        $dirs = get_directories();
         $id = required_param('id', PARAM_INT);
         $mform = $this->_form;
         $dirs = get_directories();

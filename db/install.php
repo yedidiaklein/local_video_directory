@@ -28,6 +28,7 @@ if (empty($role)) {
     if (is_int($roleid)) {
         $contextsids = array(CONTEXT_SYSTEM);
         set_role_contextlevels($roleid, $contextsids);
+        role_change_permission( $roleid, context_system::instance(), 'local/video_directory:video', 1);
     }
 }
 

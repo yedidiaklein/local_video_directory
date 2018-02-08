@@ -31,7 +31,6 @@ class converting_task extends \core\task\scheduled_task {
 
         $dirs = get_directories();
 
-        // include_once( $CFG->dirroot . "/local/video_directory/init.php");
         $settings = get_settings();
         $streamingurl = $settings->streaming.'/';
         $ffmpeg = $settings->ffmpeg;
@@ -89,8 +88,8 @@ class converting_task extends \core\task\scheduled_task {
                 exec($thumbmini);
 
                 // Get video length.
-                $lengthcmd = $ffprobe ." -v error -show_entries format=duration -sexagesimal -of default=noprint_wrappers=1
-                            :nokey=1 " . $streamingdir . $video->id . ".mp4";
+                $lengthcmd = $ffprobe ." -v error -show_entries format=duration -sexagesimal -of default=noprint_wrappers=1" .
+                ":nokey=1 " . $streamingdir . $video->id . ".mp4";
                 $lengthoutput = exec( $lengthcmd );
                 // Remove data after .
                 $arraylength = explode(".", $lengthoutput);

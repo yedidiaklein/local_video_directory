@@ -215,8 +215,6 @@ function local_video_directory_extend_settings_navigation($settingsnav, $context
 function create_dash($id, $converted, $dashdir, $ffmpeg, $resolutions) {
     global $DB, $CFG;
 
-    // include_once( $CFG->dirroot . "/local/video_directory/init.php");
-
     // Update state to 6 - creating dash streams.
     $DB->update_record("local_video_directory", array('id' => $id, 'convert_status' => 6));
 
@@ -225,7 +223,8 @@ function create_dash($id, $converted, $dashdir, $ffmpeg, $resolutions) {
     // Multi resolutions for dash-ing.
     // first take care of current resolution.
     $cmd = " -y -i " . escapeshellarg($converted . $id . ".mp4") .
-        " -strict -2 -c:v libx264 -crf 22 -c:a aac -movflags faststart -x264opts " . escapeshellarg("keyint=24:min-keyint=24:no-scenecut") .
+        " -strict -2 -c:v libx264 -crf 22 -c:a aac -movflags faststart -x264opts "
+        . escapeshellarg("keyint=24:min-keyint=24:no-scenecut") .
         " " . escapeshellarg($dashdir . $id . "_" . $video->height . ".mp4");
 
     exec($ffmpeg . $cmd);
@@ -241,7 +240,8 @@ function create_dash($id, $converted, $dashdir, $ffmpeg, $resolutions) {
     foreach ($resolutions as $resolution) {
         if (($resolution < $video->height) && (is_numeric($resolution))) {
             $cmd = " -y -i " . escapeshellarg($converted . $id . ".mp4") .
-            " -strict -2 -c:v libx264 -crf 22 -c:a aac -movflags faststart -x264opts " . escapeshellarg("keyint=24:min-keyint=24:no-scenecut") .
+            " -strict -2 -c:v libx264 -crf 22 -c:a aac -movflags faststart -x264opts "
+            . escapeshellarg("keyint=24:min-keyint=24:no-scenecut") .
             " -vf " . escapeshellarg( "scale=-2:" . $resolution) ." " . escapeshellarg($dashdir . $id . "_" . $resolution . ".mp4");
             exec($ffmpeg . $cmd);
             $record = array("video_id" => $id,

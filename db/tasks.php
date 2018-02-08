@@ -26,4 +26,3 @@ $tasks = array(
         'month' => '*'
     )
 );
-// mod_hygene\task\cut_my_toe_nails

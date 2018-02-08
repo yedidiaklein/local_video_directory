@@ -30,8 +30,6 @@ $settings = get_settings();
 if (!CLI_SCRIPT) {
     require_login();
 
-    // Check if user belong to the cohort or is admin.
-    require_once($CFG->dirroot.'/cohort/lib.php');
 
     // Check if user have permissionss.
     $context = context_system::instance();
@@ -40,9 +38,6 @@ if (!CLI_SCRIPT) {
         die("Access Denied. You must be a member of the designated cohort. Please see your site admin.");
     }
 
-    // if (!cohort_is_member($settings->cohort, $USER->id) && !is_siteadmin($USER)) {
-    // die("Access Denied. You must be a member of the designated cohort. Please see your site admin.");
-    // }
 }
 
 $PAGE->set_context(context_system::instance());
@@ -66,10 +61,39 @@ require('menu.php');
 
 $versions = $DB->get_records('local_video_directory_vers', array('file_id' => $id));
 
+<<<<<<< Updated upstream
 foreach ($versions as $version) {
     $version->date = strftime("%A, %d %B %Y %H:%M", $version->datecreated);
 }
 
 echo $OUTPUT->render_from_template("local_video_directory/versions", array('lines' =>array_values($versions),'id'=>$id));
+=======
+
+echo "<table><tr><th>" . get_string('date') . "</th><th>" . get_string('view') .
+        "</th><th>" . get_string('restore') . "</th></tr>";
+
+foreach ($versions as $version) {
+    echo '<tr><td>' . strftime("%A, %d %B %Y %H:%M", $version->datecreated) . '</td><td>
+    <img class="play_video local_video_directory_action_thumb" onclick="local_video_directory.play(\'play.php?video_id=' .
+            $version->file_id . "_" . $version->datecreated . '\')" " src="' . $CFG->wwwroot
+            . '/local/video_directory/pix/play.svg"></td><td><a href="restore.php?id='
+            . $id . '&restore=' . $version->datecreated . '"><img class="play_video local_video_directory_action_thumb"
+            src="' . $CFG->wwwroot . '/local/video_directory/pix/synchronize.svg"></a></td></tr>';
+}
+echo "</table>";
+
+?>
+<div id='video_player' class="local_video_directory_video-player" style='display:none'>
+    <a href=# class='close' onclick='local_video_directory.close_player();'>
+        &times; <?php echo get_string('close', 'local_video_directory'); ?>
+    </a>
+    <br>
+    <video id="my-video" class="local_video_directory_my-video" controls preload="auto"></video>
+</div>
+
+<?php
+
+echo "<br><br><a href=upload.php?video_id=" . $id . ">" . get_string('upload_new_version', 'local_video_directory') . "</a><br>";
+>>>>>>> Stashed changes
 
 echo $OUTPUT->footer();
