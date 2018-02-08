@@ -163,22 +163,30 @@ function local_video_directory_get_videos_by_tags($list, $tagid=0) {
     return $videos;
 }
 
-function local_video_directory_get_videos() {
+function local_video_directory_get_videos($order=0) {
     global $USER, $DB;
+    if ($order) {
+        $order_by = " ORDER BY ? ";
+        $ar_order = ['$order'];
+    } else {
+        $order_by = "";
+        $ar_order=array();
+    }
+
     if (is_siteadmin($USER)) {
         $videos = $DB->get_records_sql('SELECT v.*, ' . $DB->sql_concat_join("' '", array("firstname", "lastname")) .
                                     ' AS name FROM {local_video_directory} v
-                                    LEFT JOIN {user} u on v.owner_id = u.id');
+                                    LEFT JOIN {user} u on v.owner_id = u.id' . $order_by, $ar_order);
     } else {
         $videos = $DB->get_records_sql('SELECT v.*, ' . $DB->sql_concat_join("' '", array("firstname", "lastname")) .
                                             ' AS name FROM {local_video_directory} v
                                     LEFT JOIN {user} u on v.owner_id = u.id WHERE owner_id =' . $USER->id .
-                                    ' OR (private IS NULL OR private = 0)');
+                                    ' OR (private IS NULL OR private = 0)' . $order_by, $ar_order);
     }
     return $videos;
 }   
 
-function local_video_get_thumbnail_url($thumb, $videoid) {
+function local_video_get_thumbnail_url($thumb, $videoid, $clean=0) {
     global $CFG;
     $dirs = get_directories();
     $thumb = str_replace(".png", "-mini.png", $thumb);
@@ -202,6 +210,10 @@ function local_video_get_thumbnail_url($thumb, $videoid) {
 
     $thumb = "<div class='video-thumbnail' " . $playbutton . ">" . ($thumb ? "<img src='$CFG->wwwroot/local/video_directory/thumb.php?id=$thumbid$thumbseconds&mini=1 '
         class='thumb' " . $playbutton ." >" : get_string('noimage', 'local_video_directory')) . "</div>";
+
+    if ($clean) {
+        $thumb = "$CFG->wwwroot/local/video_directory/thumb.php?id=$thumbid$thumbseconds";
+    }
 
     return $thumb;
 }
