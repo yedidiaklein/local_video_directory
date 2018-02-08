@@ -30,20 +30,12 @@ $dirs = get_directories();
 if (!CLI_SCRIPT) {
     require_login();
 
-<<<<<<< Updated upstream
-=======
-
->>>>>>> Stashed changes
     // Check if user have permissionss.
     $context = context_system::instance();
     if (!has_capability('local/video_directory:video', $context) && !is_siteadmin($USER)) {
         // TODO : write nice errors.
         die("Access Denied. Please see your site admin.");
     }
-<<<<<<< Updated upstream
-=======
-
->>>>>>> Stashed changes
 }
 
 $PAGE->set_context(context_system::instance());
@@ -69,8 +61,6 @@ foreach ($videos as $video) {
     $OUTPUT->tag_list(core_tag_tag::get_item_tags('local_video_directory', 'local_video_directory', $video->id), "", 'videos'));*/
     $video->tags = str_replace('/tag/index.php?tc=1', '/local/video_directory/tag.php?action=add&tag=',
     $OUTPUT->tag_list(core_tag_tag::get_item_tags('local_video_directory', 'local_video_directory', $video->id), "", 'videos'));
-<<<<<<< Updated upstream
-=======
     $video->thumb = str_replace(".png", "-mini.png", $video->thumb);
     $thumbdata = explode('-', $video->thumb);
     $thumbid = $thumbdata[0];
@@ -79,7 +69,6 @@ foreach ($videos as $video) {
         get_string('clicktochangethumb', 'local_video_directory') .
         "'>" . ($video->thumb ? "<img src='$CFG->wwwroot/local/video_directory/thumb.php?id=$thumbid$thumbseconds&mini=1 '
         class='local_video_directory_thumb'>" : get_string('noimage', 'local_video_directory')) . "</a>";
->>>>>>> Stashed changes
 
     $versions = $DB->get_records('local_video_directory_vers', array('file_id' => $video->id));
     $versionsbutton = '<a href="' . $CFG->wwwroot . '/local/video_directory/versions.php?id=' .
