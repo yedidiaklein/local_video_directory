@@ -30,12 +30,20 @@ $dirs = get_directories();
 if (!CLI_SCRIPT) {
     require_login();
 
+<<<<<<< Updated upstream
+=======
+
+>>>>>>> Stashed changes
     // Check if user have permissionss.
     $context = context_system::instance();
     if (!has_capability('local/video_directory:video', $context) && !is_siteadmin($USER)) {
         // TODO : write nice errors.
         die("Access Denied. Please see your site admin.");
     }
+<<<<<<< Updated upstream
+=======
+
+>>>>>>> Stashed changes
 }
 
 $PAGE->set_context(context_system::instance());
@@ -50,15 +58,28 @@ if (isset($SESSION->video_tags) && is_array($SESSION->video_tags)) {
     $videos = local_video_directory_get_videos();
 }
 
+
 foreach ($videos as $video) {
     // Do not show filename.
     unset($video->filename);
     if (is_numeric($video->convert_status)) {
         $video->convert_status = get_string('state_' . $video->convert_status, 'local_video_directory');
     }
-
-    $video->tags = str_replace('/tag/index.php', '/local/video_directory/list.php',
+    /*$video->tags = str_replace('/tag/index.php', '/local/video_directory/list.php',
+    $OUTPUT->tag_list(core_tag_tag::get_item_tags('local_video_directory', 'local_video_directory', $video->id), "", 'videos'));*/
+    $video->tags = str_replace('/tag/index.php?tc=1', '/local/video_directory/tag.php?action=add&tag=',
     $OUTPUT->tag_list(core_tag_tag::get_item_tags('local_video_directory', 'local_video_directory', $video->id), "", 'videos'));
+<<<<<<< Updated upstream
+=======
+    $video->thumb = str_replace(".png", "-mini.png", $video->thumb);
+    $thumbdata = explode('-', $video->thumb);
+    $thumbid = $thumbdata[0];
+    $thumbseconds = isset($thumbdata[1]) ? "&second=$thumbdata[1]" : '';
+    $video->thumb = "<a href='$CFG->wwwroot/local/video_directory/thumbs.php?id=$video->id' title='" .
+        get_string('clicktochangethumb', 'local_video_directory') .
+        "'>" . ($video->thumb ? "<img src='$CFG->wwwroot/local/video_directory/thumb.php?id=$thumbid$thumbseconds&mini=1 '
+        class='local_video_directory_thumb'>" : get_string('noimage', 'local_video_directory')) . "</a>";
+>>>>>>> Stashed changes
 
     $versions = $DB->get_records('local_video_directory_vers', array('file_id' => $video->id));
     $versionsbutton = '<a href="' . $CFG->wwwroot . '/local/video_directory/versions.php?id=' .
@@ -69,12 +90,19 @@ foreach ($videos as $video) {
          $versionsbutton .= ' grey';
     }
     $versionsbutton .= '" aria-hidden="true" ></i></a>';
+    // $versionsbutton .= '.png" class="local_video_directory_action_thumb"></a>';
 
     if (!file_exists( $dirs['converted'] . $video->id . ".mp4")) {
         $video->convert_status .= '<br>' . get_string('awaitingconversion', 'local_video_directory');
     }
 
+<<<<<<< Updated upstream
     $video->thumb = local_video_get_thumbnail_url($video->thumb, $video->id);
+=======
+    $video->thumb = "<div class='video-thumbnail' " . $playbutton . ">"
+    . ($video->thumb ? "<img src='$CFG->wwwroot/local/video_directory/thumb.php?id=$thumbid$thumbseconds&mini=1 '
+        class='thumb' " . $playbutton ." >" : get_string('noimage', 'local_video_directory')) . "</div>";
+>>>>>>> Stashed changes
 
     if (($video->owner_id != $USER->id) && !is_siteadmin($USER)) {
         $video->actions = '';
@@ -90,11 +118,12 @@ foreach ($videos as $video) {
             <i class="fa fa-wrench" aria-hidden="true"></i>
         </a>
         <a href="' . $CFG->wwwroot . '/local/video_directory/thumbs.php?id=' . $video->id .
-            '" title="' . get_string('clicktochangethumb','local_video_directory') . '" alt="' . get_string('clicktochangethumb','local_video_directory') . '">
+            '" title="' . get_string('clicktochangethumb', 'local_video_directory')
+            . '" alt="' . get_string('clicktochangethumb', 'local_video_directory') . '">
             <i class="fa fa-camera" aria-hidden="true"></i>
         </a>
-        <a href="' . $CFG->wwwroot . '/local/video_directory/upload_subs.php?id=' .
-            $video->id .'" title="' . get_string('upload_subs', 'local_video_directory') . '"
+        <a href="' . $CFG->wwwroot . '/local/video_directory/upload_subs.php?id=' . $video->id .
+            '" title="' . get_string('upload_subs', 'local_video_directory') . '"
             alt="' . get_string('upload_subs', 'local_video_directory') . '">
             <i class="fa fa-align-center';
 

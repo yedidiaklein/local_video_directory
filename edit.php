@@ -30,9 +30,6 @@ $settings = get_settings();
 if (!CLI_SCRIPT) {
     require_login();
 
-    // Check if user belong to the cohort or is admin.
-    require_once($CFG->dirroot.'/cohort/lib.php');
-
     // Check if user have permissionss.
     $context = context_system::instance();
 
@@ -40,9 +37,6 @@ if (!CLI_SCRIPT) {
         die("Access Denied. You must be a member of the designated cohort. Please see your site admin.");
     }
 
-    // if (!cohort_is_member($settings->cohort, $USER->id) && !is_siteadmin($USER)) {
-    // die("Access Denied. You must be a member of the designated cohort. Please see your site admin.");
-    // }
 }
 
 require_once("$CFG->libdir/formslib.php");
@@ -116,16 +110,23 @@ if ($mform->is_cancelled()) {
     echo $OUTPUT->header();
 
     $video = $DB->get_record('local_video_directory', array("id" => $id));
-    echo '<video  width="655" controls preload="auto"
-            poster="' . $CFG->wwwroot . '/local/video_directory/thumb.php?id=' . str_replace("-", "&second=", $video->thumb) . '">
-            <source src="play.php?video_id='. $id . '" type="video/mp4"">
-          </video>';
-    $mform->display();
-    echo "<a href=upload.php?video_id=" . $id . ">" . get_string('upload_new_version', 'local_video_directory') . "</a><br>";
     $versions = $DB->get_records("local_video_directory_vers", array("file_id" => $id));
+
+    echo $OUTPUT->render_from_template('local_video_directory/edit',
+    ['wwwroot' => $CFG->wwwroot, 'versions' => $versions, 'id' => $id, 'thumb' => str_replace("-", "&second=", $video->thumb)]);
+
+
+
+    $mform->display();
+    /*   echo '<video  width="655" controls preload="auto"
+    poster="' . $CFG->wwwroot . '/local/video_directory/thumb.php?id=' . str_replace("-", "&second=", $video->thumb) . '">
+    <source src="play.php?video_id='. $id . '" type="video/mp4"">
+    </video>';
+    echo "<a href=upload.php?video_id=" . $id . ">" . get_string('upload_new_version', 'local_video_directory') . "</a><br>";
+
     if ($versions) {
         echo "<a href=versions.php?id=" . $id . ">" . get_string('versions', 'local_video_directory') . "</a>";
-    }
+    }*/
 }
 
 echo $OUTPUT->footer();

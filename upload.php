@@ -32,9 +32,6 @@ $settings = get_settings();
 if (!CLI_SCRIPT) {
     require_login();
 
-    // Check if user belong to the cohort or is admin.
-    require_once($CFG->dirroot.'/cohort/lib.php');
-
     // Check if user have permissionss.
     $context = context_system::instance();
 

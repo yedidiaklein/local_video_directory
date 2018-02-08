@@ -31,8 +31,6 @@ $settings = get_settings();
 if (!CLI_SCRIPT) {
     require_login();
 
-    // Check if user belong to the cohort or is admin.
-    require_once($CFG->dirroot.'/cohort/lib.php');
 
     // Check if user have permissionss.
     $context = context_system::instance();
@@ -40,9 +38,6 @@ if (!CLI_SCRIPT) {
         die("Access Denied. You must be a member of the designated cohort. Please see your site admin.");
     }
 
-    // if (!cohort_is_member($settings->cohort, $USER->id) && !is_siteadmin($USER)) {
-    // die("Access Denied. You must be a member of the designated cohort. Please see your site admin.");
-    // }
 }
 
 $dirs = get_directories();
