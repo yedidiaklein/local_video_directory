@@ -61,7 +61,7 @@ foreach ($videos as $video) {
     $OUTPUT->tag_list(core_tag_tag::get_item_tags('local_video_directory', 'local_video_directory', $video->id), "", 'videos'));*/
     $video->tags = str_replace('/tag/index.php?tc=1', '/local/video_directory/tag.php?action=add&tag=',
     $OUTPUT->tag_list(core_tag_tag::get_item_tags('local_video_directory', 'local_video_directory', $video->id), "", 'videos'));
-    $video->thumb = str_replace(".png", "-mini.png", $video->thumb);
+/*    $video->thumb = str_replace(".png", "-mini.png", $video->thumb);
     $thumbdata = explode('-', $video->thumb);
     $thumbid = $thumbdata[0];
     $thumbseconds = isset($thumbdata[1]) ? "&second=$thumbdata[1]" : '';
@@ -69,7 +69,7 @@ foreach ($videos as $video) {
         get_string('clicktochangethumb', 'local_video_directory') .
         "'>" . ($video->thumb ? "<img src='$CFG->wwwroot/local/video_directory/thumb.php?id=$thumbid$thumbseconds&mini=1 '
         class='local_video_directory_thumb'>" : get_string('noimage', 'local_video_directory')) . "</a>";
-
+*/
     $versions = $DB->get_records('local_video_directory_vers', array('file_id' => $video->id));
     $versionsbutton = '<a href="' . $CFG->wwwroot . '/local/video_directory/versions.php?id=' .
             $video->id . '" title="' . get_string('versions', 'local_video_directory') .
@@ -85,13 +85,7 @@ foreach ($videos as $video) {
         $video->convert_status .= '<br>' . get_string('awaitingconversion', 'local_video_directory');
     }
 
-<<<<<<< Updated upstream
     $video->thumb = local_video_get_thumbnail_url($video->thumb, $video->id);
-=======
-    $video->thumb = "<div class='video-thumbnail' " . $playbutton . ">"
-    . ($video->thumb ? "<img src='$CFG->wwwroot/local/video_directory/thumb.php?id=$thumbid$thumbseconds&mini=1 '
-        class='thumb' " . $playbutton ." >" : get_string('noimage', 'local_video_directory')) . "</div>";
->>>>>>> Stashed changes
 
     if (($video->owner_id != $USER->id) && !is_siteadmin($USER)) {
         $video->actions = '';
