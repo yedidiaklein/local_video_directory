@@ -29,20 +29,12 @@ $settings = get_settings();
 
 if (!CLI_SCRIPT) {
     require_login();
-<<<<<<< Updated upstream
-=======
-
->>>>>>> Stashed changes
     // Check if user have permissionss.
     $context = context_system::instance();
 
     if (!has_capability('local/video_directory:video', $context) && !is_siteadmin($USER)) {
         die("Access Denied. You must be a member of the designated cohort. Please see your site admin.");
     }
-<<<<<<< Updated upstream
-=======
-
->>>>>>> Stashed changes
 }
 
 $id = required_param('video_id', PARAM_INT);

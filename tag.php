@@ -35,10 +35,6 @@ if (!CLI_SCRIPT) {
     if (!has_capability('local/video_directory:video', $context) && !is_siteadmin($USER)) {
         die("Access Denied. You must be a member of the designated cohort. Please see your site admin.");
     }
-<<<<<<< Updated upstream
-=======
-
->>>>>>> Stashed changes
 }
 
 $tag = required_param('tag', PARAM_RAW);
