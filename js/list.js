@@ -1,4 +1,5 @@
 require.config({catchError:true});
+/*
 require(['jquery', 'jqueryui', 'datatables'], function($, jqueryui, datatables) {
     $(document).ready(function() {
         var table = $("#video_table").DataTable({
@@ -49,7 +50,7 @@ require(['jquery', 'jqueryui', 'datatables'], function($, jqueryui, datatables) 
         });
     });
 });
-
+*/
 var local_video_directory = {
     play: function(stream) {
         var video = document.getElementById('my-video'), source = document.createElement('source');

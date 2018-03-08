@@ -64,7 +64,7 @@ if ($CFG->branch < 33) {
     $PAGE->requires->css(new moodle_url('https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css'));
 }
 
-// $PAGE->requires->js('/local/video_directory/js/list.js');
+$PAGE->requires->js('/local/video_directory/js/list.js');
 $PAGE->requires->css('/local/video_directory/style.css');
 
 
