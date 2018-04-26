@@ -64,7 +64,7 @@ if ($CFG->branch < 33) {
     $PAGE->requires->css(new moodle_url('https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css'));
 }
 
-$PAGE->requires->js('/local/video_directory/js/list.js');
+$PAGE->requires->js('/local/video_directory/js/play.js');
 $PAGE->requires->css('/local/video_directory/style.css');
 
 
@@ -85,81 +85,24 @@ ON ti.tagid=t.id
 WHERE itemtype = \'local_video_directory\'
 ORDER BY name');
 
-/*echo '<div id="tools" class="local_video_directory_tools"><button id="datatable_ajax_reload" class="btn btn-default">' .
-        get_string('reload', 'local_video_directory') . '</button>';
-
-echo ' <button id="datatable_ajax_clear_tags" class="btn btn-default">' .
-        get_string('show_all', 'local_video_directory') . '</button>';
-
-echo '<div class="local_video_directory_existing_tags">' . get_string('existing_tags', 'local_video_directory').':';
-
-echo '<span class="tag_list hideoverlimit local_video_directory_videos">
-    <ul class="inline-list">';*/
 $alltagsurl = array();
 
 foreach ($alltags as $key => $value) {
-    // echo '<li>
-    // <a href="' . $CFG->wwwroot . '/local/video_directory/tag.php?action=add&tag=' .
-    // urlencode($key) . '" class="label label-info ">+ ' . $key . '</a>
-    // </li>';
-
     array_push($alltagsurl, array('name' => $key, 'url' => urlencode($key)));
-    // $value = array('value'=>$value, 'url'=>urlencode($key));
-
 }
-// print_r($alltagsurl);die;
-// echo '</ul></span></div>';
 $selectedtags = array();
 if (is_array($SESSION->video_tags)) {
-    // echo '<div class="local_video_directory_selected_tags">' . get_string('selected_tags', 'local_video_directory').':';
-    // echo '<span class="tag_list hideoverlimit local_video_directory_videos">
-    // <ul class="inline-list">';
-
-
     foreach ($SESSION->video_tags as $key => $value) {
-        // echo '<li>
-        // <a href="' . $CFG->wwwroot . '/local/video_directory/tag.php?action=remove&tag=' .
-        // urlencode($value) . '" class="label label-info "> &times; ' . $value . '</a>
-        // </li>';
         array_push($selectedtags, array('name' => $value, 'url' => urlencode($value)));
-        // $value = array('value'=>$value, 'url'=>urlencode($value));
     }
-    // echo '</ul></span></div>';
 }
-/* after php
-</div>
-<table id="video_table" class="local_video_directory_video-table display" cellspacing="0">
-    <thead>
-        <tr>*/
-?>
 
-
-<?php
 $listheaders = array('actions', 'thumb', 'id', 'owner', 'orig_filename', 'length',
                     'convert_status', 'private', 'streaming_url', 'tags');
 $liststrings = array();
 foreach ($listheaders as $liststring) {
             array_push($liststrings, get_string($liststring, 'local_video_directory'));
 }
-
-/*
-        </tr>
-    </thead>
-    <tbody></tbody>
-</table>
-
-<div id='video_player' class="local_video_directory_video-player" style='display:none'>
-    <a href=# class='close' onclick='local_video_directory.close_player();'>
-        &times; <?php echo get_string('close', 'local_video_directory'); ?>
-    </a>
-    <br>
-
-    <video id="my-video" class="local_video_directory_my-video" controls preload="auto"></video>
-
-</div>
-
-
-*/
 echo $OUTPUT->render_from_template('local_video_directory/list',
  ['wwwroot' => $CFG->wwwroot, 'alltags' => $alltagsurl, 'existvideotags' => is_array($SESSION->video_tags),
  'videotags' => $selectedtags, 'liststrings' => $liststrings]);

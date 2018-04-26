@@ -1,16 +1,24 @@
 var local_video_directory;
 
-require(['jquery'], function($) {
+require(['jquery', 'core/ajax'], function($, ajax) {
     $('.mform[action$="thumbs.php"] input[type="radio"]').parent().addClass('local_video_directory_thumbselectorelement');
     local_video_directory = {
-        getThumb: function(id, second) {
-            $.get(M.cfg.wwwroot + '/local/video_directory/ajax_thumbs.php?id=' + id + '&second=' + second, function(data){
-                local_video_directory.ChangeRBText(second,
-                    data == 'noimage' ? local_video_directory_vars
-                                        .errorcreatingthumbat + ' ' + second + ' s': "<img class='local_video_directory_thumb' height='80px' src='" + data + "'>"
+        getThumb: function(id,second) {
+            var promises = ajax.call([
+                { methodname: 'local_video_directory_thumb', args: { videoid: id, seconds: second } }
+            ]);
+
+            promises[0].done(function(data){
+                local_video_directory.ChangeRBText(
+                        second,
+                        data === 'noimage'
+                            ?
+                            local_video_directory_vars.errorcreatingthumbat + ' ' + second + ' s'
+                            :
+                            "<img class='local_video_directory_thumb' height='80px' src='" + data + "'>"
                 );
 
-                if (data == 'noimage') {
+                if (data === 'noimage') {
                     $('#id_thumb_' + second).hide();
                 }
             });

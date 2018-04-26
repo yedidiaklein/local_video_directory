@@ -30,12 +30,28 @@ $functions = array(
                 'type'        => 'write',
                 'ajax'        => true,
                 'capabilities'  => 'local/video_directory:video'
+        ),
+        'local_video_directory_thumb' => array(
+                'classname'   => 'local_video_directory_external',
+                'methodname'  => 'thumb',
+                'description' => 'Generate thumbs from video',
+                'type'        => 'write',
+                'ajax'        => true,
+                'capabilities'  => 'local/video_directory:video'
+        ),
+        'local_video_directory_list' => array(
+                'classname'   => 'local_video_directory_external',
+                'methodname'  => 'list',
+                'description' => 'Generate json of videos',
+                'type'        => 'read',
+                'ajax'        => true,
+                'capabilities'  => 'local/video_directory:video'
         )
 );
 // We define the services to install as pre-build services. A pre-build service is not editable by administrator.
 $services = array(
         'Video Directory Services' => array(
-                'functions' => array ('local_video_directory_edit'),
+                'functions' => array ('local_video_directory_edit', 'local_video_directory_thumb', 'local_video_directory_list'),
                 'restrictedusers' => 0,
                 'enabled'=>1,
         )

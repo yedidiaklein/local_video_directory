@@ -1,12 +1,21 @@
 {{#js}}
 
 require.config({catchError:true});
-require(['jquery', 'jqueryui', 'datatables'], function($, jqueryui, datatables) {
+require(['jquery', 'jqueryui', 'datatables', 'core/ajax'], function($, jqueryui, datatables, ajax) {
     $(document).ready(function() {
         var table = $("#video_table").DataTable({
             "ajax": {
-                "url": M.cfg.wwwroot + '/local/video_directory/ajax_list.php',
-                "dataSrc": ""
+                method: "POST",
+                data : function ( d ) {
+                    return JSON.stringify({"0" : {"index":0,"methodname":"local_video_directory_list","args" : {"id": 0}}});
+                },
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                "url": M.cfg.wwwroot + '/lib/ajax/service.php?sesskey=' + M.cfg.sesskey + '&info=local_video_directory_list',
+                "dataSrc": function (d) {
+                    console.log(JSON.parse(d[0].data));
+                    return JSON.parse(d[0].data);
+                }
             },
             "order": [[2, "desc"]],
             "columns": [
@@ -37,18 +46,9 @@ require(['jquery', 'jqueryui', 'datatables'], function($, jqueryui, datatables) 
             var id = data.pop();
             var status = this.type == 'checkbox' ? this.checked : null;
             var value = this.type == 'checkbox' ? null : this.value;
-            require(['core/ajax'], function(ajax) {
-                var promises = ajax.call([
-                    { methodname: 'local_video_directory_edit', args: { videoid: id, field: field, value: value, status: status } }
-                ]);
-            });
-//            $.post(M.cfg.wwwroot + '/local/video_directory/ajax_edit.php',
-//                {field: field, id: id, value: value, status: status}, function (data){
-//                     // Do nothing.
-//                })
-//            .fail(function() {
-//                alert("error");
-//            });
+            var promises = ajax.call([
+                { methodname: 'local_video_directory_edit', args: { videoid: id, field: field, value: value, status: status } }
+            ]);
         });
 
         $('.play_video').click(function () {

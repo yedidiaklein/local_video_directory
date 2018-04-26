@@ -256,3 +256,7 @@ input.hidden_input:focus, input.hidden_input:hover {
     z-index: 100;
     background-color: white;
 } 
+
+.local_video_directory_versions i {
+    font-size: 30px;
+}

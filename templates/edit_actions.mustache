@@ -1,0 +1,18 @@
+
+<a href="delete.php?video_id={{id}}" title="{{#str}}delete{{/str}}" alt="{{#str}}delete{{/str}}">
+    <i class="fa fa-eraser" aria-hidden="true"></i>
+</a>
+<a href="edit.php?video_id={{id}}" title="{{#str}}edit{{/str}}" alt="{{#str}}edit{{/str}}">
+    <i class="fa fa-wrench" aria-hidden="true"></i>
+</a>
+<a href="thumbs.php?id={{id}}" title="{{#str}}clicktochangethumb, local_video_directory{{/str}}" 
+                                 alt="{{#str}}clicktochangethumb, local_video_directory{{/str}}">
+    <i class="fa fa-camera" aria-hidden="true"></i>
+</a>
+<a href="upload_subs.php?id={{id}}" title="{{#str}}upload_subs, local_video_directory{{/str}}"
+                                      alt="{{#str}}upload_subs, local_video_directory{{/str}}">
+    <i class="fa fa-align-center {{#nosubs}} grey{{/nosubs}}" aria-hidden="true"></i>
+</a>
+<a href="versions.php?id={{id}}" title="{{#str}}versions, local_video_directory{{/str}}" 
+                                   alt="{{#str}}versions, local_video_directory{{/str}}">
+        <i class="fa fa-clock-o {{#noversion}}grey{{/noversion}}" aria-hidden="true" ></i></a>

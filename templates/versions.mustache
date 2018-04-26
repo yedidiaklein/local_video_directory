@@ -1,7 +1,7 @@
 <h1>{{#str}}versions,local_video_directory{{/str}}</h1>
 <br><br>
 
-<table width="500px">
+<table width="500px" class="local_video_directory_versions">
     <tr>
         <th>{{#str}}date{{/str}}</th>
         <th>{{#str}}view{{/str}}</th>
@@ -13,11 +13,15 @@
         <td>
             {{date}}
         </td>
-        <td><img class="play_video action_thumb" onclick="local_video_directory.play('play.php?video_id={{file_id}}_{{datecreated}}')"
-            src="pix/play.svg">
+        <td>
+        <span onclick="local_video_directory.play('{{streaming}}/{{file_id}}_{{datecreated}}.mp4')">
+            <a href=#>
+                <i class="fa fa-play" aria-hidden="true"></i>
+            </a>
+        </span>
         </td>
         <td><a href="restore.php?id={{id}}&restore={{datecreated}}">
-             <img class="play_video action_thumb" src="pix/synchronize.svg">
+            <i class="fa fa-undo" aria-hidden="true"></i>
             </a>
         </td>
     </tr>
@@ -27,7 +31,7 @@
 
 <br><br><a href=upload.php?video_id={{id}}>{{#str}}upload_new_version, local_video_directory{{/str}}</a><br>
 
-<div id='video_player' class="video-player" style='display:none'>
+<div id='video_player' class="local_video_directory_video-player" style='display:none'>
     <a href=# class='close' onclick='local_video_directory.close_player();'>
         {{#str}}close ,local_video_directory{{/str}}
     </a>
