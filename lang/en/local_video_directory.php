@@ -116,3 +116,5 @@ $string['subs_deleted'] = 'Subtitle file deleted successfully.';
 $string['restore_in_queue'] = "Restore request in queue...";
 $string['cant_upload_or_restore_while_converting'] = "Can't upload or restore while this video is in converting action";
 $string['portal'] = "Video Portal";
+$string['sure_restore'] = "Are you sure that you want to restore the video from";
+$string['restore'] = "Restore";

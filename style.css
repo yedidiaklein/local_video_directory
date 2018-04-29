@@ -253,9 +253,16 @@ input.hidden_input:focus, input.hidden_input:hover {
     top: -40px;
     /* left: 0; */
     /* width: 100%; */
-    z-index: 100;
+    z-index: 1;
     background-color: white;
 } 
+
+.local_video_portal_video {
+    float: left;
+    border: 1px solid;
+    padding: 10px;
+    margin: 10px;
+}
 
 .local_video_directory_versions i {
     font-size: 30px;

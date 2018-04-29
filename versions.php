@@ -29,21 +29,19 @@ $settings = get_settings();
 
 if (!CLI_SCRIPT) {
     require_login();
-
-
     // Check if user have permissionss.
     $context = context_system::instance();
-
     if (!has_capability('local/video_directory:video', $context) && !is_siteadmin($USER)) {
         die("Access Denied. You must be a member of the designated cohort. Please see your site admin.");
     }
 
 }
+$id = required_param('id', PARAM_INT);
 
 $PAGE->set_context(context_system::instance());
 $PAGE->set_heading(get_string('versions', 'local_video_directory'));
 $PAGE->set_title(get_string('versions', 'local_video_directory'));
-$PAGE->set_url('/local/video_directory/versions.php');
+$PAGE->set_url('/local/video_directory/versions.php?id='.$id);
 $PAGE->navbar->add(get_string('pluginname', 'local_video_directory'), new moodle_url('/local/video_directory/'));
 $PAGE->navbar->add(get_string('versions', 'local_video_directory'));
 $PAGE->set_pagelayout('base');
@@ -57,7 +55,6 @@ if ($CFG->branch < 33) {
     $PAGE->requires->css(new moodle_url('https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css'));
 }
 
-$id = required_param('id', PARAM_INT);
 
 echo $OUTPUT->header();
 

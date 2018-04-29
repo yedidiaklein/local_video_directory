@@ -36,6 +36,8 @@ $PAGE->navbar->add(get_string('pluginname', 'local_video_directory'), new moodle
 $PAGE->navbar->add(get_string('portal', 'local_video_directory'));
 $PAGE->set_pagelayout('base');
 $PAGE->requires->css('/local/video_directory/style.css');
+$PAGE->requires->js('/local/video_directory/js/play.js');
+
 
 // include font awesome in case of moodle 32 and older
 if ($CFG->branch < 33) {
@@ -51,7 +53,7 @@ foreach ($videos as $video) {
     $video->thumbnail = local_video_get_thumbnail_url($video->thumb, $video->id, 1);
 }
 
-echo $OUTPUT->render_from_template("local_video_directory/portal", array('videos' =>array_values($videos)));
+echo $OUTPUT->render_from_template("local_video_directory/portal", array('videos' =>array_values($videos),'streaming' => get_streaming_server_url()));
 
 //print_r($videos);
 

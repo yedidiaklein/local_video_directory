@@ -1,6 +1,7 @@
 This local plugin is for managing a video directory inside moodle.
 
 The idea of this plugin is that every allowed user can upload any kind of video to the system. The plugin will convert it to mp4 and generate thumbnails for it.
+The easiest and best way to use it is with mod_videostream that can be found here : https://github.com/yedidiaklein/mod_videostream.git
 
 _Installation_
 
@@ -10,5 +11,5 @@ _Installation_
 - Go to your moodle "Notification" page (http://moodle-address/admin)  and install the plugin by clicking on "Upgrade Moodle Database"
 - It will be available from the Course Administration Block when you are inside a course.
 - Direct URL access is via http://moodle-address/local/video_directory/
-- You can allow non administrator users to access this plugin by adding them to the cohort that you entered in the settings.
+- You can allow non administrator users to access this plugin by adding them to the system role name local_video_directory.
 

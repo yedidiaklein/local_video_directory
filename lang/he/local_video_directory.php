@@ -116,3 +116,5 @@ $string['subs_deleted'] = 'קובץ הכתוביות נמחק בהצלחה.';
 $string['restore_in_queue'] = "פעולת השחזור בתהליך...";
 $string['cant_upload_or_restore_while_converting'] = "אין אפשרות להעלות או לשחזר בזמן שוידאו זה בתהליך המרה";
 $string['portal'] = "פורטל הוידאו";
+$string['sure_restore'] = "האם אתם בטוחים שאתם רוצים לשחזר את הסרטון מהתאריך";
+$string['restore'] = "שחזור";
