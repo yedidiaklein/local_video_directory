@@ -22,6 +22,7 @@
  */
 
 require_once( __DIR__ . '/../../config.php');
+require_login();
 defined('MOODLE_INTERNAL') || die();
 
 require_once("$CFG->libdir/formslib.php");
@@ -30,8 +31,6 @@ require_once('locallib.php');
 $settings = get_settings();
 
 if (!CLI_SCRIPT) {
-    require_login();
-
 
     // Check if user have permissionss.
     $context = context_system::instance();

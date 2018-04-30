@@ -20,7 +20,6 @@
  */
 defined('MOODLE_INTERNAL') || die();
 
-require_once( __DIR__ . '/../../../config.php');
 require_once($CFG->dirroot.'/lib/accesslib.php');
 $role = $DB->get_record('role', array('shortname' => 'local_video_directory'));
 if (empty($role)) {

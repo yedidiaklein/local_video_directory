@@ -22,6 +22,7 @@
  */
 
 require_once( __DIR__ . '/../../config.php');
+require_login();
 require_once('locallib.php');
 defined('MOODLE_INTERNAL') || die();
 
@@ -45,12 +46,16 @@ $menu = array('list', 'upload', 'mass', 'wget');
 $tabs = array();
 
 foreach ($menu as $item) {
-    array_push($tabs, array('name' => $item, 'selected' => ($item . '.php' == $selected), 'str' => get_string($item, 'local_video_directory')));
+    array_push($tabs, array('name' => $item,
+                            'selected' => ($item . '.php' == $selected),
+                            'str' => get_string($item, 'local_video_directory')));
 }
-// print_r($tabs);die;
 
 echo $OUTPUT->render_from_template('local_video_directory/menu',
-['size' => local_video_directory_human_filesize(disk_free_space($CFG->dataroot), 2, $settings->df), 'selected' => $selected, 'menu' => $tabs]);
+                                    ['size' => local_video_directory_human_filesize(
+                                        disk_free_space($CFG->dataroot), 2, $settings->df),
+                                     'selected' => $selected,
+                                     'menu' => $tabs]);
 
 
 /*?>

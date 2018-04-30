@@ -22,11 +22,9 @@
  */
 
 require_once( __DIR__ . '/../../config.php');
+require_login();
 defined('MOODLE_INTERNAL') || die();
 require_once('locallib.php');
-
-//$settings = get_settings();
-//$dirs = get_directories();
 
 $PAGE->set_context(context_system::instance());
 $PAGE->set_heading(get_string('portal', 'local_video_directory'));
@@ -39,7 +37,7 @@ $PAGE->requires->css('/local/video_directory/style.css');
 $PAGE->requires->js('/local/video_directory/js/play.js');
 
 
-// include font awesome in case of moodle 32 and older
+// Include font awesome in case of moodle 32 and older.
 if ($CFG->branch < 33) {
     $PAGE->requires->css(new moodle_url('https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css'));
 }
@@ -53,8 +51,7 @@ foreach ($videos as $video) {
     $video->thumbnail = local_video_get_thumbnail_url($video->thumb, $video->id, 1);
 }
 
-echo $OUTPUT->render_from_template("local_video_directory/portal", array('videos' =>array_values($videos),'streaming' => get_streaming_server_url()));
-
-//print_r($videos);
+echo $OUTPUT->render_from_template("local_video_directory/portal",
+                                   array('videos' => array_values($videos), 'streaming' => get_streaming_server_url()));
 
 echo $OUTPUT->footer();

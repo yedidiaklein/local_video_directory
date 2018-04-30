@@ -1,4 +1,6 @@
 <?php
+// This file is part of Moodle - http://moodle.org/
+//
 // Moodle is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation, either version 3 of the License, or
@@ -42,14 +44,14 @@ class local_video_directory_external extends external_api {
      */
     public static function edit($videoid, $value, $field, $status) {
         global $USER, $DB;
-        //Parameter validation
-        //REQUIRED
+        // Parameter validation.
+        // REQUIRED.
         $params = self::validate_parameters(self::edit_parameters(),
                 array('videoid' => $videoid, 'value' => $value, 'field' => $field, 'status' => $status));
-        //Context validation
+        // Context validation.
         $context = context_system::instance();
         self::validate_context($context);
-        //Capability checking
+        // Capability checking.
         if (!has_capability('local/video_directory:video', $context)) {
             throw new moodle_exception('accessdenied');
         }
@@ -59,7 +61,7 @@ class local_video_directory_external extends external_api {
         } else {
             $record = array("id" => $videoid, "private" => (int)$status);
         }
-        
+
         if ($update = $DB->update_record("local_video_directory", $record)) {
             return 1;
         } else {
@@ -74,7 +76,7 @@ class local_video_directory_external extends external_api {
         return new external_value(PARAM_INT, 'Success (1) while name was updated');
     }
 
-        /**
+    /**
      * Returns description of method parameters
      * @return external_function_parameters
      */
@@ -91,14 +93,14 @@ class local_video_directory_external extends external_api {
      */
     public static function thumb($videoid, $seconds) {
         global $CFG;
-        //Parameter validation
-        //REQUIRED
+        // Parameter validation.
+        // REQUIRED.
         $params = self::validate_parameters(self::thumb_parameters(),
                     array('videoid' => $videoid, 'seconds' => $seconds));
-        //Context validation
+        // Context validation.
         $context = context_system::instance();
         self::validate_context($context);
-        //Capability checking
+        // Capability checking.
         if (!has_capability('local/video_directory:video', $context)) {
             throw new moodle_exception('accessdenied');
         }
@@ -110,7 +112,6 @@ class local_video_directory_external extends external_api {
         $id = $videoid;
         $dirs = get_directories();
         $streamingdir = $dirs['converted'];
-
 
         if (is_numeric($seconds)) {
             $timing = gmdate("H:i:s", $seconds);
@@ -136,7 +137,7 @@ class local_video_directory_external extends external_api {
         return new external_value(PARAM_TEXT, 'Return the URL of the new generated thumbnail');
     }
 
-        /**
+    /**
      * Returns description of method parameters
      * @return external_function_parameters
      */
@@ -150,15 +151,15 @@ class local_video_directory_external extends external_api {
      * @return string
      */
     public static function list($id) {
-        global $USER,$CFG,$DB,$OUTPUT;
-        //Parameter validation
-        //REQUIRED
+        global $USER, $CFG, $DB, $OUTPUT;
+        // Parameter validation.
+        // REQUIRED.
         $params = self::validate_parameters(self::list_parameters(),
                     array('id' => $id));
-        //Context validation
+        // Context validation.
         $context = context_system::instance();
         self::validate_context($context);
-        //Capability checking
+        // Capability checking.
         if (!has_capability('local/video_directory:video', $context)) {
             throw new moodle_exception('accessdenied');
         }
@@ -182,29 +183,32 @@ class local_video_directory_external extends external_api {
                 $video->convert_status = get_string('state_' . $video->convert_status, 'local_video_directory');
             }
             $video->tags = str_replace('/tag/index.php?tc=1', '/local/video_directory/tag.php?action=add&tag=',
-            $OUTPUT->tag_list(core_tag_tag::get_item_tags('local_video_directory', 'local_video_directory', $video->id), "", 'videos'));
+                            $OUTPUT->tag_list(core_tag_tag::get_item_tags('local_video_directory',
+                                                                          'local_video_directory',
+                                                                          $video->id),
+                            "", 'videos'));
             $versions = $DB->get_records('local_video_directory_vers', array('file_id' => $video->id));
-        
+
             if (!file_exists( $dirs['converted'] . $video->id . ".mp4")) {
                 $video->convert_status .= '<br>' . get_string('awaitingconversion', 'local_video_directory');
             }
-        
+
             $video->thumb = local_video_get_thumbnail_url($video->thumb, $video->id);
-        
+
             if (($video->owner_id != $USER->id) && !is_siteadmin($USER)) {
                 $video->actions = '';
             } else {
-                unset($template_params);
-                $template_params = array('id' => $video->id);
+                unset($templateparams);
+                $templateparams = array('id' => $video->id);
                 if (!$video->subs) {
-                    $template_params['nosubs'] = 1;
+                    $templateparams['nosubs'] = 1;
                 }
                 if (!$versions) {
-                    $template_params['noversion'] = 1;
+                    $templateparams['noversion'] = 1;
                 }
-                $video->actions = $OUTPUT->render_from_template('local_video_directory/edit_actions',$template_params);
+                $video->actions = $OUTPUT->render_from_template('local_video_directory/edit_actions', $templateparams);
             }
-        
+
             if (get_streaming_server_url()) {
                 $video->streaming_url = '<a target="_blank" href="' . get_streaming_server_url() . '/' . $video->id . '.mp4">'
                                         . get_streaming_server_url() . '/' . $video->id . '.mp4</a><br>';
@@ -212,13 +216,13 @@ class local_video_directory_external extends external_api {
             $video->streaming_url .= '<a target="_blank" href="play.php?video_id=' . $video->id . '" >'.
                 $CFG->wwwroot . '/local/video_directory/play.php?video_id=' .
                 $video->id . '</a>';
-        
+
             if ($video->private) {
                 $checked = "checked";
             } else {
                 $checked = "";
             }
-        
+
             // Do not allow non owner to edit privacy and title.
             if (($video->owner_id != $USER->id) && !is_siteadmin($USER)) {
                  $video->private = '';
@@ -229,7 +233,7 @@ class local_video_directory_external extends external_api {
                                          . "</p><input type='text' class='hidden_input ajax_edit' id='orig_filename_" .
                 $video->id . "' value='" . htmlspecialchars($video->orig_filename, ENT_QUOTES) . "'>";
             }
-        } // end of foreach of all videos
+        } // end of foreach of all videos.
 
         return json_encode(array_values($videos), JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
     }

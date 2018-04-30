@@ -15,7 +15,6 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 namespace local_video_directory\task;
-require_once( __DIR__ . '/../../../../config.php');
 defined('MOODLE_INTERNAL') || die();
 
 class converting_task extends \core\task\scheduled_task {

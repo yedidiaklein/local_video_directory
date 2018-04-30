@@ -22,6 +22,7 @@
  */
 
 require_once( __DIR__ . '/../../config.php');
+require_login();
 defined('MOODLE_INTERNAL') || die();
 require_once('locallib.php');
 
@@ -67,6 +68,9 @@ foreach ($versions as $version) {
     $version->date = strftime("%A, %d %B %Y %H:%M", $version->datecreated);
 }
 
-echo $OUTPUT->render_from_template("local_video_directory/versions", array('lines' =>array_values($versions),'id'=>$id,'streaming' => get_streaming_server_url()));
+echo $OUTPUT->render_from_template("local_video_directory/versions",
+                                   array('lines' => array_values($versions),
+                                         'id' => $id,
+                                         'streaming' => get_streaming_server_url()));
 
 echo $OUTPUT->footer();

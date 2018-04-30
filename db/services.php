@@ -1,4 +1,6 @@
 <?php
+// This file is part of Moodle - http://moodle.org/
+//
 // Moodle is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation, either version 3 of the License, or
@@ -26,7 +28,7 @@ $functions = array(
         'local_video_directory_edit' => array(
                 'classname'   => 'local_video_directory_external',
                 'methodname'  => 'edit',
-                'description' => 'Allow ajax editing of video name and privacy, sending videoid and a new name as parameter or privacy info',
+                'description' => 'Allow ajax editing of video name and privacy',
                 'type'        => 'write',
                 'ajax'        => true,
                 'capabilities'  => 'local/video_directory:video'
@@ -53,6 +55,6 @@ $services = array(
         'Video Directory Services' => array(
                 'functions' => array ('local_video_directory_edit', 'local_video_directory_thumb', 'local_video_directory_list'),
                 'restrictedusers' => 0,
-                'enabled'=>1,
+                'enabled' => 1,
         )
 );

@@ -22,6 +22,7 @@
  */
 
 require_once( __DIR__ . '/../../config.php');
+require_login();
 require_once('locallib.php');
 defined('MOODLE_INTERNAL') || die();
 
@@ -118,15 +119,6 @@ if ($mform->is_cancelled()) {
 
 
     $mform->display();
-    /*   echo '<video  width="655" controls preload="auto"
-    poster="' . $CFG->wwwroot . '/local/video_directory/thumb.php?id=' . str_replace("-", "&second=", $video->thumb) . '">
-    <source src="play.php?video_id='. $id . '" type="video/mp4"">
-    </video>';
-    echo "<a href=upload.php?video_id=" . $id . ">" . get_string('upload_new_version', 'local_video_directory') . "</a><br>";
-
-    if ($versions) {
-        echo "<a href=versions.php?id=" . $id . ">" . get_string('versions', 'local_video_directory') . "</a>";
-    }*/
 }
 
 echo $OUTPUT->footer();

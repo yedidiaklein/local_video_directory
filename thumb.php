@@ -22,6 +22,7 @@
  */
 
 require_once( __DIR__ . '/../../config.php');
+require_login();
 defined('MOODLE_INTERNAL') || die();
 require_once('locallib.php');
 

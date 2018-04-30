@@ -22,6 +22,7 @@
  */
 
 require_once( __DIR__ . '/../../config.php');
+require_login();
 defined('MOODLE_INTERNAL') || die();
 require_once('locallib.php');
 
@@ -70,8 +71,10 @@ class restore_form extends moodleform {
             $origfilename = "";
         }
         $mform = $this->_form;
-        $mform->addElement('html', "<h2>" . get_string('restore','local_video_directory') . " " . $origfilename . " (ID: " . $id . ")</h2>");
-        $mform->addElement('html', get_string('sure_restore','local_video_directory') . ": " . strftime("%A, %d %B %Y %H:%M", $restore) . "?");
+        $mform->addElement('html', "<h2>" . get_string('restore', 'local_video_directory')
+                                 . " " . $origfilename . " (ID: " . $id . ")</h2>");
+        $mform->addElement('html', get_string('sure_restore', 'local_video_directory')
+                                 . ": " . strftime("%A, %d %B %Y %H:%M", $restore) . "?");
 
         $mform->addElement('hidden', 'id', $id);
         $mform->setType('id', PARAM_INT);

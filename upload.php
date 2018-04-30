@@ -22,6 +22,7 @@
  */
 
 require_once( __DIR__ . '/../../config.php');
+require_login();
 defined('MOODLE_INTERNAL') || die();
 require_once('locallib.php');
 
@@ -32,7 +33,7 @@ $settings = get_settings();
 if (!CLI_SCRIPT) {
     require_login();
 
-    // Check if user have permissionss.
+    // Check if user have permissions.
     $context = context_system::instance();
 
     if (!has_capability('local/video_directory:video', $context) && !is_siteadmin($USER)) {
@@ -124,7 +125,6 @@ if ($mform->is_cancelled()) {
             // Uploading new video on existing ID.
         } else {
             // Check that user has rights to edit this video.
-            // require('locallib.php');
             local_video_edit_right($fromform->id);
 
             $lastinsertid = $fromform->id;
