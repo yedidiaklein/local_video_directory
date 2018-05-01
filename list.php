@@ -65,7 +65,6 @@ if ($CFG->branch < 33) {
     $PAGE->requires->css(new moodle_url('https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css'));
 }
 
-$PAGE->requires->js('/local/video_directory/js/play.js');
 $PAGE->requires->css('/local/video_directory/style.css');
 
 
@@ -107,6 +106,5 @@ foreach ($listheaders as $liststring) {
 echo $OUTPUT->render_from_template('local_video_directory/list',
  ['wwwroot' => $CFG->wwwroot, 'alltags' => $alltagsurl, 'existvideotags' => is_array($SESSION->video_tags),
  'videotags' => $selectedtags, 'liststrings' => $liststrings]);
-
+echo $OUTPUT->render_from_template('local_video_directory/player', []);
 echo $OUTPUT->footer();
-

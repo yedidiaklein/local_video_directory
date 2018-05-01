@@ -107,6 +107,7 @@ input.hidden_input:focus, input.hidden_input:hover {
     z-index: 5;
     width: 800px;
     max-width: 100%;
+    height: 500px;
 }
 
 

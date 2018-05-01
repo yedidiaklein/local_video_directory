@@ -199,11 +199,11 @@ function local_video_get_thumbnail_url($thumb, $videoid, $clean=0) {
         $alt = 'title="' . get_string('play', 'local_video_directory') . '"
             alt="' . get_string('play', 'local_video_directory') . '"';
         if (get_streaming_server_url()) {
-            $playbutton = ' onclick="local_video_directory.play(\'' . get_streaming_server_url() . "/" .
-                        $videoid . '.mp4\')" "';
+            $playbutton = ' data-video-url="' . htmlspecialchars(get_streaming_server_url()) . "/" .
+                        $videoid . '.mp4"';
         } else {
-            $playbutton = ' onclick="local_video_directory.play(\'play.php?video_id=' .
-            $videoid . '\')" " ';
+            $playbutton = ' data-video-url="play.php?video_id=' .
+            $videoid . '"';
         }
     } else {
         $playbutton = '';

@@ -1,0 +1,19 @@
+<div class="local_video_directory_video-player" style='display:none'>
+    <a href=# class='close'>
+        &times; {{#str}}close, local_video_directory{{/str}}
+    </a>
+    <br>
+    <video id="player-{{uniqid}}" class="local_video_directory_my-video" controls preload="auto"></video>
+</div>
+{{#js}}
+require(['jquery', 'local_video_directory/player'], function($, P) {
+    $(function(){
+        $('.local_video_directory_video-table').on('click', '[data-video-url]', function(){
+            P.play($(this).data('video-url'), $('#player-{{uniqid}}'));
+        });
+        $('.local_video_directory_video-player .close').click(function(){
+           P.close_player($(this).closest('.local_video_directory_video-player'));
+        });
+    });
+})
+{{/js}}

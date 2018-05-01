@@ -20,9 +20,8 @@
  * @copyright  2017 Yedidia Klein <yedidia@openapp.co.il>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-require_once( __DIR__ . '/../../config.php');
-require_once( __DIR__ . '/locallib.php');
 defined('MOODLE_INTERNAL') || die();
+require_once( __DIR__ . '/locallib.php');
 
 function local_video_directory_cron() {
     global $CFG, $DB;
@@ -256,4 +255,3 @@ function create_dash($id, $converted, $dashdir, $ffmpeg, $resolutions) {
     $DB->update_record("local_video_directory", array('id' => $id, 'convert_status' => 7));
 
 }
-
