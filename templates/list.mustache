@@ -13,7 +13,12 @@ require(['jquery', 'jqueryui', 'datatables', 'core/ajax'], function($, jqueryui,
                 dataType: "json",
                 "url": M.cfg.wwwroot + '/lib/ajax/service.php?sesskey=' + M.cfg.sesskey + '&info=local_video_directory_list',
                 "dataSrc": function (d) {
-                    return JSON.parse(d[0].data);
+                    var data = JSON.parse(d[0].data);
+                    if (data[0] && data[0].error) {
+                        location.reload();
+                        return;
+                    }
+                    return data;
                 }
             },
             "order": [[2, "desc"]],

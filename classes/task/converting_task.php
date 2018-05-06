@@ -84,9 +84,11 @@ class converting_task extends \core\task\scheduled_task {
 
                 if (file_exists($ffmpeg)) {
                     $thumb = '"' . $ffmpeg . '" -i ' . escapeshellarg($origdir . $video->id) .
-                            " -ss " . escapeshellarg($timing) . " -vframes 1 " . escapeshellarg($streamingdir . $video->id . ".png");
+                            " -ss " . escapeshellarg($timing) . " -vframes 1 " .
+                            escapeshellarg($streamingdir . $video->id . ".png");
                     $thumbmini = '"' . $ffmpeg . '" -i ' . escapeshellarg($origdir . $video->id) .
-                            " -ss " . escapeshellarg($timing) . " -vframes 1 -vf scale=100:-1 " . escapeshellarg($streamingdir . $video->id . "-mini.png");
+                            " -ss " . escapeshellarg($timing) . " -vframes 1 -vf scale=100:-1 " .
+                            escapeshellarg($streamingdir . $video->id . "-mini.png");
 
                     exec($thumb);
                     exec($thumbmini);

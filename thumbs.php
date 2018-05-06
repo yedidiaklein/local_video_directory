@@ -114,7 +114,7 @@ if ($mform->is_cancelled()) {
     // Generate the big thumb and rename the small one.
     rename($streamingdir . $id . "-" . $fromform->thumb . ".png", $streamingdir . $id . "-" . $fromform->thumb . "-mini.png");
     $timing = gmdate("H:i:s", $fromform->thumb );
-    // Check that $ffmpeg is a file
+    // Check that $ffmpeg is a file.
     if (file_exists($ffmpeg)) {
         $thumb = '"' . $ffmpeg . '" -i ' . escapeshellarg($streamingdir . $id . ".mp4") . " -ss " . escapeshellarg($timing)
             . " -vframes 1 " . escapeshellarg($streamingdir . $id . "-" . $fromform->thumb . ".png") . " -y";

@@ -115,14 +115,6 @@ if ($hassiteconfig) {
         PARAM_INT
     ));
 
-    $settings->add( new admin_setting_configtext(
-        'local_video_directory/cohort',
-        get_string('cohortallowed', 'local_video_directory'),
-        get_string('cohortalloweddesc', 'local_video_directory'),
-        '1',
-        PARAM_INT
-    ));
-
     $settings->add( new admin_setting_configcheckbox(
         'local_video_directory/multiresolution',
         get_string('multiresolution', 'local_video_directory'),
