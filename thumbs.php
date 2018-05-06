@@ -56,7 +56,6 @@ $PAGE->set_heading(get_string('thumb', 'local_video_directory'));
 $PAGE->set_title(get_string('thumb', 'local_video_directory'));
 $PAGE->set_url('/local/video_directory/thumbs.php');
 $PAGE->set_pagelayout('standard');
-$PAGE->requires->js('/local/video_directory/js/thumbs.js');
 $PAGE->requires->css('/local/video_directory/style.css');
 $PAGE->requires->strings_for_js(
     array_keys(
@@ -143,11 +142,13 @@ if ($mform->is_cancelled()) {
     echo get_string('choose_thumb', 'local_video_directory') . '<br>';
     $mform->display();
 }
+echo $OUTPUT->footer();
 ?>
 <script>
+require(['jquery','local_video_directory/thumbs'], function($, P) { 
+    return;
+    });
 local_video_directory_vars = {id: <?php echo $id ?>, seconds: <?php echo json_encode($seconds) ?>,
     errorcreatingthumbat: '<?php echo get_string('errorcreatingthumbat', 'local_video_directory') ?>',
     secondsstring: '<?php echo get_string('seconds') ?>'};
 </script>
-<?php
-echo $OUTPUT->footer();

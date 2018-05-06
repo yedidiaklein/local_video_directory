@@ -14,8 +14,8 @@
             {{date}}
         </td>
         <td>
-        <span onclick="local_video_directory.play('{{streaming}}/{{file_id}}_{{datecreated}}.mp4')">
-            <a href=#>
+        <span class='local_video_directory_video-table'>
+            <a href=# class='' data-video-url="{{streaming}}/{{file_id}}_{{datecreated}}.mp4">
                 <i class="fa fa-play" aria-hidden="true"></i>
             </a>
         </span>
@@ -30,11 +30,3 @@
 </table>
 
 <br><br><a href=upload.php?video_id={{id}}>{{#str}}upload_new_version, local_video_directory{{/str}}</a><br>
-
-<div id='video_player' class="local_video_directory_video-player" style='display:none'>
-    <a href=# class='close' onclick='local_video_directory.close_player();'>
-        {{#str}}close ,local_video_directory{{/str}}
-    </a>
-    <br>
-    <video id="my-video" class="my-video" controls preload="auto"></video>
-</div>

@@ -23,6 +23,7 @@
 defined('MOODLE_INTERNAL') || die();
 require_once( __DIR__ . '/locallib.php');
 
+/*
 function local_video_directory_cron() {
     global $CFG, $DB;
 
@@ -153,7 +154,7 @@ function local_video_directory_cron() {
             create_dash($video->id, $dirs['converted'], $dirs['multidir'], $ffmpeg, $resolutions);
         }
     }
-}
+}*/
 
 function local_video_directory_extend_settings_navigation($settingsnav, $context) {
     global $CFG, $PAGE, $USER;

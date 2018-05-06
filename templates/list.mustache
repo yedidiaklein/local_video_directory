@@ -13,7 +13,6 @@ require(['jquery', 'jqueryui', 'datatables', 'core/ajax'], function($, jqueryui,
                 dataType: "json",
                 "url": M.cfg.wwwroot + '/lib/ajax/service.php?sesskey=' + M.cfg.sesskey + '&info=local_video_directory_list',
                 "dataSrc": function (d) {
-                    console.log(JSON.parse(d[0].data));
                     return JSON.parse(d[0].data);
                 }
             },

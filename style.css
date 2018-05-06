@@ -100,7 +100,7 @@ input.hidden_input:focus, input.hidden_input:hover {
 .local_video_directory_video-player {
     margin: auto 1.5em;
     position: fixed;
-    top: 30%;
+    top: 12%;
     right: 20%;
     border: 1px solid;
     background-color: white;

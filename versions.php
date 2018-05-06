@@ -47,7 +47,6 @@ $PAGE->navbar->add(get_string('pluginname', 'local_video_directory'), new moodle
 $PAGE->navbar->add(get_string('versions', 'local_video_directory'));
 $PAGE->set_pagelayout('base');
 $PAGE->requires->css('/local/video_directory/style.css');
-$PAGE->requires->js('/local/video_directory/js/play.js');
 $PAGE->set_context(context_system::instance());
 $context = context_user::instance($USER->id);
 
@@ -72,5 +71,5 @@ echo $OUTPUT->render_from_template("local_video_directory/versions",
                                    array('lines' => array_values($versions),
                                          'id' => $id,
                                          'streaming' => get_streaming_server_url()));
-
+echo $OUTPUT->render_from_template('local_video_directory/player', []);
 echo $OUTPUT->footer();

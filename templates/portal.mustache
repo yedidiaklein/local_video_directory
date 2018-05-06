@@ -1,6 +1,7 @@
+<div class='local_video_directory_video-table'>
 {{#videos}}
-    <span class="local_video_portal_video" onclick="local_video_directory.play('{{streaming}}/{{id}}.mp4')">
-        <img src="{{thumbnail}}" class="local_video_portal_thumb">
+    <span class="local_video_portal_video">
+        <img src="{{thumbnail}}" class="local_video_portal_thumb" data-video-url='{{streaming}}/{{id}}.mp4'>
         <div class="local_video_portal_name">
             {{orig_filename}}
         </div>
@@ -9,11 +10,4 @@
         </div>
     </span>
 {{/videos}}
-
-<div id='video_player' class="local_video_directory_video-player" style='display:none'>
-    <a href=# class='close' onclick='local_video_directory.close_player();'>
-        {{#str}}close ,local_video_directory{{/str}}
-    </a>
-    <br>
-    <video id="my-video" class="my-video" controls preload="auto"></video>
 </div>

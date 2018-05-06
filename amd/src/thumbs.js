@@ -1,9 +1,7 @@
-var local_video_directory;
-
-require(['jquery', 'core/ajax'], function($, ajax) {
+define(['jquery', 'core/ajax'], function($, ajax) {
     $('.mform[action$="thumbs.php"] input[type="radio"]').parent().addClass('local_video_directory_thumbselectorelement');
     local_video_directory = {
-        getThumb: function(id,second) {
+        getThumb: function(id, second) {
             var promises = ajax.call([
                 { methodname: 'local_video_directory_thumb', args: { videoid: id, seconds: second } }
             ]);
