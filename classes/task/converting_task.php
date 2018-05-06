@@ -65,10 +65,14 @@ class converting_task extends \core\task\scheduled_task {
                 $record = array('datecreated' => $time, 'file_id' => $video->id, 'filename' => $newfilename);
                 $insert = $DB->insert_record('local_video_directory_vers', $record);
             }
-            $convert = '"' . $ffmpeg . '" -i ' . $origdir . $video->id . ' ' . $ffmpegsettings . ' ' .
-                    $streamingdir . $video->id . ".mp4";
-            exec($convert);
-
+            if (file_exists($ffmpeg)) {
+                $convert = '"' . $ffmpeg . '" -i ' . escapeshellarg($origdir . $video->id) . ' '
+                    . $ffmpegsettings . ' '
+                    . escapeshellarg($streamingdir . $video->id . ".mp4");
+                exec($convert);
+            } else {
+                echo "Ffmpeg is not configured well, No such file : " . $ffmpeg . "\n";
+            }
             // Check if was converted.
             if (file_exists($streamingdir . $video->id . ".mp4")) {
                 // Get Video Thumbnail.
@@ -78,22 +82,28 @@ class converting_task extends \core\task\scheduled_task {
                     $timing = "00:00:05";
                 }
 
-                $thumb = '"' . $ffmpeg . '" -i ' . $origdir . $video->id .
-                        " -ss " . $timing . " -vframes 1 " . $streamingdir . $video->id . ".png";
-                $thumbmini = '"' . $ffmpeg . '" -i ' . $origdir . $video->id .
-                        " -ss " . $timing . " -vframes 1 -vf scale=100:-1 " . $streamingdir . $video->id . "-mini.png";
+                if (file_exists($ffmpeg)) {
+                    $thumb = '"' . $ffmpeg . '" -i ' . escapeshellarg($origdir . $video->id) .
+                            " -ss " . escapeshellarg($timing) . " -vframes 1 " . escapeshellarg($streamingdir . $video->id . ".png");
+                    $thumbmini = '"' . $ffmpeg . '" -i ' . escapeshellarg($origdir . $video->id) .
+                            " -ss " . escapeshellarg($timing) . " -vframes 1 -vf scale=100:-1 " . escapeshellarg($streamingdir . $video->id . "-mini.png");
 
-                exec($thumb);
-                exec($thumbmini);
-
-                // Get video length.
-                $lengthcmd = $ffprobe ." -v error -show_entries format=duration -sexagesimal -of default=noprint_wrappers=1" .
-                ":nokey=1 " . $streamingdir . $video->id . ".mp4";
-                $lengthoutput = exec( $lengthcmd );
-                // Remove data after .
-                $arraylength = explode(".", $lengthoutput);
-                $length = $arraylength[0];
-
+                    exec($thumb);
+                    exec($thumbmini);
+                } else {
+                    echo "Ffmpeg is not configured well, No such file : " . $ffmpeg . "\n";
+                }
+                if (file_exists($ffprobe)) {
+                    // Get video length.
+                    $lengthcmd = $ffprobe ." -v error -show_entries format=duration -sexagesimal -of default=noprint_wrappers=1" .
+                        ":nokey=1 " . escapeshellarg($streamingdir . $video->id . ".mp4");
+                    $lengthoutput = exec( $lengthcmd );
+                    // Remove data after .
+                    $arraylength = explode(".", $lengthoutput);
+                    $length = $arraylength[0];
+                } else {
+                    echo "Ffprobe is not configured well, No such file : " . $ffprobe . "\n";
+                }
                 $metadata = array();
                 $metafields = array("height" => "stream=height", "width" => "stream=width", "size" => "format=size");
                 foreach ($metafields as $key => $value) {
@@ -116,13 +126,13 @@ class converting_task extends \core\task\scheduled_task {
                                 );
 
                 $update = $DB->update_record("local_video_directory", $record);
+                // Delete original uploaded file.
+                unlink($origdir . $video->id);
             } else {
                 // Update that converted and streaming URL.
                 $record = array("id" => $video->id, "convert_status" => "5");
                 $update = $DB->update_record("local_video_directory", $record);
             }
-            // Delete original file.
-            unlink($origdir . $video->id);
         }
 
         // Take care of wget table.

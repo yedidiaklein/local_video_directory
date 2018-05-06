@@ -118,11 +118,13 @@ class local_video_directory_external extends external_api {
         } else {
             $timing = "00:00:05";
         }
-        // Added -y for windows during execution it will ask wheather to Overwite or not [y/n] -y make overwrite always.
-        $thumb = '"' . $ffmpeg . '" -y -i ' . $streamingdir . $id . ".mp4 -ss " . $timing . " -vframes 1  -vf scale=100:-1 "
-            . $streamingdir . $id . "-" . $seconds . ".png";
-        $output = exec( $thumb );
-
+        // Check that $ffmpeg is a file
+        if (file_exists($ffmpeg)) {
+            // Added -y for windows during execution it will ask wheather to Overwite or not [y/n] -y make overwrite always.
+            $thumb = '"' . $ffmpeg . '" -y -i ' . escapeshellarg($streamingdir . $id . ".mp4") . " -ss " . escapeshellarg($timing) . " -vframes 1  -vf scale=100:-1 "
+                . escapeshellarg($streamingdir . $id . "-" . $seconds . ".png");
+            $output = exec( $thumb );
+        } 
         if (file_exists($streamingdir . $id . "-" . $seconds . ".png")) {
             return $CFG->wwwroot . '/local/video_directory/thumb.php?id=' . $id . "&second=" . $seconds;
         } else {
