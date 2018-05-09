@@ -154,7 +154,7 @@ class local_video_directory_external extends external_api {
      * @return string
      */
     public static function videolist($id) {
-        global $USER, $CFG, $DB, $OUTPUT;
+        global $USER, $CFG, $DB, $OUTPUT, $SESSION;
         // Parameter validation.
         // REQUIRED.
         $params = self::validate_parameters(self::videolist_parameters(),

@@ -79,11 +79,11 @@ require('menu.php');
 
 // Find all movies tags.
 $alltags = $DB->get_records_sql('SELECT DISTINCT name
-FROM {tag_instance} ti
-LEFT JOIN {tag} t
-ON ti.tagid=t.id
-WHERE itemtype = \'local_video_directory\'
-ORDER BY name');
+                                 FROM {tag_instance} ti
+                                 LEFT JOIN {tag} t
+                                 ON ti.tagid=t.id
+                                 WHERE itemtype = \'local_video_directory\'
+                                 ORDER BY name');
 
 $alltagsurl = array();
 
@@ -91,7 +91,11 @@ foreach ($alltags as $key => $value) {
     array_push($alltagsurl, array('name' => $key, 'url' => urlencode($key)));
 }
 $selectedtags = array();
-if (is_array($SESSION->video_tags)) {
+if (!isset($SESSION->video_tags)) {
+    $SESSION->video_tags = array();
+}
+
+if ((count($SESSION->video_tags) > 0) && is_array($SESSION->video_tags)) {
     foreach ($SESSION->video_tags as $key => $value) {
         array_push($selectedtags, array('name' => $value, 'url' => urlencode($value)));
     }
