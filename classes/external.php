@@ -144,7 +144,7 @@ class local_video_directory_external extends external_api {
      * Returns description of method parameters
      * @return external_function_parameters
      */
-    public static function list_parameters() {
+    public static function videolist_parameters() {
         return new external_function_parameters(
             array('id' => new external_value(PARAM_INT,  'ID', VALUE_DEFAULT, 0)
         ));
@@ -153,11 +153,11 @@ class local_video_directory_external extends external_api {
      * Returns url of new thumbnail
      * @return string
      */
-    public static function list($id) {
+    public static function videolist($id) {
         global $USER, $CFG, $DB, $OUTPUT;
         // Parameter validation.
         // REQUIRED.
-        $params = self::validate_parameters(self::list_parameters(),
+        $params = self::validate_parameters(self::videolist_parameters(),
                     array('id' => $id));
         // Context validation.
         $context = context_system::instance();
@@ -244,7 +244,7 @@ class local_video_directory_external extends external_api {
      * Returns description of method result value
      * @return external_description
      */
-    public static function list_returns() {
+    public static function videolist_returns() {
         return new external_value(PARAM_RAW, 'Return a JSON of videos');
     }
 

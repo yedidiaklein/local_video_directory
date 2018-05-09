@@ -7,11 +7,11 @@ require(['jquery', 'jqueryui', 'datatables', 'core/ajax'], function($, jqueryui,
             "ajax": {
                 method: "POST",
                 data : function ( d ) {
-                    return JSON.stringify({"0" : {"index":0,"methodname":"local_video_directory_list","args" : {"id": 0}}});
+                    return JSON.stringify({"0" : {"index":0,"methodname":"local_video_directory_videolist","args" : {"id": 0}}});
                 },
                 contentType: "application/json; charset=utf-8",
                 dataType: "json",
-                "url": M.cfg.wwwroot + '/lib/ajax/service.php?sesskey=' + M.cfg.sesskey + '&info=local_video_directory_list',
+                "url": M.cfg.wwwroot + '/lib/ajax/service.php?sesskey=' + M.cfg.sesskey + '&info=local_video_directory_videolist',
                 "dataSrc": function (d) {
                     var data = JSON.parse(d[0].data);
                     if (data[0] && data[0].error) {
