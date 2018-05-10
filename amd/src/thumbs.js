@@ -1,12 +1,12 @@
 define(['jquery', 'core/ajax'], function($, ajax) {
     $('.mform[action$="thumbs.php"] input[type="radio"]').parent().addClass('local_video_directory_thumbselectorelement');
-    local_video_directory = {
+    var local_video_directory = {
         getThumb: function(id, second) {
             var promises = ajax.call([
-                { methodname: 'local_video_directory_thumb', args: { videoid: id, seconds: second } }
+                {methodname: 'local_video_directory_thumb', args: {videoid: id, seconds: second}}
             ]);
 
-            promises[0].done(function(data){
+            promises[0].done(function(data) {
                 local_video_directory.ChangeRBText(
                         second,
                         data === 'noimage'
@@ -26,7 +26,7 @@ define(['jquery', 'core/ajax'], function($, ajax) {
         }
     }
 
-    for (second in local_video_directory_vars.seconds) {
+    for (var second in local_video_directory_vars.seconds) {
         var s = local_video_directory_vars.seconds[second];
         // Change default text to loading gif.
         local_video_directory.ChangeRBText(s,

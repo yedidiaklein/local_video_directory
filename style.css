@@ -28,10 +28,10 @@
 .local_video_directory_thumb {
     height: 3vw;
     display: block;
-    margin: 0 auto;
+    margin: 0px auto;
     border: 3px solid teal;
     border-radius: 5px;
-    max-width: 5vw;
+    max-width: 4vw;
 }
 
 .local_video_directory_thumb:hover {
@@ -115,6 +115,7 @@ input.hidden_input:hover {
 .local_video_directory_my-video,
 .my-video {
     width: 100%;
+    max-height: 95%;
 }
 
 .local_video_directory_videos ul {
