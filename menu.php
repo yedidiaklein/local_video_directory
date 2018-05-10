@@ -57,24 +57,3 @@ echo $OUTPUT->render_from_template('local_video_directory/menu',
                                      'selected' => $selected,
                                      'menu' => $tabs]);
 
-
-/*?>
-<div class="alert alert-default alert-block" role="alert">
-    <?php echo get_string('freedisk', 'local_video_directory') .
-     ' : ' . local_video_directory_human_filesize(disk_free_space($CFG->dataroot), 2, $settings->df) ?>
-</div>
-<ul id='videomenu' class='nav nav-tabs' role="tablist">
-<?php
-
-foreach ($menu as $item) {
-    if ($item . '.php' == $selected) {
-        echo '<li id="selected"  class="nav-item">
-        <a class="nav-link active" href="' . $item . '.php">' . get_string($item, 'local_video_directory') . '</a></li>';
-    } else {
-        echo '<li class="nav-item" ><a class="nav-link" href="' . $item . '.php">'
-        . get_string($item, 'local_video_directory') . '</a></li>';
-    }
-}
-?>
-</ul>
-<br>*/

@@ -1,4 +1,4 @@
-.videomenu {
+.local_video_directory_videomenu {
     list-style: none;
     padding: 0 0 2vw 10px;
     min-width: 460px;
@@ -8,7 +8,7 @@
     white-space: nowrap;
 }
 
- .action{
+.local_video_directory_action {
     white-space: nowrap;
 }
 
@@ -26,8 +26,8 @@
 }
 
 .local_video_directory_thumb {
-    height:3vw;
-    display:block;
+    height: 3vw;
+    display: block;
     margin: 0 auto;
     border: 3px solid teal;
     border-radius: 5px;
@@ -54,7 +54,7 @@
     box-sizing: content-box;
 }
 
-.local_video_directory_thumbselectorelement *{
+.local_video_directory_thumbselectorelement * {
     box-sizing: content-box;
 }
 
@@ -90,9 +90,10 @@ input.hidden_input {
     background: inherit;
 }
 
-input.hidden_input:focus, input.hidden_input:hover {
+input.hidden_input:focus,
+input.hidden_input:hover {
     border: 1px solid #ccc;
-    box-shadow: inset 0 1px 1px rgba(0,0,0,0.075);
+    box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
     background: lightgrey;
 }
 
@@ -111,7 +112,8 @@ input.hidden_input:focus, input.hidden_input:hover {
 }
 
 
-.local_video_directory_my-video, .my-video {
+.local_video_directory_my-video,
+.my-video {
     width: 100%;
 }
 

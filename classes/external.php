@@ -24,6 +24,9 @@
 defined('MOODLE_INTERNAL') || die;
 
 require_once($CFG->libdir . "/externallib.php");
+/**
+* Main class for external API.
+*/
 class local_video_directory_external extends external_api {
     /**
      * Returns description of method parameters
@@ -40,6 +43,10 @@ class local_video_directory_external extends external_api {
     }
     /**
      * Returns success if name change
+     * @param int $videoid The id of video
+     * @param string $value Value to change
+     * @param string $field Name of field to change
+     * @param int $status For private status  
      * @return int success (1)
      */
     public static function edit($videoid, $value, $field, $status) {
@@ -89,6 +96,8 @@ class local_video_directory_external extends external_api {
     }
     /**
      * Returns url of new thumbnail
+     * @param int $videoid ID of video
+     * @param int $seconds Seconds from start to take the thumbnail
      * @return string
      */
     public static function thumb($videoid, $seconds) {
@@ -151,6 +160,7 @@ class local_video_directory_external extends external_api {
     }
     /**
      * Returns url of new thumbnail
+     * @param int $id Just because I was unable to manage a webservice call without params
      * @return string
      */
     public static function videolist($id) {
