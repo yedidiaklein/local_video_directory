@@ -14,7 +14,7 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 /**
- * External Web Service Template
+ * External Web Service
  *
  * @package    local_video_directory
  * @copyright  2018 Yedidia Klein OpenApp Israel
@@ -26,6 +26,8 @@ defined('MOODLE_INTERNAL') || die;
 require_once($CFG->libdir . "/externallib.php");
 /**
 * Main class for external API.
+ * @copyright  2018 Yedidia Klein OpenApp Israel
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
 */
 class local_video_directory_external extends external_api {
     /**
