@@ -60,5 +60,3 @@ if ($action == 'add') {
 $list = implode(",", $SESSION->video_tags);
 
 redirect($CFG->wwwroot . '/local/video_directory/' . $from . '.php?tag='.$list);
-
-

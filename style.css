@@ -184,3 +184,8 @@ input.hidden_input:hover {
 .local_video_directory_versions i {
     font-size: 30px;
 }
+
+#page-local-video_directory-list #messagemodal {
+	direction: ltr;
+	text-align: left;
+}

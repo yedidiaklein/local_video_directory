@@ -1,69 +1,3 @@
-{{#js}}
-
-require.config({catchError:true});
-require(['jquery', 'jqueryui', 'datatables', 'core/ajax'], function($, jqueryui, datatables, ajax) {
-    $(document).ready(function() {
-        var table = $("#video_table").DataTable({
-            "ajax": {
-                method: "POST",
-                data : function ( d ) {
-                    return JSON.stringify({"0" : {"index":0,"methodname":"local_video_directory_videolist","args" : {"id": 0}}});
-                },
-                contentType: "application/json; charset=utf-8",
-                dataType: "json",
-                "url": M.cfg.wwwroot + '/lib/ajax/service.php?sesskey=' + M.cfg.sesskey + '&info=local_video_directory_videolist',
-                "dataSrc": function (d) {
-                    var data = JSON.parse(d[0].data);
-                    if (data[0] && data[0].error) {
-                        location.reload();
-                        return;
-                    }
-                    return data;
-                }
-            },
-            "order": [[2, "desc"]],
-            "columns": [
-                {"data": "actions"},
-                {"data": "thumb"},
-                {"data": "id"},
-                {"data": "name"},
-                {"data": "orig_filename"},
-                {"data": "length"},
-                {"data": "convert_status"},
-                {"data": "private"},
-                {"data": "streaming_url"},
-                {"data": "tags"}
-            ]
-        });
-
-        $('#datatable_ajax_reload').click(function() {
-            table.ajax.reload();
-        });
-
-        $('#datatable_ajax_clear_tags').click(function() {
-            window.location = 'list.php';
-        });
-
-        $('#video_table').on('change', '.ajax_edit', function () {
-            var data = this.id.split('_');
-            var field = this.type == 'checkbox' ? 'private' : 'orig_filename';
-            var id = data.pop();
-            var status = this.type == 'checkbox' ? this.checked : null;
-            var value = this.type == 'checkbox' ? null : this.value;
-            var promises = ajax.call([
-                { methodname: 'local_video_directory_edit', args: { videoid: id, field: field, value: value, status: status } }
-            ]);
-        });
-
-        $('.play_video').click(function () {
-            $("#video_player").show();
-        });
-    });
-});
-
-{{/js}}
-
-
 <div id="tools" class="local_video_directory_tools">
     <button id="datatable_ajax_reload" class="btn btn-default"> {{#str}}reload, local_video_directory{{/str}}</button>
     <button id="datatable_ajax_clear_tags" class="btn btn-default"> {{#str}}show_all, local_video_directory{{/str}} </button>
@@ -104,3 +38,76 @@ require(['jquery', 'jqueryui', 'datatables', 'core/ajax'], function($, jqueryui,
     </thead>
     <tbody></tbody>
 </table>
+
+{{#js}}
+
+require.config({catchError:true});
+require(['jquery', 'jqueryui', 'datatables', 'core/ajax'], function($, jqueryui, datatables, ajax) {
+    $(document).ready(function() {
+        var table = $("#video_table").DataTable({
+            "ajax": {
+                method: "POST",
+                data : function ( d ) {
+                    return JSON.stringify({"0" : {"index":0,"methodname":"local_video_directory_videolist","args" : {"id": 0}}});
+                },
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                "url": M.cfg.wwwroot + '/lib/ajax/service.php?sesskey=' + M.cfg.sesskey + '&info=local_video_directory_videolist',
+                "dataSrc": function (d) {
+                    var data = JSON.parse(d[0].data);
+                    if (data[0] && data[0].error) {
+                        location.reload();
+                        return;
+                    }
+                    return data;
+                }
+            },
+            "order": [[2, "desc"]],
+            "columns": [
+                {"data": "actions"},
+                {"data": "thumb"},
+                {"data": "id"},
+                {"data": "name"},
+                {"data": "orig_filename"},
+                {"data": "length"},
+                {"data": "convert_status"},
+                {"data": "private"},
+                {"data": "streaming_url"},
+                {"data": "tags"}
+            ],
+            initComplete: function(){
+                $('.showembed').click(function(e) {
+                    e.preventDefault();
+                    var html = '<iframe src="' + M.cfg.wwwroot + '/local/video_directory/embed.php?id=' + $(this).data('id') + '" width="1280px" height="720px" frameBorder="0"></iframe>';
+                    $($('#messagemodal').length ? $('#messagemodal').text(html) :
+                        '<div id="messagemodal">' + html.replace(/</g, '&lt;') + '</div>').dialog({width: 650, height: 200});
+                })
+            }
+        });
+
+        $('#datatable_ajax_reload').click(function() {
+            table.ajax.reload();
+        });
+
+        $('#datatable_ajax_clear_tags').click(function() {
+            window.location = 'list.php';
+        });
+
+        $('#video_table').on('change', '.ajax_edit', function () {
+            var data = this.id.split('_');
+            var field = this.type == 'checkbox' ? 'private' : 'orig_filename';
+            var id = data.pop();
+            var status = this.type == 'checkbox' ? this.checked : null;
+            var value = this.type == 'checkbox' ? null : this.value;
+            var promises = ajax.call([
+                { methodname: 'local_video_directory_edit', args: { videoid: id, field: field, value: value, status: status } }
+            ]);
+        });
+
+        $('.play_video').click(function () {
+            $("#video_player").show();
+        });
+    });
+});
+
+{{/js}}

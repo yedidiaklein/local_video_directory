@@ -56,4 +56,3 @@ echo $OUTPUT->render_from_template('local_video_directory/menu',
                                         disk_free_space($CFG->dataroot), 2, $settings->df),
                                      'selected' => $selected,
                                      'menu' => $tabs]);
-

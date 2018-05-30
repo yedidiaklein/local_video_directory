@@ -130,6 +130,35 @@ if ($hassiteconfig) {
         PARAM_TEXT
      ));
 
+	// Embed type.
+	$settings->add(
+		new admin_setting_configselect('local_video_directory/embedtype',
+        get_string('embed_type', 'local_video_directory'), '', '', array("none" => "none", "dash"=>"dash")));
+        # "php"=>"php", "symlink"=>"symlink", 
+
+    $settings->add( new admin_setting_configcheckbox(
+        'local_video_directory/allowanonymousembed',
+        get_string('allowanonymousembed', 'local_video_directory'),
+        get_string('allowanonymousembeddesc', 'local_video_directory'),
+        '0'
+    ));
+
+    $settings->add( new admin_setting_configtext(
+        'local_video_directory/nginxmultiuri',
+        get_string('nginxmultiuri', 'local_video_directory'),
+        get_string('nginxmultiuridesc', 'local_video_directory'),
+        'multiuri',
+        PARAM_TEXT
+    ));
+
+    $settings->add( new admin_setting_configtext(
+        'local_video_directory/dashbaseurl',
+        get_string('dashbaseurl', 'local_video_directory'),
+        get_string('dashbaseurldesc', 'local_video_directory'),
+        $CFG->wwwroot . '/dash',
+        PARAM_URL
+    ));
+
      // Create.
      $ADMIN->add( 'localplugins', $settings );
 }

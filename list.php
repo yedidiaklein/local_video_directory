@@ -60,6 +60,9 @@ $PAGE->set_pagelayout('base');
 $PAGE->requires->js(new moodle_url('https://cdn.datatables.net/1.10.7/js/jquery.dataTables.min.js'));
 $PAGE->requires->css(new moodle_url('https://cdn.datatables.net/1.10.7/css/jquery.dataTables.min.css'));
 
+require $CFG->libdir . '/jquery/plugins.php'; // Just populates the variable "$plugins" in the next line.
+$PAGE->requires->css('/lib/jquery/' . $plugins['ui-css']['files'][0]);
+
 // Include font awesome in case of moodle 32 and older.
 if ($CFG->branch < 33) {
     $PAGE->requires->css(new moodle_url('https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css'));

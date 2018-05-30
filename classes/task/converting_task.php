@@ -176,7 +176,7 @@ class converting_task extends \core\task\scheduled_task {
             // Create multi resolutions streams.
             $videos = $DB->get_records("local_video_directory", array('convert_status' => 3));
             foreach ($videos as $video) {
-                create_dash($video->id, $dirs['converted'], $dirs['multidir'], $ffmpeg, $resolutions);
+                local_video_directory_create_dash($video->id, $dirs['converted'], $dirs['multidir'], $ffmpeg, $resolutions);
             }
         }
 

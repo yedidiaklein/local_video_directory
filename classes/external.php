@@ -221,7 +221,10 @@ class local_video_directory_external extends external_api {
                 if (!$versions) {
                     $templateparams['noversion'] = 1;
                 }
-                $video->actions = $OUTPUT->render_from_template('local_video_directory/edit_actions', $templateparams);
+                if ($settings->embedtype != 'none') {
+                    $templateparams['embed'] = 1;
+                }
+                $video->actions = $OUTPUT->render_from_template('local_video_directory/list_actions', $templateparams);
             }
 
             if (get_streaming_server_url()) {

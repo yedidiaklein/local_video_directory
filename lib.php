@@ -79,7 +79,7 @@ function local_video_directory_extend_settings_navigation($settingsnav, $context
     }
 }
 
-function create_dash($id, $converted, $dashdir, $ffmpeg, $resolutions) {
+function local_video_directory_create_dash($id, $converted, $dashdir, $ffmpeg, $resolutions) {
     global $DB, $CFG;
 
     // Update state to 6 - creating dash streams.
@@ -122,4 +122,32 @@ function create_dash($id, $converted, $dashdir, $ffmpeg, $resolutions) {
     // Update state to 7 - ready + multi.
     $DB->update_record("local_video_directory", array('id' => $id, 'convert_status' => 7));
 
+}
+
+function local_video_directory_get_dash_url($videoid) {
+    global $DB;
+    
+    $config = get_config('local_video_directory');
+
+    $dash_streaming = $config->dashbaseurl;
+    $nginx_multi = 'multiuri';
+
+    $id = $videoid;
+    $streams = $DB->get_records("local_video_directory_multi",array("video_id" => $id));
+    foreach ($streams as $stream) {
+        $files[]=$stream->filename;
+    }
+
+    $parts=array();
+    foreach ($files as $file) {
+        $parts[] = preg_split("/[_.]/", $file);
+    }
+
+    $dash_url = $dash_streaming . "/" . $parts[0][0] . "_";
+    foreach ($parts as $key => $value) {
+        $dash_url .= "," . $value[1];
+    }
+    $dash_url .= "," . ".mp4".$nginx_multi."/manifest.mpd";
+
+    return $dash_url;			
 }
