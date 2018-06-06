@@ -123,5 +123,21 @@ function xmldb_local_video_directory_upgrade($oldversion) {
         upgrade_plugin_savepoint(true, 2017062200, 'local', 'video_directory');
     }
 
+    if ($oldversion < 2018060601) {
+        $table = new xmldb_table('local_video_directory');
+        $field = new xmldb_field('uniqid', XMLDB_TYPE_CHAR, '23', 0, XMLDB_NOTNULL, null, 0, 'views');
+        if (!$dbman->field_exists($table, $field)) {
+            $dbman->add_field($table, $field);
+        }
+        // Video_directory savepoint reached.
+        upgrade_plugin_savepoint(true, 2018060601, 'local', 'video_directory');
+
+        // Fill table with uniqids.
+        $videos = $DB->get_records('local_video_directory', array());
+        foreach ($videos as $video) {
+            $uniqid = uniqid('',TRUE);
+            $DB->update_record('local_video_directory', array('id' => $video->id, 'uniqid' => $uniqid));
+        }
+    }
     return 1;
 }

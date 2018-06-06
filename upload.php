@@ -115,7 +115,7 @@ if ($mform->is_cancelled()) {
     $files = $DB->get_records_select('files', "itemid = $fromform->attachments and filename <> '.'",
                 null , 'contenthash , filename');
     foreach ($files as $file) {
-        $record = array('orig_filename' => $file->filename, 'owner_id' => $USER->id);
+        $record = array('orig_filename' => $file->filename, 'owner_id' => $USER->id, 'uniqid' => uniqid('',TRUE));
         if ((isset($fromform->private)) && ($fromform->private)) {
             $record['private'] = 1;
         }

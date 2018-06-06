@@ -78,9 +78,14 @@ require(['jquery', 'jqueryui', 'datatables', 'core/ajax'], function($, jqueryui,
             initComplete: function(){
                 $('.showembed').click(function(e) {
                     e.preventDefault();
-                    var html = '<iframe src="' + M.cfg.wwwroot + '/local/video_directory/embed.php?id=' + $(this).data('id') + '" width="1280px" height="720px" frameBorder="0"></iframe>';
+                    var html = '<iframe src="' + M.cfg.wwwroot + '/local/video_directory/embed.php?id=' 
+                            + $(this).data('uniqid') + '" width="1280px" height="720px" frameBorder="0"></iframe>';
+                    var streaming = M.cfg.wwwroot + '/local/video_directory/play.php?video_id=' + $(this).data('id');
+                    var embed = M.cfg.wwwroot + '/local/video_directory/embed.php?id=' + $(this).data('uniqid')
                     $($('#messagemodal').length ? $('#messagemodal').text(html) :
-                        '<div id="messagemodal">' + html.replace(/</g, '&lt;') + '</div>').dialog({width: 650, height: 200});
+                        '<div id="messagemodal">'
+                            + '<br><br><p><b>Authenticated Streaming:</b></p>' + streaming
+                            + '</div>').dialog({width: 650, height: 400});
                 })
             }
         });

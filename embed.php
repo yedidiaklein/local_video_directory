@@ -33,12 +33,30 @@ if (!$config->allowanonymousembed) {
 $PAGE->set_context(context_system::instance());
 $PAGE->requires->css(new moodle_url('https://vjs.zencdn.net/7.0.2/video-js.css'));
 $PAGE->set_pagelayout('embedded');
+$PAGE->set_url('/local/video_directory/embed.php');
 
-$videoid = required_param('id', PARAM_INT);
-$dashurl = local_video_directory_get_dash_url($videoid);
+$uniqid = required_param('id', PARAM_RAW);
+$video = $DB->get_record('local_video_directory', array('uniqid' => $uniqid));
+$videoid = $video->id;
+
+if ($config->embedtype == "dash") {
+    $streamingurl = local_video_directory_get_dash_url($videoid);
+    $dash = 1;
+    $hls = 0;
+} elseif ($config->embedtype == "hls") {
+    $streamingurl = local_video_directory_get_hls_url($videoid);
+    $dash = 0;
+    $hls = 1;    
+} else {
+    # Should never get here.
+    echo "Streaming type not supported...";
+}
 
 echo $OUTPUT->header();
 echo $OUTPUT->render_from_template("local_video_directory/embed",
                                    array(   'videoid' => $videoid,
-                                            'dashurl' => $dashurl,
-                                            'wwwroot' => $CFG->wwwroot));
+                                            'streamingurl' => $streamingurl,
+                                            'wwwroot' => $CFG->wwwroot,
+                                            'dash' => $dash,
+                                            'hls' => $hls));
+echo $OUTPUT->footer();

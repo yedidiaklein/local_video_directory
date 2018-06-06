@@ -8,13 +8,23 @@ html, body { overflow: hidden; }
 </video>
 
 <script src="https://vjs.zencdn.net/6.6.3/video.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/dashjs/2.6.8/dash.all.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/videojs-contrib-dash/2.9.3/videojs-dash.min.js"></script>
+{{#dash}}
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/dashjs/2.6.8/dash.all.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/videojs-contrib-dash/2.9.3/videojs-dash.min.js"></script>
+{{/dash}}
+{{#hls}}
+    <script src="https://unpkg.com/videojs-contrib-hls/dist/videojs-contrib-hls.js"></script>
+{{/hls}}
 <script>
     var player = videojs("videostream-{{videoid}}",{      
                         playbackRates: [0.5, 1, 1.5, 2, 3]
                         });
-    player.src({    src: '{{dashurl}}',
+    player.src({    src: '{{streamingurl}}',
+                    {{#dash}}
                     type: 'application/dash+xml'});
+                    {{/dash}}
+                    {{#hls}}
+                    type: 'application/x-mpegURL'});
+                    {{/hls}}
     player.play();
 </script>

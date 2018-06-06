@@ -227,13 +227,12 @@ class local_video_directory_external extends external_api {
                 $video->actions = $OUTPUT->render_from_template('local_video_directory/list_actions', $templateparams);
             }
 
-            if (get_streaming_server_url()) {
-                $video->streaming_url = '<a target="_blank" href="' . get_streaming_server_url() . '/' . $video->id . '.mp4">'
-                                        . get_streaming_server_url() . '/' . $video->id . '.mp4</a><br>';
-            }
-            $video->streaming_url .= '<a target="_blank" href="play.php?video_id=' . $video->id . '" >'.
-                $CFG->wwwroot . '/local/video_directory/play.php?video_id=' .
-                $video->id . '</a>';
+//            if (get_streaming_server_url()) {
+//                $video->streaming_url = '<a target="_blank" href="' . get_streaming_server_url() . '/' . $video->id . '.mp4">'
+//                                        . get_streaming_server_url() . '/' . $video->id . '.mp4</a><br>';
+//            }
+            $video->streaming_url = '&lt;iframe src="' . $CFG->wwwroot . '/local/video_directory/embed.php?id=' 
+            . $video->uniqid . '" width="1280px" height="720px" frameBorder="0">&lt;/iframe>';
 
             if ($video->private) {
                 $checked = "checked";

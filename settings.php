@@ -133,7 +133,7 @@ if ($hassiteconfig) {
 	// Embed type.
 	$settings->add(
 		new admin_setting_configselect('local_video_directory/embedtype',
-        get_string('embed_type', 'local_video_directory'), '', '', array("none" => "none", "dash"=>"dash")));
+        get_string('embed_type', 'local_video_directory'), '', '', array("none" => "none", "dash" => "dash", "hls" => "hls")));
         # "php"=>"php", "symlink"=>"symlink", 
 
     $settings->add( new admin_setting_configcheckbox(
@@ -156,6 +156,14 @@ if ($hassiteconfig) {
         get_string('dashbaseurl', 'local_video_directory'),
         get_string('dashbaseurldesc', 'local_video_directory'),
         $CFG->wwwroot . '/dash',
+        PARAM_URL
+    ));
+
+    $settings->add( new admin_setting_configtext(
+        'local_video_directory/hlsbaseurl',
+        get_string('hlsbaseurl', 'local_video_directory'),
+        get_string('hlsbaseurldesc', 'local_video_directory'),
+        $CFG->wwwroot . '/hls',
         PARAM_URL
     ));
 
