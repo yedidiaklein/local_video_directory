@@ -231,8 +231,8 @@ class local_video_directory_external extends external_api {
 //                $video->streaming_url = '<a target="_blank" href="' . get_streaming_server_url() . '/' . $video->id . '.mp4">'
 //                                        . get_streaming_server_url() . '/' . $video->id . '.mp4</a><br>';
 //            }
-            $video->streaming_url = '&lt;iframe src="' . $CFG->wwwroot . '/local/video_directory/embed.php?id=' 
-            . $video->uniqid . '" width="1280px" height="720px" frameBorder="0">&lt;/iframe>';
+            $video->streaming_url = '<div style="direction:ltr">&lt;iframe src="' . $CFG->wwwroot . '/local/video_directory/embed.php?id=' 
+            . $video->uniqid . '" width="1280px" height="720px" frameBorder="0">&lt;/iframe></div>';
 
             if ($video->private) {
                 $checked = "checked";
