@@ -53,7 +53,7 @@ function local_video_directory_get_tagged_pages($tag, $exclusivemode = false, $f
     foreach ($videos as $video) {
         $thumb = local_video_get_thumbnail_url($video->thumb, $video->id);
         $tagfeed->add('<i class="fa fa-file-video-o" aria-hidden="true" style="font-size: xx-large;"></i>',
-                        '<a href="' . $CFG->wwwroot .'/local/video_directory/list.php?tag=' . rawurlencode($tag->name) . '">' .
+                        '<a href="' . $CFG->wwwroot .'/local/video_directory/list.php?tc=1&tag=' . rawurlencode($tag->name) . '">' .
                         $thumb . '<span class="local_video_directory-intag-title">' . $video->orig_filename . '</span></a>',
                         '<b>' . get_string('owner', 'local_video_directory') . ': </b>' . $video->name . '<br><br>');
     }

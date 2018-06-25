@@ -25,10 +25,10 @@ defined('MOODLE_INTERNAL') || die;
 
 require_once($CFG->libdir . "/externallib.php");
 /**
-* Main class for external API.
+ * Main class for external API.
  * @copyright  2018 Yedidia Klein OpenApp Israel
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
-*/
+ */
 class local_video_directory_external extends external_api {
     /**
      * Returns description of method parameters
@@ -48,7 +48,7 @@ class local_video_directory_external extends external_api {
      * @param int $videoid The id of video
      * @param string $value Value to change
      * @param string $field Name of field to change
-     * @param int $status For private status  
+     * @param int $status For private status
      * @return int success (1)
      */
     public static function edit($videoid, $value, $field, $status) {
@@ -227,12 +227,13 @@ class local_video_directory_external extends external_api {
                 $video->actions = $OUTPUT->render_from_template('local_video_directory/list_actions', $templateparams);
             }
 
-//            if (get_streaming_server_url()) {
-//                $video->streaming_url = '<a target="_blank" href="' . get_streaming_server_url() . '/' . $video->id . '.mp4">'
-//                                        . get_streaming_server_url() . '/' . $video->id . '.mp4</a><br>';
-//            }
-            $video->streaming_url = '<div style="direction:ltr">&lt;iframe src="' . $CFG->wwwroot . '/local/video_directory/embed.php?id=' 
-            . $video->uniqid . '" width="1280px" height="720px" frameBorder="0">&lt;/iframe></div>';
+            if (get_streaming_server_url()) {
+                $video->streaming_url = '<a target="_blank" href="' . get_streaming_server_url() . '/' . $video->id . '.mp4">'
+                                        . get_streaming_server_url() . '/' . $video->id . '.mp4</a><br>';
+            }
+            $video->streaming_url .= '<div style="direction:ltr">&lt;iframe src="' . $CFG->wwwroot
+                . '/local/video_directory/embed.php?id='
+                . $video->uniqid . '" width="1280px" height="720px" frameBorder="0">&lt;/iframe></div>';
 
             if ($video->private) {
                 $checked = "checked";
