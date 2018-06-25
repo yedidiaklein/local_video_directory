@@ -53,7 +53,9 @@ $functions = array(
 // We define the services to install as pre-build services. A pre-build service is not editable by administrator.
 $services = array(
         'Video Directory Services' => array(
-                'functions' => array ('local_video_directory_edit', 'local_video_directory_thumb', 'local_video_directory_videolist'),
+                'functions' => array ('local_video_directory_edit',
+                                      'local_video_directory_thumb',
+                                      'local_video_directory_videolist'),
                 'restrictedusers' => 0,
                 'enabled' => 1,
         )

@@ -44,7 +44,7 @@ if (is_numeric($uniqid) && (!$video)) {
     } else {
         die("Error...");
     }
-} elseif ($video) {
+} else if ($video) {
     $videoid = $video->id;
 } else {
     die("Error...");
@@ -54,12 +54,12 @@ if ($config->embedtype == "dash") {
     $streamingurl = local_video_directory_get_dash_url($videoid);
     $dash = 1;
     $hls = 0;
-} elseif ($config->embedtype == "hls") {
+} else if ($config->embedtype == "hls") {
     $streamingurl = local_video_directory_get_hls_url($videoid);
     $dash = 0;
-    $hls = 1;    
+    $hls = 1;
 } else {
-    # Should never get here.
+    // Should never get here.
     echo "Streaming type not supported...";
 }
 

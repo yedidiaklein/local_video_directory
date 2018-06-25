@@ -186,6 +186,6 @@ input.hidden_input:hover {
 }
 
 #page-local-video_directory-list #messagemodal {
-	direction: ltr;
-	text-align: left;
+    direction: ltr;
+    text-align: left;
 }

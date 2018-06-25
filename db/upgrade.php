@@ -135,7 +135,7 @@ function xmldb_local_video_directory_upgrade($oldversion) {
         // Fill table with uniqids.
         $videos = $DB->get_records('local_video_directory', array());
         foreach ($videos as $video) {
-            $uniqid = uniqid('',TRUE);
+            $uniqid = uniqid('', true);
             $DB->update_record('local_video_directory', array('id' => $video->id, 'uniqid' => $uniqid));
         }
     }

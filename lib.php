@@ -126,56 +126,56 @@ function local_video_directory_create_dash($id, $converted, $dashdir, $ffmpeg, $
 
 function local_video_directory_get_dash_url($videoid) {
     global $DB;
-    
+
     $config = get_config('local_video_directory');
 
-    $dash_streaming = $config->dashbaseurl;
-    $nginx_multi = $config->nginxmultiuri;
+    $dashstreaming = $config->dashbaseurl;
+    $nginxmulti = $config->nginxmultiuri;
 
     $id = $videoid;
-    $streams = $DB->get_records("local_video_directory_multi",array("video_id" => $id));
+    $streams = $DB->get_records("local_video_directory_multi", array("video_id" => $id));
     foreach ($streams as $stream) {
-        $files[]=$stream->filename;
+        $files[] = $stream->filename;
     }
 
-    $parts=array();
+    $parts = array();
     foreach ($files as $file) {
         $parts[] = preg_split("/[_.]/", $file);
     }
 
-    $dash_url = $dash_streaming . "/" . $parts[0][0] . "_";
+    $dashurl = $dashstreaming . "/" . $parts[0][0] . "_";
     foreach ($parts as $key => $value) {
-        $dash_url .= "," . $value[1];
+        $dashurl .= "," . $value[1];
     }
-    $dash_url .= "," . ".mp4".$nginx_multi."/manifest.mpd";
+    $dashurl .= "," . ".mp4".$nginxmulti."/manifest.mpd";
 
-    return $dash_url;			
+    return $dashurl;
 }
 
 function local_video_directory_get_hls_url($videoid) {
     global $DB;
-    
+
     $config = get_config('local_video_directory');
 
-    $hls_streaming = $config->hlsbaseurl;
-    $nginx_multi = $config->nginxmultiuri;
+    $hlsstreaming = $config->hlsbaseurl;
+    $nginxmulti = $config->nginxmultiuri;
 
     $id = $videoid;
-    $streams = $DB->get_records("local_video_directory_multi",array("video_id" => $id));
+    $streams = $DB->get_records("local_video_directory_multi", array("video_id" => $id));
     foreach ($streams as $stream) {
-        $files[]=$stream->filename;
+        $files[] = $stream->filename;
     }
 
-    $parts=array();
+    $parts = array();
     foreach ($files as $file) {
         $parts[] = preg_split("/[_.]/", $file);
     }
 
-    $hls_url = $hls_streaming . '/' . $parts[0][0] . "_";
+    $hlsurl = $hlsstreaming . '/' . $parts[0][0] . "_";
     foreach ($parts as $key => $value) {
-        $hls_url .= "," . $value[1];
+        $hlsurl .= "," . $value[1];
     }
-    $hls_url .= "," . ".mp4".$nginx_multi."/master.m3u8";
+    $hlsurl .= "," . ".mp4".$nginxmulti."/master.m3u8";
 
-    return $hls_url;			
+    return $hlsurl;
 }

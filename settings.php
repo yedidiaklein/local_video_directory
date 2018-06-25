@@ -130,11 +130,10 @@ if ($hassiteconfig) {
         PARAM_TEXT
      ));
 
-	// Embed type.
-	$settings->add(
-		new admin_setting_configselect('local_video_directory/embedtype',
+    // Embed type.
+    $settings->add(
+        new admin_setting_configselect('local_video_directory/embedtype',
         get_string('embed_type', 'local_video_directory'), '', '', array("none" => "none", "dash" => "dash", "hls" => "hls")));
-        # "php"=>"php", "symlink"=>"symlink", 
 
     $settings->add( new admin_setting_configcheckbox(
         'local_video_directory/allowanonymousembed',
