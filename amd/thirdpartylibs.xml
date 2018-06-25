@@ -14,4 +14,11 @@
         <license>SIL OFL</license>
         <licenseversion>1.1</licenseversion>
     </library>
+    <library>
+        <location>https://vjs.zencdn.net/6.6.3/video.js</location>
+        <name>Video.js</name>
+        <version>6.6.3</version>
+        <license>Apache</license>
+        <licenseversion>2.0</licenseversion>
+    </library>
 </libraries>
