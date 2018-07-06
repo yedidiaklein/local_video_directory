@@ -63,6 +63,10 @@ if ($config->embedtype == "dash") {
     echo "Streaming type not supported...";
 }
 
+// Increase video view counter.
+$views = $video->views + 1;
+$DB->update_record('local_video_directory', array('id' => $video->id, 'views' => $views));
+
 echo $OUTPUT->header();
 echo $OUTPUT->render_from_template("local_video_directory/embed",
                                    array(   'videoid' => $videoid,
