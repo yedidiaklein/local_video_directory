@@ -157,7 +157,7 @@ class local_video_directory_external extends external_api {
      */
     public static function videolist_parameters() {
         return new external_function_parameters(
-            array('id' => new external_value(PARAM_INT,  'ID', VALUE_DEFAULT, 0)
+            array('data' => new external_value(PARAM_RAW,  'DATA', VALUE_DEFAULT, "")
         ));
     }
     /**
@@ -165,12 +165,12 @@ class local_video_directory_external extends external_api {
      * @param int $id Just because I was unable to manage a webservice call without params
      * @return string
      */
-    public static function videolist($id) {
+    public static function videolist($data) {
         global $USER, $CFG, $DB, $OUTPUT, $SESSION;
         // Parameter validation.
         // REQUIRED.
         $params = self::validate_parameters(self::videolist_parameters(),
-                    array('id' => $id));
+                    array('data' => $data));
         // Context validation.
         $context = context_system::instance();
         self::validate_context($context);
@@ -183,14 +183,24 @@ class local_video_directory_external extends external_api {
         $settings = get_settings();
         $dirs = get_directories();
 
+        $videodata = json_decode($data);
+
+        if ($videodata->search->value != "") {
+            $search = $videodata->search->value;
+        } else {
+            $search = 0;
+        }
+
         if (isset($SESSION->video_tags) && is_array($SESSION->video_tags)) {
             $list = implode("', '", $SESSION->video_tags);
             $list = "'" . $list . "'";
-            $videos = local_video_directory_get_videos_by_tags($list);
+            $total = count(local_video_directory_get_videos_by_tags($list, 0, null, null, $search));
+            $videos = local_video_directory_get_videos_by_tags($list, 0, $videodata->start, $videodata->length, $search);
         } else {
-            $videos = local_video_directory_get_videos();
+            $total = count(local_video_directory_get_videos(0,null,null,$search));
+            $videos = local_video_directory_get_videos(0, $videodata->start, $videodata->length, $search);
         }
-
+        
         foreach ($videos as $video) {
             // Do not show filename.
             unset($video->filename);
@@ -253,9 +263,15 @@ class local_video_directory_external extends external_api {
                                          . "</p><input type='text' class='hidden_input ajax_edit' id='orig_filename_" .
                 $video->id . "' value='" . htmlspecialchars($video->orig_filename, ENT_QUOTES) . "'>";
             }
+            $video->total = $total;
         } // end of foreach of all videos.
-
-        return json_encode(array_values($videos), JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
+        //$total = 14;
+        //return json_encode(array("draw" => 1, "recordsTotal" => $total, "recordsFiltered" => $total,
+        //                         "tabledata" => array_values($videos)),
+        //                         JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
+        //print_r($videos);
+        return json_encode( array_values($videos),
+                            JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
     }
     /**
      * Returns description of method result value

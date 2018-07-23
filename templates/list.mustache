@@ -45,19 +45,30 @@ require.config({catchError:true});
 require(['jquery', 'jqueryui', 'datatables', 'core/ajax'], function($, jqueryui, datatables, ajax) {
     $(document).ready(function() {
         var table = $("#video_table").DataTable({
+            "processing": true,
+            "serverSide": true,
             "ajax": {
                 method: "POST",
                 data : function ( d ) {
-                    return JSON.stringify({"0" : {"index":0,"methodname":"local_video_directory_videolist","args" : {"id": 0}}});
+                    return JSON.stringify({"0" : {"index":0,"methodname":"local_video_directory_videolist","args" : {"data": JSON.stringify(d)}}});
                 },
                 contentType: "application/json; charset=utf-8",
                 dataType: "json",
                 "url": M.cfg.wwwroot + '/lib/ajax/service.php?sesskey=' + M.cfg.sesskey + '&info=local_video_directory_videolist',
                 "dataSrc": function (d) {
                     var data = JSON.parse(d[0].data);
-                    if (data[0] && data[0].error) {
+                    if (data.error) {
                         location.reload();
                         return;
+                    }
+                    if (typeof data[0] !== 'undefined') {
+                        d.recordsTotal = data[0].total;
+                        d.draw = 0;
+                        d.recordsFiltered = data[0].total;
+                    } else {
+                        d.recordsTotal = 0;
+                        d.draw = 0;
+                        d.recordsFiltered = 0;
                     }
                     return data;
                 }
