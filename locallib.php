@@ -136,8 +136,13 @@ function get_directories() {
     return $dirs;
 }
 
-function local_video_directory_get_videos_by_tags($list, $tagid=0, $start = null, $length = null, $search = 0) {
+function local_video_directory_get_videos_by_tags($list, $tagid=0, $start = null, $length = null, $search = 0, $order=0) {
     global $USER, $DB;
+    if ($order) {
+        $orderby = " ORDER BY $order ";
+    } else {
+        $orderby = "";
+    }
     if ($list != "") {
         $and = ' AND t.name IN (' . $list . ') ';
     } else if (is_numeric($tagid)) {
@@ -165,7 +170,7 @@ function local_video_directory_get_videos_by_tags($list, $tagid=0, $start = null
                                                 LEFT JOIN {tag_instance} ti on v.id=ti.itemid
                                                 LEFT JOIN {tag} t on ti.tagid=t.id
                                                 WHERE ti.itemtype = \'local_video_directory\' ' . $and . $whereor .
-                                                'GROUP by id' . $limit);
+                                                'GROUP by id' . $orderby . $limit);
     } else {
         $videos = $DB->get_records_sql('SELECT v.*, ' . $DB->sql_concat_join("' '", array("firstname", "lastname")) . ' AS name
                                                 FROM {local_video_directory} v
@@ -174,7 +179,7 @@ function local_video_directory_get_videos_by_tags($list, $tagid=0, $start = null
                                                 LEFT JOIN {tag} t on ti.tagid=t.id
                                                 WHERE ti.itemtype = \'local_video_directory\' ' . $and . $whereor .
                                                 'AND (owner_id =' . $USER->id . ' OR (private IS NULL OR private = 0))
-                                                GROUP by id' . $limit);
+                                                GROUP by id' . $orderby . $limit);
     }
     return $videos;
 }

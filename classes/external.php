@@ -192,24 +192,29 @@ class local_video_directory_external extends external_api {
         }
 
         if ($videodata->order[0]->column != "") {
+            if ($videodata->order[0]->dir == "asc") {
+                $dir = " ASC ";
+            } else {
+                $dir = " DESC ";
+            }
             switch ($videodata->order[0]->column) {
                 case 2:
-                    $order = ' id ' . $videodata->order[0]->dir;
+                    $order = ' id ' . $dir;
                     break;
                 case 3:
-                    $order = ' name ' . $videodata->order[0]->dir;
+                    $order = ' name ' . $dir;
                     break;
                 case 4:
-                    $order = ' orig_filename ' . $videodata->order[0]->dir;
+                    $order = ' orig_filename ' . $dir;
                     break;
                 case 5:
-                    $order = ' length ' . $videodata->order[0]->dir;
+                    $order = ' length ' . $dir;
                     break;
                 case 6:
-                    $order = ' convert_status ' . $videodata->order[0]->dir;
+                    $order = ' convert_status ' . $dir;
                     break;
                 case 7:
-                    $order = ' private ' . $videodata->order[0]->dir;
+                    $order = ' private ' . $dir;
                     break;
 
             }
@@ -221,7 +226,7 @@ class local_video_directory_external extends external_api {
             $list = implode("', '", $SESSION->video_tags);
             $list = "'" . $list . "'";
             $total = count(local_video_directory_get_videos_by_tags($list, 0, null, null, $search));
-            $videos = local_video_directory_get_videos_by_tags($list, 0, $videodata->start, $videodata->length, $search);
+            $videos = local_video_directory_get_videos_by_tags($list, 0, $videodata->start, $videodata->length, $search, $order);
         } else {
             $total = count(local_video_directory_get_videos(0, null, null, $search));
             $videos = local_video_directory_get_videos($order, $videodata->start, $videodata->length, $search);
