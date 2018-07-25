@@ -191,14 +191,40 @@ class local_video_directory_external extends external_api {
             $search = 0;
         }
 
+        if ($videodata->order[0]->column != "") {
+            switch ($videodata->order[0]->column) {
+                case 2:
+                    $order = ' id ' . $videodata->order[0]->dir;
+                    break;
+                case 3:
+                    $order = ' name ' . $videodata->order[0]->dir;
+                    break;
+                case 4:
+                    $order = ' orig_filename ' . $videodata->order[0]->dir;
+                    break;
+                case 5:
+                    $order = ' length ' . $videodata->order[0]->dir;
+                    break;
+                case 6:
+                    $order = ' convert_status ' . $videodata->order[0]->dir;
+                    break;
+                case 7:
+                    $order = ' private ' . $videodata->order[0]->dir;
+                    break;
+
+            }
+        } else {
+            $order = 0;
+        }
+
         if (isset($SESSION->video_tags) && is_array($SESSION->video_tags)) {
             $list = implode("', '", $SESSION->video_tags);
             $list = "'" . $list . "'";
             $total = count(local_video_directory_get_videos_by_tags($list, 0, null, null, $search));
             $videos = local_video_directory_get_videos_by_tags($list, 0, $videodata->start, $videodata->length, $search);
         } else {
-            $total = count(local_video_directory_get_videos(0,null,null,$search));
-            $videos = local_video_directory_get_videos(0, $videodata->start, $videodata->length, $search);
+            $total = count(local_video_directory_get_videos(0, null, null, $search));
+            $videos = local_video_directory_get_videos($order, $videodata->start, $videodata->length, $search);
         }
         
         foreach ($videos as $video) {
@@ -265,11 +291,6 @@ class local_video_directory_external extends external_api {
             }
             $video->total = $total;
         } // end of foreach of all videos.
-        //$total = 14;
-        //return json_encode(array("draw" => 1, "recordsTotal" => $total, "recordsFiltered" => $total,
-        //                         "tabledata" => array_values($videos)),
-        //                         JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
-        //print_r($videos);
         return json_encode( array_values($videos),
                             JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
     }
