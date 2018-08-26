@@ -25,7 +25,7 @@
 defined('MOODLE_INTERNAL') || die();
 
 if ($hassiteconfig) {
-    $settings = new admin_settingpage( 'local_video_directory', 'Video System Settings' );
+    $settings = new admin_settingpage( 'local_video_directory', 'Video Directory Settings' );
     $iswin = strtoupper(substr(PHP_OS, 0, 3)) === 'WIN';
 
     if ($iswin) {
@@ -167,5 +167,11 @@ if ($hassiteconfig) {
     ));
 
      // Create.
-     $ADMIN->add( 'localplugins', $settings );
+    $ADMIN->add( 'localplugins', $settings );
+
+     $ADMIN->add('server', new admin_externalpage('local_video_directory_list',
+        get_string('pluginname', 'local_video_directory'),
+        new moodle_url('/local/video_directory/')));
+
+
 }
