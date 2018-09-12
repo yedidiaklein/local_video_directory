@@ -225,12 +225,12 @@ class local_video_directory_external extends external_api {
         if (isset($SESSION->video_tags) && is_array($SESSION->video_tags)) {
             $list = implode("', '", $SESSION->video_tags);
             $list = "'" . $list . "'";
+            $total = count(local_video_directory_get_videos_by_tags($list, 0, null, null, $search));
             $videos = local_video_directory_get_videos_by_tags($list, 0, $videodata->start, $videodata->length, $search, $order);
         } else {
+            $total = count(local_video_directory_get_videos(0,null,null,$search));
             $videos = local_video_directory_get_videos($order, $videodata->start, $videodata->length, $search);
         }
-        
-        $total = count($videos);
 
         foreach ($videos as $video) {
             // Do not show filename.
