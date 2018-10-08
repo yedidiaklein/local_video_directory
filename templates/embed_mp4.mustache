@@ -1,0 +1,10 @@
+<style>
+html, body { overflow: hidden; }
+</style>
+<video id="videostream-{{videoid}}" class="video-js vjs-default-skin" data-setup='{}' 
+        style="position: relative !important; width: 100% !important; height: 100% !important;" controls> 
+    <source src='{{streamingurl}}/{{videoid}}.mp4'>
+    <track label="English" kind="subtitles" srclang="en" 
+        src="{{wwwroot}}/local/video_directory/subs.php?video_id={{videoid}}" default>
+</video>
+

@@ -253,3 +253,15 @@ function local_video_get_thumbnail_url($thumb, $videoid, $clean=0) {
 
     return $thumb;
 }
+
+function local_video_directory_check_android_version($version = '4.5.0') {
+
+	if(strstr($_SERVER['HTTP_USER_AGENT'], 'Android')){
+		
+		preg_match('/Android (\d+(?:\.\d+)+)[;)]/', $_SERVER['HTTP_USER_AGENT'], $matches);
+
+		return version_compare($matches[1], $version, '<=');
+
+	}
+
+}

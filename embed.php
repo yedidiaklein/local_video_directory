@@ -23,6 +23,7 @@
 
 require_once( __DIR__ . '/../../config.php');
 require_once('lib.php');
+require_once('locallib.php');
 
 $config = get_config('local_video_directory');
 
@@ -72,10 +73,20 @@ $views = $video->views + 1;
 $DB->update_record('local_video_directory', array('id' => $video->id, 'views' => $views));
 
 echo $OUTPUT->header();
-echo $OUTPUT->render_from_template("local_video_directory/embed",
+
+//check for old android and give simple mp4 in that case
+if (local_video_directory_check_android_version()) {
+    $streamingurl = get_settings()->streaming;
+    echo $OUTPUT->render_from_template("local_video_directory/embed_mp4",
+    array(   'videoid' => $videoid,
+             'streamingurl' => $streamingurl));
+} else {
+    echo $OUTPUT->render_from_template("local_video_directory/embed",
                                    array(   'videoid' => $videoid,
                                             'streamingurl' => $streamingurl,
                                             'wwwroot' => $CFG->wwwroot,
                                             'dash' => $dash,
                                             'hls' => $hls));
+}
+
 echo $OUTPUT->footer();
