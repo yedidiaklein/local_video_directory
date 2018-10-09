@@ -187,7 +187,7 @@ function local_video_directory_render_navbar_output(\renderer_base $renderer) {
     if (has_capability('local/video_directory:video', $context) || is_siteadmin($USER)) {
         return '<div style="padding: .5rem .5rem; float: right;">
                         <a href="' . $CFG->wwwroot . '/local/video_directory/">
-                            <i class="icon fa fa-video-camera fa-fw " title="Video Directory" aria-label="Video Directory"></i>
+                            <i class="icon fa fa-video-camera fa-fw " title="Video Directory" aria-label="Video Directory" style="color:grey;"></i>
                         </a>
                 </div>';
     } else {
