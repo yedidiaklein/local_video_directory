@@ -79,6 +79,10 @@ if ($mform->is_cancelled()) {
 
     echo $OUTPUT->header();
 
+    echo '<p class="local_video_directory_backtolist">
+          <a href="list.php" alt ="' . get_string('list', 'local_video_directory') . '">' . get_string('list', 'local_video_directory') . '</a>
+          </p>';
+
     $mform->display();
 
     $search = optional_param('search', 0, PARAM_TEXT);

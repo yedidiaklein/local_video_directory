@@ -203,3 +203,11 @@ input.hidden_input:hover {
     direction: ltr;
     text-align: left;
 }
+
+.local_video_directory_backtolist {
+    text-align: right;
+}
+
+.dir-rtl .local_video_directory_backtolist {
+    text-align: left;
+}
