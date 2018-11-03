@@ -106,7 +106,7 @@ function xmldb_local_video_directory_upgrade($oldversion) {
         // Define table local_video_vers to be created.
         $table = new xmldb_table('local_video_directory_vers');
 
-        // Adding fields to table local_video_directory_multi.
+        // Adding fields to table local_video_directory_vers.
         $table->add_field('id', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, XMLDB_SEQUENCE, null);
         $table->add_field('file_id', XMLDB_TYPE_INTEGER, '20', null, XMLDB_NOTNULL, null, null);
         $table->add_field('filename', XMLDB_TYPE_CHAR, '40', null, XMLDB_NOTNULL, null, null);
@@ -139,5 +139,57 @@ function xmldb_local_video_directory_upgrade($oldversion) {
             $DB->update_record('local_video_directory', array('id' => $video->id, 'uniqid' => $uniqid));
         }
     }
+
+    if ($oldversion < 2018103100) {
+        $table = new xmldb_table('local_video_directory_txtsec');
+
+        $table->add_field('id', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, XMLDB_SEQUENCE, null);
+        $table->add_field('video_id', XMLDB_TYPE_INTEGER, '20', null, XMLDB_NOTNULL, null, null);
+        $table->add_field('orderby', XMLDB_TYPE_INTEGER, '20', null, XMLDB_NOTNULL, null, null);
+        $table->add_field('content', XMLDB_TYPE_TEXT, '5000', null, XMLDB_NOTNULL, null, null);
+        $table->add_field('start', XMLDB_TYPE_CHAR, '10', null, XMLDB_NOTNULL, null, null);
+        $table->add_field('end', XMLDB_TYPE_CHAR, '10', null, XMLDB_NOTNULL, null, null);
+        $table->add_field('datecreated', XMLDB_TYPE_INTEGER, '20', null, null, null, null);
+
+        $table->add_key('primary', XMLDB_KEY_PRIMARY, array('id'));
+
+        if (!$dbman->table_exists($table)) {
+            $dbman->create_table($table);
+        }
+
+        $table = new xmldb_table('local_video_directory_words');
+
+        $table->add_field('id', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, XMLDB_SEQUENCE, null);
+        $table->add_field('video_id', XMLDB_TYPE_INTEGER, '20', null, XMLDB_NOTNULL, null, null);
+        $table->add_field('section_id', XMLDB_TYPE_INTEGER, '20', null, XMLDB_NOTNULL, null, null);
+        $table->add_field('orderby', XMLDB_TYPE_INTEGER, '20', null, XMLDB_NOTNULL, null, null);
+        $table->add_field('word', XMLDB_TYPE_CHAR, '20', null, XMLDB_NOTNULL, null, null);
+        $table->add_field('start', XMLDB_TYPE_CHAR, '10', null, XMLDB_NOTNULL, null, null);
+        $table->add_field('end', XMLDB_TYPE_CHAR, '10', null, XMLDB_NOTNULL, null, null);
+        $table->add_field('datecreated', XMLDB_TYPE_INTEGER, '20', null, null, null, null);
+
+        $table->add_key('primary', XMLDB_KEY_PRIMARY, array('id'));
+
+        if (!$dbman->table_exists($table)) {
+            $dbman->create_table($table);
+        }
+    }
+
+    if ($oldversion < 2018110104) {
+        $table = new xmldb_table('local_video_directory_txtq');
+
+        $table->add_field('id', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, XMLDB_SEQUENCE, null);
+        $table->add_field('video_id', XMLDB_TYPE_INTEGER, '20', null, XMLDB_NOTNULL, null, null);
+        $table->add_field('user_id', XMLDB_TYPE_INTEGER, '20', null, XMLDB_NOTNULL, null, null);
+        $table->add_field('lang', XMLDB_TYPE_CHAR, '10', null, XMLDB_NOTNULL, null, null);
+        $table->add_field('state', XMLDB_TYPE_CHAR, '2', null, XMLDB_NOTNULL, null, null);
+        $table->add_field('datecreated', XMLDB_TYPE_INTEGER, '20', null, null, null, null);
+        $table->add_key('primary', XMLDB_KEY_PRIMARY, array('id'));
+    
+        if (!$dbman->table_exists($table)) {
+            $dbman->create_table($table);
+        }
+    }
+    upgrade_plugin_savepoint(true, 2018110104, 'local', 'video_directory');
     return 1;
 }

@@ -244,6 +244,7 @@ class local_video_directory_external extends external_api {
                                                                           $video->id),
                             "", 'videos'));
             $versions = $DB->get_records('local_video_directory_vers', array('file_id' => $video->id));
+            $texts = $DB->get_records('local_video_directory_txtq', array('video_id' => $video->id, 'state' => 2));
 
             if (!file_exists( $dirs['converted'] . $video->id . ".mp4")) {
                 $video->convert_status .= '<br>' . get_string('awaitingconversion', 'local_video_directory');
@@ -264,6 +265,12 @@ class local_video_directory_external extends external_api {
                 }
                 if ($settings->embedtype != 'none') {
                     $templateparams['embed'] = 1;
+                }
+                if ($settings->googlespeech != 0) {
+                    $templateparams['googlespeech'] = 1;
+                }
+                if (!$texts) {
+                    $templateparams['notext'] = 1;
                 }
                 $video->actions = $OUTPUT->render_from_template('local_video_directory/list_actions', $templateparams);
             }

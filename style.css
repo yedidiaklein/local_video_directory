@@ -179,6 +179,20 @@ input.hidden_input:hover {
     border: 1px solid;
     padding: 10px;
     margin: 10px;
+    height: fit-content;
+}
+
+.local_video_portal_texts {
+    float: left;
+    width: 70%;
+    padding-top: 10px;
+}
+
+.local_video_portal_search {
+    border: 1px solid;
+    padding: 10px;
+    margin: 10px;
+    display: flex;
 }
 
 .local_video_directory_versions i {

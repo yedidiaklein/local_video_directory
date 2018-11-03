@@ -166,6 +166,29 @@ if ($hassiteconfig) {
         PARAM_URL
     ));
 
+    $settings->add( new admin_setting_configcheckbox(
+        'local_video_directory/googlespeech',
+        get_string('googlespeech', 'local_video_directory'),
+        get_string('googlespeechdesc', 'local_video_directory'),
+        '0'
+    ));
+
+    $settings->add( new admin_setting_configtextarea(
+        'local_video_directory/googlejson',
+        get_string('googlejson', 'local_video_directory'),
+        get_string('googlejsondesc', 'local_video_directory'),
+        '',
+        PARAM_RAW
+    ));
+
+    $settings->add( new admin_setting_configtext(
+        'local_video_directory/googlestoragebucket',
+        get_string('googlestoragebucket', 'local_video_directory'),
+        get_string('googlestoragebucketdesc', 'local_video_directory'),
+        'video',
+        PARAM_TEXT
+    ));
+
      // Create.
     $ADMIN->add( 'localplugins', $settings );
 

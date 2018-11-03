@@ -1,0 +1,18 @@
+<div class='local_video_directory_video-table'>
+{{#videos}}
+    <div class="local_video_portal_search">
+        <div class="local_video_portal_video">
+            <img src="{{thumbnail}}" class="local_video_portal_thumb" data-video-url='{{streaming}}/{{id}}.mp4'>
+            <div class="local_video_portal_name">
+                {{{orig_filename}}}
+            </div>
+            <div class="local_video_portal_length">
+                {{length}}
+            </div>
+        </div>
+        <div class="local_video_portal_texts">
+            {{{content}}}
+        </div>
+    </div>
+{{/videos}}
+</div>

@@ -24,5 +24,14 @@ $tasks = array(
         'day' => '*' ,
         'dayofweek' => '*' ,
         'month' => '*'
+    ),
+    array(
+        'classname' => 'local_video_directory\task\googlespeech_task' ,
+        'blocking' => 0 ,
+        'minute' => '*/5' ,
+        'hour' => '*' ,
+        'day' => '*' ,
+        'dayofweek' => '*' ,
+        'month' => '*'
     )
 );
