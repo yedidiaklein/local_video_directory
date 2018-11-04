@@ -160,7 +160,7 @@ if ($mform->is_cancelled()) {
     }
     echo $OUTPUT->render_from_template('local_video_directory/player', []);
 }
-
-echo $pagination;
-
+if (isset($pagination)) {
+    echo $pagination;
+}
 echo $OUTPUT->footer();

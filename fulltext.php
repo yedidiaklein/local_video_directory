@@ -125,7 +125,11 @@ if ($mform->is_cancelled()) {
         echo "</table>";
     }
 
-    $mform->display();
+    if ($video->convert_status < 3) {
+        echo get_string('state_' . $video->convert_status, 'local_video_directory');
+    } else {
+        $mform->display();
+    }
 
     $sections = $DB->get_records("local_video_directory_txtsec", array("video_id" => $id));
 
