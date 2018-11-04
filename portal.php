@@ -126,7 +126,14 @@ if ($mform->is_cancelled()) {
         }
         $pagination .= "<a href='?currentpage=0'> " . get_string('first') . "</a> .. ";
         for ($i=0; $i < $pages; $i++) {
-            $pagination .= " <a href='?currentpage=$i'>$i </a> .. ";
+            $pagination .= " <a href='?currentpage=$i'> ";
+            if ($i == $currentpage) {
+                $pagination .= "<b> $i </b>";
+            } else {
+                $pagination .= $i;
+            }
+
+            $pagination .= " </a> .. ";
         }
         $last = $i - 1;
         $next = $currentpage + 1;
