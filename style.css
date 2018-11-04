@@ -211,3 +211,8 @@ input.hidden_input:hover {
 .dir-rtl .local_video_directory_backtolist {
     text-align: left;
 }
+
+.local_video_directory_pagination {
+    text-align: center;
+    display: inline-block;
+}

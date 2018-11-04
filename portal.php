@@ -113,7 +113,20 @@ if ($mform->is_cancelled()) {
                                                     . "</p></a>" . $fulltext->content . "<hr>"; 
         }
     } else {
-        $videos = local_video_directory_get_videos('views');
+        // No search.
+        $perpage = 12;
+        $currentpage = optional_param('currentpage', 0, PARAM_INT);
+        $start = $currentpage * $perpage;
+        $total = count(local_video_directory_get_videos('views'));
+        $pages = ceil($total / $perpage);
+        $pagination = "<div class='local_video_directory_pagination'><a href='?currentpage=0'> << " . get_string('first') . "</a> .. ";
+        for ($i=0; $i < $pages; $i++) {
+            $pagination .= " <a href='?currentpage=$i'>$i </a> .. ";
+        }
+        $last = $i - 1;
+        $pagination .= "<a href='?currentpage=" . $last . "'>" . get_string('last') . " >> </a>";
+        echo $pagination;
+        $videos = local_video_directory_get_videos('views', $start, $perpage);
     }
     
     foreach ($videos as $video) {
@@ -131,5 +144,7 @@ if ($mform->is_cancelled()) {
     }
     echo $OUTPUT->render_from_template('local_video_directory/player', []);
 }
+
+echo $pagination;
 
 echo $OUTPUT->footer();
