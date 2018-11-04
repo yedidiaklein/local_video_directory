@@ -119,12 +119,21 @@ if ($mform->is_cancelled()) {
         $start = $currentpage * $perpage;
         $total = count(local_video_directory_get_videos('views'));
         $pages = ceil($total / $perpage);
-        $pagination = "<div class='local_video_directory_pagination'><a href='?currentpage=0'> << " . get_string('first') . "</a> .. ";
+        $previous = $currentpage - 1;
+        $pagination = "<div class='local_video_directory_pagination'>";
+        if ($previous >= 0) {
+            $pagination .= "<a href='?currentpage=$previous'> << </a>";
+        }
+        $pagination .= "<a href='?currentpage=0'> " . get_string('first') . "</a> .. ";
         for ($i=0; $i < $pages; $i++) {
             $pagination .= " <a href='?currentpage=$i'>$i </a> .. ";
         }
         $last = $i - 1;
-        $pagination .= "<a href='?currentpage=" . $last . "'>" . get_string('last') . " >> </a>";
+        $next = $currentpage + 1;
+        $pagination .= "<a href='?currentpage=" . $last . "'>" . get_string('last') . "</a>";
+        if ($next < $pages) {
+            $pagination .= "<a href='?currentpage=$next'> >> </a>";
+        }
         echo $pagination;
         $videos = local_video_directory_get_videos('views', $start, $perpage);
     }
