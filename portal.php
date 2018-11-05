@@ -97,51 +97,56 @@ if ($mform->is_cancelled()) {
                                         . ' OR ' . $DB->sql_like('v.orig_filename', ':name',0)
                                         . ' AND (v.owner_id = :id OR v.private = 0 OR 1 = :admin)'
                                         , [ 'content' => '%' . $search . '%', 'id' => $USER->id, 'admin' => $admin, 'name' => '%' . $search . '%' ]);
-        $fulltexts = $DB->get_records_sql('SELECT t.id, t.video_id, t.content, t.start, t.end FROM {local_video_directory} v
+        $total = count($videos);
+        $perpage = 6;
+        $currentpage = optional_param('currentpage', 0, PARAM_INT);
+        $pagination = local_video_directory_pagination($total,$perpage,$currentpage,"&search=" . $search);
+        echo $pagination;
+        $start = $currentpage * $perpage;
+
+        $videos = $DB->get_records_sql('SELECT DISTINCT v.* FROM {local_video_directory} v
                                         LEFT JOIN {local_video_directory_txtsec} t
                                         ON v.id = t.video_id
                                         WHERE ' . $DB->sql_like('t.content', ':content',0)
+                                        . ' OR ' . $DB->sql_like('v.orig_filename', ':name',0)
                                         . ' AND (v.owner_id = :id OR v.private = 0 OR 1 = :admin)'
-                                        , [ 'content' => '%' . $search . '%', 'id' => $USER->id, 'admin' => $admin ]);
-        foreach ($fulltexts as $fulltext) {
-            $fulltext->content = preg_replace('!(' . $search . ')!i', '<font style="color:red; font-weight:bold;">$1</font>', $fulltext->content);
-            if (!isset($videos[$fulltext->video_id]->content)) {
-                $videos[$fulltext->video_id]->content = '';
+                                        , [ 'content' => '%' . $search . '%', 'id' => $USER->id, 'admin' => $admin, 'name' => '%' . $search . '%' ]
+                                        , $start, $perpage);
+
+        if ($videos) {
+        
+            foreach ($videos as $video) {
+                $items[] = $video->id;
             }
-            $startsec = explode(".", $fulltext->start);
-            $videos[$fulltext->video_id]->content .= "<a href=#><p data-video-url='$streaming/$fulltext->video_id.mp4#t=$startsec[0]'>" . $fulltext->start . " - " . $fulltext->end
+
+            $in = "(" . implode(",",$items) . ")";
+
+            $fulltexts = $DB->get_records_sql('SELECT t.id, t.video_id, t.content, t.start, t.end FROM {local_video_directory} v
+                                        LEFT JOIN {local_video_directory_txtsec} t
+                                        ON v.id = t.video_id
+                                        WHERE ' . $DB->sql_like('t.content', ':content',0)
+                                        . ' AND (v.owner_id = :id OR v.private = 0 OR 1 = :admin) '
+                                        . ' AND v.id IN ' . $in
+                                        , [ 'content' => '%' . $search . '%', 'id' => $USER->id, 'admin' => $admin ]);
+            foreach ($fulltexts as $fulltext) {
+                $fulltext->content = preg_replace('!(' . $search . ')!i', '<font style="color:red; font-weight:bold;">$1</font>', $fulltext->content);
+                if (!isset($videos[$fulltext->video_id]->content)) {
+                    $videos[$fulltext->video_id]->content = '';
+                }
+                $startsec = explode(".", $fulltext->start);
+                $startsec = str_replace("s", "", $startsec);
+                $videos[$fulltext->video_id]->content .= "<a href=#><p data-video-url='$streaming/$fulltext->video_id.mp4#t=$startsec[0]'>" . $fulltext->start . " - " . $fulltext->end
                                                     . "</p></a>" . $fulltext->content . "<hr>"; 
+            }
         }
     } else {
         // No search.
+        $total = count(local_video_directory_get_videos('views'));
         $perpage = 12;
         $currentpage = optional_param('currentpage', 0, PARAM_INT);
-        $start = $currentpage * $perpage;
-        $total = count(local_video_directory_get_videos('views'));
-        $pages = ceil($total / $perpage);
-        $previous = $currentpage - 1;
-        $pagination = "<div class='local_video_directory_pagination'>";
-        if ($previous >= 0) {
-            $pagination .= "<a href='?currentpage=$previous'> << </a>";
-        }
-        $pagination .= "<a href='?currentpage=0'> " . get_string('first') . "</a> .. ";
-        for ($i=0; $i < $pages; $i++) {
-            $pagination .= " <a href='?currentpage=$i'> ";
-            if ($i == $currentpage) {
-                $pagination .= "<b> $i </b>";
-            } else {
-                $pagination .= $i;
-            }
-
-            $pagination .= " </a> .. ";
-        }
-        $last = $i - 1;
-        $next = $currentpage + 1;
-        $pagination .= "<a href='?currentpage=" . $last . "'>" . get_string('last') . "</a>";
-        if ($next < $pages) {
-            $pagination .= "<a href='?currentpage=$next'> >> </a>";
-        }
+        $pagination = local_video_directory_pagination($total,$perpage,$currentpage);
         echo $pagination;
+        $start = $currentpage * $perpage;
         $videos = local_video_directory_get_videos('views', $start, $perpage);
     }
     
@@ -164,3 +169,35 @@ if (isset($pagination)) {
     echo $pagination;
 }
 echo $OUTPUT->footer();
+
+function local_video_directory_pagination($total, $perpage, $currentpage, $url = '') {
+    if ($total < $perpage) {
+        return "";
+    }
+    $start = $currentpage * $perpage;
+    $pages = ceil($total / $perpage);
+    $previous = $currentpage - 1;
+    $pagination = "<div class='local_video_directory_pagination'>";
+    if ($previous >= 0) {
+        $pagination .= "<a href='?currentpage=$previous" . $url . "'> << </a>";
+    }
+    $pagination .= "<a href='?currentpage=0" . $url . "'> " . get_string('first') . "</a> .. ";
+    for ($i=0; $i < $pages; $i++) {
+        $pagination .= " <a href='?currentpage=$i" . $url . "'> ";
+        if ($i == $currentpage) {
+            $pagination .= "<b> $i </b>";
+        } else {
+            $pagination .= $i;
+        }
+
+        $pagination .= " </a> .. ";
+    }
+    $last = $i - 1;
+    $next = $currentpage + 1;
+    $pagination .= "<a href='?currentpage=" . $last . $url . "'>" . get_string('last') . "</a>";
+    if ($next < $pages) {
+        $pagination .= "<a href='?currentpage=$next" . $url . "'> >> </a>";
+    }
+
+    return $pagination;
+}
