@@ -134,7 +134,7 @@ if ($mform->is_cancelled()) {
                     $videos[$fulltext->video_id]->content = '';
                 }
                 $startsec = explode(".", $fulltext->start);
-                $startsec = str_replace("s", "", $startsec);
+                $startsec[0] = str_replace("s", "", $startsec[0]); 
                 $videos[$fulltext->video_id]->content .= "<a href=#><p data-video-url='$streaming/$fulltext->video_id.mp4#t=$startsec[0]'>" . $fulltext->start . " - " . $fulltext->end
                                                     . "</p></a>" . $fulltext->content . "<hr>"; 
             }
