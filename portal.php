@@ -93,9 +93,9 @@ if ($mform->is_cancelled()) {
         $videos = $DB->get_records_sql('SELECT DISTINCT v.* FROM {local_video_directory} v
                                         LEFT JOIN {local_video_directory_txtsec} t
                                         ON v.id = t.video_id
-                                        WHERE ' . $DB->sql_like('t.content', ':content',0)
+                                        WHERE (' . $DB->sql_like('t.content', ':content',0)
                                         . ' OR ' . $DB->sql_like('v.orig_filename', ':name',0)
-                                        . ' AND (v.owner_id = :id OR v.private = 0 OR 1 = :admin)'
+                                        . ') AND (v.owner_id = :id OR v.private = 0 OR 1 = :admin)'
                                         , [ 'content' => '%' . $search . '%', 'id' => $USER->id, 'admin' => $admin, 'name' => '%' . $search . '%' ]);
         $total = count($videos);
         $perpage = 6;
@@ -107,9 +107,9 @@ if ($mform->is_cancelled()) {
         $videos = $DB->get_records_sql('SELECT DISTINCT v.* FROM {local_video_directory} v
                                         LEFT JOIN {local_video_directory_txtsec} t
                                         ON v.id = t.video_id
-                                        WHERE ' . $DB->sql_like('t.content', ':content',0)
+                                        WHERE (' . $DB->sql_like('t.content', ':content',0)
                                         . ' OR ' . $DB->sql_like('v.orig_filename', ':name',0)
-                                        . ' AND (v.owner_id = :id OR v.private = 0 OR 1 = :admin)'
+                                        . ') AND (v.owner_id = :id OR v.private = 0 OR 1 = :admin)'
                                         , [ 'content' => '%' . $search . '%', 'id' => $USER->id, 'admin' => $admin, 'name' => '%' . $search . '%' ]
                                         , $start, $perpage);
 
