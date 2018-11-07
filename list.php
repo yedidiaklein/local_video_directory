@@ -98,9 +98,11 @@ if (!isset($SESSION->video_tags)) {
     $SESSION->video_tags = array();
 }
 
-if ((count($SESSION->video_tags) > 0) && is_array($SESSION->video_tags)) {
-    foreach ($SESSION->video_tags as $key => $value) {
-        array_push($selectedtags, array('name' => $value, 'url' => urlencode($value)));
+if (is_array($SESSION->video_tags)) {
+    if ((count($SESSION->video_tags) > 0)) {
+        foreach ($SESSION->video_tags as $key => $value) {
+            array_push($selectedtags, array('name' => $value, 'url' => urlencode($value)));
+        }
     }
 }
 
