@@ -190,6 +190,22 @@ function xmldb_local_video_directory_upgrade($oldversion) {
             $dbman->create_table($table);
         }
     }
-    upgrade_plugin_savepoint(true, 2018110104, 'local', 'video_directory');
+
+    if ($oldversion < 2018110701) {
+        global $CFG;
+        require_once($CFG->dirroot . '/lib/accesslib.php');
+        $role = $DB->get_record('role', array('shortname' => 'local_video_directory'));
+        if (empty($role)) {
+            $roleid = create_role('local_video_directory', 'local_video_directory', 'video system roll');
+                if (is_int($roleid)) {
+                    $contextsids = array(CONTEXT_SYSTEM);
+                    set_role_contextlevels($roleid, $contextsids);
+                    role_change_permission( $roleid, context_system::instance(), 'local/video_directory:video', 1);
+                }
+        }
+    }
+
+
+    upgrade_plugin_savepoint(true, 2018110704, 'local', 'video_directory');
     return 1;
 }
