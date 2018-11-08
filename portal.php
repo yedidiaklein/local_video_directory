@@ -135,8 +135,15 @@ if ($mform->is_cancelled()) {
                 }
                 $startsec = explode(".", $fulltext->start);
                 $startsec[0] = str_replace("s", "", $startsec[0]); 
+                $words = $DB->get_records('local_video_directory_words', ['video_id' => $fulltext->video_id, 'section_id' => $fulltext->id], 'orderby');
+                $fulltext->wordscontent = '';
+                foreach ($words as $word) {
+                    $word->start = str_replace("s", "", $word->start);
+                    $fulltext->wordscontent .= "<span title='" . get_string('playthisword', 'local_video_directory') . "' data-video-url='$streaming/$fulltext->video_id.mp4#t=$word->start'>" . $word->word . "</span> ";
+                }
+                
                 $videos[$fulltext->video_id]->content .= "<a href=#><p data-video-url='$streaming/$fulltext->video_id.mp4#t=$startsec[0]'>" . $fulltext->start . " - " . $fulltext->end
-                                                    . "</p></a>" . $fulltext->content . "<hr>"; 
+                                                    . "</p></a>" . $fulltext->wordscontent . "<hr>"; 
             }
         }
     } else {

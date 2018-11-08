@@ -141,3 +141,4 @@ $string['fulltext'] = 'Get Text from Video';
 $string['textstate_0'] = 'Queued';
 $string['textstate_1'] = 'Working on it...';
 $string['textstate_2'] = 'Done';
+$string['playthisword'] = 'Play this word';

@@ -141,3 +141,4 @@ $string['fulltext'] = 'תמלול הסרט';
 $string['textstate_0'] = 'בתור';
 $string['textstate_1'] = 'עובדים על התמלול...';
 $string['textstate_2'] = 'בוצע';
+$string['playthisword'] = 'נגן מילה זו';
