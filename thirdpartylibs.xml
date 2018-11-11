@@ -21,4 +21,18 @@
         <license>Apache</license>
         <licenseversion>2.0</licenseversion>
     </library>
+    <library>
+        <location>https://cloud.google.com/speech-to-text/</location>
+        <name>Google Speech Cloud API</name>
+        <version>0.17.1</version>
+        <license>Apache</license>
+        <licenseversion>2.0</licenseversion>
+    </library>
+    <library>
+        <location>https://cloud.google.com/storage/</location>
+        <name>Google Storage Cloud API</name>
+        <version>1.9.2</version>
+        <license>Apache</license>
+        <licenseversion>2.0</licenseversion>
+    </library>
 </libraries>
