@@ -192,10 +192,8 @@ function local_video_directory_get_videos($order = 0, $start = null, $length = n
         $orderby = "";
     }
 
-    if ((is_numeric($start)) && (is_numeric($length))) {
-        $limit = " LIMIT $start , $length";
-    } else {
-        $limit = "";
+    if (!is_numeric($start) || !is_numeric($length)) {
+        $start = $length = null;
     }
 
     if ($search) {
@@ -216,7 +214,7 @@ function local_video_directory_get_videos($order = 0, $start = null, $length = n
         $videos = $DB->get_records_sql('SELECT v.*, ' . $DB->sql_concat_join("' '", array("firstname", "lastname")) .
                                             ' AS name FROM {local_video_directory} v
                                     LEFT JOIN {user} u on v.owner_id = u.id WHERE (owner_id =' . $USER->id .
-                                    ' OR (private IS NULL OR private = 0))' . $whereor . $orderby . $limit);
+                                    ' OR (private IS NULL OR private = 0))' . $whereor . $orderby, null, $start, $length);
     }
     return $videos;
 }
