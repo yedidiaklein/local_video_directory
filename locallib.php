@@ -67,7 +67,7 @@ function local_video_directory_get_tagged_pages($tag, $exclusivemode = false, $f
 function local_video_edit_right($videoid) {
     global $DB, $CFG, $USER;
     $video = $DB->get_record("local_video_directory", array('id' => $videoid));
-    if ((is_siteadmin($USER) || $video->owner_id == $USER->id)) {
+    if ((is_siteadmin() || $video->owner_id == $USER->id)) {
         return 1;
     } else {
         redirect($CFG->wwwroot . '/local/video_directory/list.php', get_string('accessdenied', 'admin'));
@@ -138,21 +138,23 @@ function get_directories() {
 
 function local_video_directory_get_videos_by_tags($list, $tagid=0, $start = null, $length = null, $search = 0, $order=0) {
     global $USER, $DB;
+	
     if ($order) {
         $orderby = " ORDER BY $order ";
     } else {
         $orderby = "";
     }
+	
     if ($list != "") {
         $and = ' AND t.name IN (' . $list . ') ';
     } else if (is_numeric($tagid)) {
         $and = ' AND t.id =' . $tagid . ' ';
     }
-    if ((is_numeric($start)) && (is_numeric($length))) {
-        $limit = " LIMIT $start , $length";
-    } else {
-        $limit = "";
+	
+    if (!is_numeric($start) || !is_numeric($length)) {
+        $start = $length = null;
     }
+
     if ($search) {
         $match = " (orig_filename LIKE '%$search%' OR firstname LIKE '%$search%' OR  lastname LIKE '%$search%') ";
         $where = " WHERE " . $match;
@@ -163,14 +165,14 @@ function local_video_directory_get_videos_by_tags($list, $tagid=0, $start = null
     }
 
 
-    if (is_siteadmin($USER)) {
+    if (is_siteadmin()) {
         $videos = $DB->get_records_sql('SELECT v.*, ' . $DB->sql_concat_join("' '", array("firstname", "lastname")) . ' AS name
                                                 FROM {local_video_directory} v
                                                 LEFT JOIN {user} u on v.owner_id = u.id
                                                 LEFT JOIN {tag_instance} ti on v.id=ti.itemid
                                                 LEFT JOIN {tag} t on ti.tagid=t.id
                                                 WHERE ti.itemtype = \'local_video_directory\' ' . $and . $whereor .
-                                                'GROUP by id' . $orderby . $limit);
+                                                'GROUP by id' . $orderby, null, $start, $length);
     } else {
         $videos = $DB->get_records_sql('SELECT v.*, ' . $DB->sql_concat_join("' '", array("firstname", "lastname")) . ' AS name
                                                 FROM {local_video_directory} v
@@ -179,7 +181,7 @@ function local_video_directory_get_videos_by_tags($list, $tagid=0, $start = null
                                                 LEFT JOIN {tag} t on ti.tagid=t.id
                                                 WHERE ti.itemtype = \'local_video_directory\' ' . $and . $whereor .
                                                 'AND (owner_id =' . $USER->id . ' OR (private IS NULL OR private = 0))
-                                                GROUP by id' . $orderby . $limit);
+                                                GROUP by id' . $orderby, null, $start, $length);
     }
     return $videos;
 }
@@ -205,10 +207,10 @@ function local_video_directory_get_videos($order = 0, $start = null, $length = n
         $whereor = "";
     }
 
-    if (is_siteadmin($USER)) {
+    if (is_siteadmin()) {
         $videos = $DB->get_records_sql('SELECT v.*, ' . $DB->sql_concat_join("' '", array("firstname", "lastname")) .
                                     ' AS name FROM {local_video_directory} v
-                                    LEFT JOIN {user} u on v.owner_id = u.id' . $where . $orderby . $limit);
+                                    LEFT JOIN {user} u on v.owner_id = u.id' . $where . $orderby, null, $start, $length);
     
     } else {
         $videos = $DB->get_records_sql('SELECT v.*, ' . $DB->sql_concat_join("' '", array("firstname", "lastname")) .
