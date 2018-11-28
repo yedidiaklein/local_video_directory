@@ -135,7 +135,7 @@ if ($mform->is_cancelled()) {
                     $tags = $directory;
                 }
             }
-            $record = array('orig_filename' => $basename, 'owner_id' => $USER->id, 'private' => 1 );
+            $record = array('orig_filename' => $basename, 'owner_id' => $USER->id, 'private' => 1, 'uniqid' => uniqid('', true) );
             $lastinsertid = $DB->insert_record('local_video_directory', $record);
             $copied = copy($dirs['massdir'] . '/' . $filename , $dirs['uploaddir'] . $lastinsertid);
             if ($copied) {
