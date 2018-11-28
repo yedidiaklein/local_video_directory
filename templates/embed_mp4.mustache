@@ -2,7 +2,8 @@
 html, body { overflow: hidden; }
 </style>
 <video id="videostream-{{videoid}}" class="video-js vjs-default-skin" data-setup='{}' 
-        style="position: relative !important; width: 100% !important; height: 100% !important;" controls> 
+        style="position: relative !important; width: 100% !important; height: 100% !important;" controls
+        poster="{{wwwroot}}/local/video_directory/poster.php?id={{videoid}}"> 
     <source src='{{streamingurl}}/{{videoid}}.mp4'>
     <track label="English" kind="subtitles" srclang="en" 
         src="{{wwwroot}}/local/video_directory/subs.php?video_id={{videoid}}" default>
