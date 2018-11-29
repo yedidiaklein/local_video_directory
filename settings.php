@@ -83,6 +83,14 @@ if ($hassiteconfig) {
     ));
 
     $settings->add( new admin_setting_configtext(
+        'local_video_directory/youtubedl',
+        get_string('youtube-dlpath', 'local_video_directory'),
+        get_string('youtube-dldesc', 'local_video_directory'),
+        $iswin ? '/bin/youtube-dl.exe' : '/usr/bin/youtube-dl',
+        PARAM_PATH
+    ));
+
+    $settings->add( new admin_setting_configtext(
         'local_video_directory/streaming',
         get_string('streamingurl', 'local_video_directory'),
         get_string('streamingurldesc', 'local_video_directory'),

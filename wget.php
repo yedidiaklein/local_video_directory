@@ -75,9 +75,24 @@ $mform = new wget_form();
 if ($mform->is_cancelled()) {
     redirect($CFG->wwwroot . '/local/video_directory/list.php');
 } else if ($fromform = $mform->get_data()) {
-    $record = array("url" => $fromform->url, "owner_id" => $USER->id , "success" => 0);
-    $update = $DB->insert_record("local_video_directory_wget", $record);
-    redirect($CFG->wwwroot . '/local/video_directory/mass.php');
+    $download =1;
+    $warning = "";
+    if ((strstr($fromform->url, 'youtube')) || (strstr($fromform->url, 'youtu.be'))) {
+        if (!file_exists($settings->youtubedl)) {
+            $warning = get_string('installyoutubedl', 'local_video_directory');
+            $download =0;
+        } else {
+            $download = 1;
+            $warning = $fromform->url . " " . get_string('wget_0', 'local_video_directory');
+        }
+    }
+    if ($download) {
+        $record = array("url" => $fromform->url, "owner_id" => $USER->id , "success" => 0);
+        $update = $DB->insert_record("local_video_directory_wget", $record);
+        redirect($CFG->wwwroot . '/local/video_directory/mass.php', $warning, null, \core\output\notification::NOTIFY_SUCCESS);
+    } else {
+        redirect($CFG->wwwroot . '/local/video_directory/mass.php', $warning, null, \core\output\notification::NOTIFY_WARNING);
+    }
 } else {
     echo $OUTPUT->header();
     include_once('menu.php');

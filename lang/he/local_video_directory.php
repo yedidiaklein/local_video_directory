@@ -142,3 +142,6 @@ $string['textstate_0'] = 'בתור';
 $string['textstate_1'] = 'עובדים על התמלול...';
 $string['textstate_2'] = 'בוצע';
 $string['playthisword'] = 'נגן מילה זו';
+$string['youtube-dlpath'] = 'נתיב של youtube-dl';
+$string['youtube-dldesc'] = 'להורדה ישירה של סרטים מ-Youtube נדרש להתקין את התכנה youtube-dl. ( https://yt-dl.org/latest/youtube-dl )';
+$string['installyoutubedl'] = 'הורדות מ-youtube פועלות רק במידה ו-youtube-dl מותקן ומוגדר בהגדרות הרכיב';

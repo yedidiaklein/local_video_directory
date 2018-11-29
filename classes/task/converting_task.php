@@ -158,15 +158,36 @@ class converting_task extends \core\task\scheduled_task {
                 $update = $DB->update_record("local_video_directory_wget", $record);
                 $filename = basename($wget->url);
 
-                echo "Downloading $wget->url to" . $dirs['wgetdir'];
-                echo "Filename is $filename";
-                file_put_contents($dirs['wgetdir'] . $filename, fopen($wget->url, 'r'));
+                if (!filter_var($wget->url, FILTER_VALIDATE_URL)) {
+                    continue;
+                }
 
-                // Move to mass directory once downloaded.
-                if (copy($dirs['wgetdir'] . $filename, $dirs['massdir'] . $filename)) {
-                    unlink($dirs['wgetdir'] . $filename);
-                    $sql = "UPDATE {local_video_directory_wget} SET success = 2 WHERE url = ?";
-                    $DB->execute($sql, array($wget->url));
+                if ((strstr($wget->url, 'youtube')) || (strstr($fromform->url, 'youtu.be'))) {
+                    $uniqid = uniqid('', true);
+                    mkdir($dirs['wgetdir'] . "/" . $uniqid);
+                    exec($settings->youtubedl . " -q -o " . $dirs['wgetdir'] . "/" . $uniqid . "/'%(title)s.%(ext)s' " . $wget->url);
+                    $files = scandir($dirs['wgetdir'] . "/" . $uniqid, 1);
+                    $filename = $files[0];
+                    $record = array('orig_filename' => $filename, 'owner_id' => $wget->owner_id, 'uniqid' => uniqid('', true), 'private' => 1);
+                    $lastinsertid = $DB->insert_record('local_video_directory', $record);
+                    if (copy($dirs['wgetdir'] . "/" . $uniqid . "/" . $filename, $dirs['uploaddir'] . $lastinsertid)) {
+                        unlink($dirs['wgetdir'] . "/" . $uniqid . "/" . $filename);
+                        rmdir($dirs['wgetdir'] . "/" . $uniqid);
+                        $sql = "UPDATE {local_video_directory_wget} SET success = 2 WHERE url = ?";
+                        $DB->execute($sql, array($wget->url));
+                    }
+                } else {
+                    echo "Downloading $wget->url to" . $dirs['wgetdir'];
+                    echo "Filename is $filename";
+                    file_put_contents($dirs['wgetdir'] . $filename, fopen($wget->url, 'r'));
+                
+
+                    // Move to mass directory once downloaded.
+                    if (copy($dirs['wgetdir'] . $filename, $dirs['massdir'] . $filename)) {
+                        unlink($dirs['wgetdir'] . $filename);
+                        $sql = "UPDATE {local_video_directory_wget} SET success = 2 WHERE url = ?";
+                        $DB->execute($sql, array($wget->url));
+                    }
                 }
                 // Doing one download per cron.
                 break;

@@ -191,7 +191,7 @@ function xmldb_local_video_directory_upgrade($oldversion) {
         }
     }
 
-    if ($oldversion < 2018110701) {
+    if ($oldversion < 2018110705) {
         global $CFG;
         require_once($CFG->dirroot . '/lib/accesslib.php');
         $role = $DB->get_record('role', array('shortname' => 'local_video_directory'));
@@ -206,6 +206,6 @@ function xmldb_local_video_directory_upgrade($oldversion) {
     }
 
 
-    upgrade_plugin_savepoint(true, 2018110704, 'local', 'video_directory');
+    upgrade_plugin_savepoint(true, 2018110705, 'local', 'video_directory');
     return 1;
 }
