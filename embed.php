@@ -78,8 +78,9 @@ echo $OUTPUT->header();
 if (local_video_directory_check_android_version() || $nostreaming) {
     $streamingurl = get_settings()->streaming;
     echo $OUTPUT->render_from_template("local_video_directory/embed_mp4",
-    array(   'videoid' => $videoid,
-             'streamingurl' => $streamingurl));
+    array(  'videoid' => $videoid,
+            'wwwroot' => $CFG->wwwroot,
+            'streamingurl' => $streamingurl));
 } else {
     echo $OUTPUT->render_from_template("local_video_directory/embed",
                                    array(   'videoid' => $videoid,
