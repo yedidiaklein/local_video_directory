@@ -143,5 +143,5 @@ $string['textstate_1'] = 'Working on it...';
 $string['textstate_2'] = 'Done';
 $string['playthisword'] = 'Play this word';
 $string['youtube-dlpath'] = 'youtube-dl path';
-$string['youtube-dldesc'] = 'If you want to direct download from youtube, install youtube-dl on your server. ( https://yt-dl.org/latest/youtube-dl)';
+$string['youtube-dldesc'] = 'If you want to direct download from youtube, install youtube-dl on your server. ( https://yt-dl.org)';
 $string['installyoutubedl'] = 'Downloads from youtube works only if youtube-dl is installed and well configured in plugin settings';
