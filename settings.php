@@ -138,6 +138,27 @@ if ($hassiteconfig) {
         PARAM_TEXT
      ));
 
+     $settings->add( new admin_setting_configcheckbox(
+        'local_video_directory/showwhere',
+        get_string('showwhere', 'local_video_directory'),
+        get_string('showwheredesc', 'local_video_directory'),
+        '0'
+    ));
+
+     $settings->add( new admin_setting_configcheckbox(
+        'local_video_directory/showqr',
+        get_string('showqr', 'local_video_directory'),
+        get_string('showqrdesc', 'local_video_directory'),
+        '0'
+    ));
+
+     $settings->add( new admin_setting_configcheckbox(
+        'local_video_directory/showembed',
+        get_string('showembed', 'local_video_directory'),
+        get_string('showembeddesc', 'local_video_directory'),
+        '0'
+    ));
+
     // Embed type.
     $settings->add(
         new admin_setting_configselect('local_video_directory/embedtype',

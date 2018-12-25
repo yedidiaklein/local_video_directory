@@ -161,7 +161,7 @@ class local_video_directory_external extends external_api {
         ));
     }
     /**
-     * Returns url of new thumbnail
+     * Returns JSON of videos
      * @param int $id Just because I was unable to manage a webservice call without params
      * @return string
      */
@@ -232,11 +232,26 @@ class local_video_directory_external extends external_api {
             $videos = local_video_directory_get_videos($order, $videodata->start, $videodata->length, $search);
         }
 
+        //check if mod_videostream is enabled
+        $videostream = $DB->get_record('modules',['name'=>'videostream']);
+        $isvideostream = count($videostream);
+
         foreach ($videos as $video) {
             // Do not show filename.
             unset($video->filename);
             if (is_numeric($video->convert_status)) {
-                $video->convert_status = get_string('state_' . $video->convert_status, 'local_video_directory');
+                $video->convert_status = get_string('state_' . $video->convert_status, 'local_video_directory') ;
+                if (($settings->showwhere != 0) && ($isvideostream > 0)) {
+                    $video->convert_status .= "<br>" . get_string('course','moodle') . ": ";
+                    $used = $DB->get_records_sql('SELECT v.course,c.fullname FROM {videostream} v 
+                                                                             LEFT JOIN {course} c ON v.course=c.id 
+                                                  WHERE videoid=?',[$video->id]);
+                    foreach ($used as $singlecourse) {
+                        $video->convert_status .= "<a title='" . $singlecourse->fullname . "' href='" . $CFG->wwwroot
+                        . "/course/view.php?id=" . $singlecourse->course . "'>" . $singlecourse->course . "</a>";
+                    }
+                }
+
             }
             $video->tags = str_replace('/tag/index.php?tc=1', '/local/video_directory/tag.php?action=add&tag=',
                             $OUTPUT->tag_list(core_tag_tag::get_item_tags('local_video_directory',
@@ -280,10 +295,17 @@ class local_video_directory_external extends external_api {
                                         . get_streaming_server_url() . '/' . $video->id . '.mp4</a><br>';
             }
             $embedurl = $CFG->wwwroot . '/local/video_directory/embed.php?id=' . $video->uniqid;
-            $video->streaming_url .= '<div style="direction:ltr">&lt;iframe src="' . $embedurl
-                . '" style="width: 99vw; height: 56vw; max-width: 1280px; max-height: 720px;" frameBorder="0">&lt;/iframe></div>'
-                . '<a href=https://chart.googleapis.com/chart?cht=qr&chld=H|1&chs=300&chl=' . urlencode($embedurl)
-                . ' target="_blank">QR</a>';
+            //embed
+            if ($settings->showembed != 0) {
+                $video->streaming_url .= '<div style="direction:ltr">&lt;iframe src="' . $embedurl
+                    . '" style="width: 99vw; height: 56vw; max-width: 1280px; max-height: 720px;" frameBorder="0"
+                    allowfullscreen="true" webkitallowfullscreen="true" mozallowfullscreen="true">&lt;/iframe></div>';
+            }
+            //QR
+            if ($settings->showqr != 0) {
+                $video->streaming_url .= '<a href=https://chart.googleapis.com/chart?cht=qr&chld=H|1&chs=300&chl=' . urlencode($embedurl)
+                    . ' target="_blank">QR</a>';
+            }
 
             if ($video->private) {
                 $checked = "checked";
@@ -312,6 +334,49 @@ class local_video_directory_external extends external_api {
      */
     public static function videolist_returns() {
         return new external_value(PARAM_RAW, 'Return a JSON of videos');
+    }
+
+
+//userslist
+    /**
+     * Returns description of method parameters
+     * @return external_function_parameters
+     */
+    public static function userslist_parameters() {
+        return new external_function_parameters(
+                array('data' => new external_value(PARAM_RAW,  'DATA', VALUE_DEFAULT, ""))
+        );
+    }
+
+    /**
+     * Returns JSON of all site users
+     * @param int $id Just because I was unable to manage a webservice call without params
+     * @return string
+     */
+    public static function userslist($data) {
+        global $DB;
+        // Parameter validation.
+        // REQUIRED.
+        $params = self::validate_parameters(self::userslist_parameters(),
+                    array('data' => $data));
+        // Context validation.
+        $context = context_system::instance();
+        self::validate_context($context);
+        // Capability checking.
+        if (!has_capability('local/video_directory:video', $context)) {
+            throw new moodle_exception('accessdenied');
+        }
+        $search = json_decode($data);
+        $users = $DB->get_records_select('user', "firstname LIKE ? OR lastname LIKE ?", [ '%' . $search->term . '%', '%' . $search->term . '%'], 'lastname', 'id, concat(firstname, " " ,lastname) as text', 0, 20);
+        return json_encode(array_values($users),JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE);
+    }
+
+    /**
+     * Returns description of method result value
+     * @return external_description
+     */
+    public static function userslist_returns() {
+        return new external_value(PARAM_RAW, 'Return a JSON of all site users');
     }
 
 }

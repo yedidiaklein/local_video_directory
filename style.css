@@ -216,3 +216,7 @@ input.hidden_input:hover {
     text-align: center;
     display: inline-block;
 }
+
+.select2-container {
+    width: 250px !important;
+}

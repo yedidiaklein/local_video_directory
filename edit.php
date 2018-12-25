@@ -50,20 +50,28 @@ $PAGE->set_title(get_string('edit', 'local_video_directory'));
 $PAGE->set_url('/local/video_directory/edit.php');
 $PAGE->set_pagelayout('standard');
 
+$PAGE->requires->css('/local/video_directory/style.css');
+
+$PAGE->requires->js('/local/video_directory/js/edit.js');
+$PAGE->requires->css('/local/video_directory/styles/select2.min.css');
+
+
 $PAGE->navbar->add(get_string('pluginname', 'local_video_directory'), new moodle_url('/local/video_directory/'));
 $PAGE->navbar->add(get_string('edit', 'local_video_directory'));
 
 class edit_form extends moodleform {
     public function definition() {
-        global $CFG, $DB;
+        global $CFG, $DB, $USER;
 
         $id = optional_param('video_id', 0, PARAM_INT);
 
         if ($id != 0) {
             $video = $DB->get_record('local_video_directory', array("id" => $id));
             $origfilename = $video->orig_filename;
+            $owner = array();
         } else {
             $origfilename = "";
+            $owner = 0;
         }
         $mform = $this->_form;
 
@@ -80,6 +88,13 @@ class edit_form extends moodleform {
             $data = $DB->get_record('local_video_directory', array('id' => $id));
             $data->tags = core_tag_tag::get_item_tags_array('local_video_directory', 'local_video_directory', $id);
             $mform->setDefault('tags', $data->tags);
+        }
+
+        if (is_siteadmin($USER) && (is_array($owner))) {
+            $owneruser = $DB->get_record('user',['id'=>$video->owner_id]);
+            $owner[$video->owner_id] = $owneruser->firstname . " " . $owneruser->lastname; 
+            $mform->addElement('select', 'owner', get_string('owner', 'local_video_directory'), $owner);
+
         }
 
         $buttonarray = array();
@@ -103,6 +118,9 @@ if ($mform->is_cancelled()) {
     local_video_edit_right($fromform->id);
 
     $record = array("id" => $fromform->id, "orig_filename" => $fromform->origfilename );
+    if ((isset($_POST['owner'])) && (is_siteadmin($USER))) { //only admins updates owners
+        $record['owner_id'] = $_POST['owner'];
+    }
     $update = $DB->update_record("local_video_directory", $record);
     $context = context_system::instance();
     core_tag_tag::set_item_tags('local_video_directory', 'local_video_directory', $fromform->id, $context, $fromform->tags);

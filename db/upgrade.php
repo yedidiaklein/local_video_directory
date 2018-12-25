@@ -203,9 +203,9 @@ function xmldb_local_video_directory_upgrade($oldversion) {
                     role_change_permission( $roleid, context_system::instance(), 'local/video_directory:video', 1);
                 }
         }
+        upgrade_plugin_savepoint(true, 2018110705, 'local', 'video_directory');
     }
 
 
-    upgrade_plugin_savepoint(true, 2018110705, 'local', 'video_directory');
     return 1;
 }
