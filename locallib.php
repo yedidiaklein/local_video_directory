@@ -206,17 +206,17 @@ function local_video_directory_get_videos($order = 0, $start = null, $length = n
         $match = " (orig_filename LIKE ? OR firstname LIKE ? OR  lastname LIKE ?) ";
         $where = " WHERE " . $match;
         $whereor = " AND " . $match;
-		$params = ['%$search%', '%$search%', '%$search%'];
+		$params = ["%$search%", "%$search%", "%$search%"];
     } else {
         $where = "";
         $whereor = "";
     }
 
     if (is_siteadmin()) {
+        $sql = 
         $videos = $DB->get_records_sql('SELECT v.*, ' . $DB->sql_concat_join("' '", array("firstname", "lastname")) .
                                     ' AS name FROM {local_video_directory} v
                                     LEFT JOIN {user} u on v.owner_id = u.id' . $where . $orderby, $params, $start, $length);
-    
     } else {
         $videos = $DB->get_records_sql('SELECT v.*, ' . $DB->sql_concat_join("' '", array("firstname", "lastname")) .
                                             ' AS name FROM {local_video_directory} v

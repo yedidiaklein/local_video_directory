@@ -231,7 +231,6 @@ class local_video_directory_external extends external_api {
             $total = count(local_video_directory_get_videos(0,null,null,$search));
             $videos = local_video_directory_get_videos($order, $videodata->start, $videodata->length, $search);
         }
-
         //check if mod_videostream is enabled
         $videostream = $DB->get_record('modules',['name'=>'videostream']);
         $isvideostream = count($videostream);
