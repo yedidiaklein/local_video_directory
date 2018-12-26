@@ -32,7 +32,7 @@ if (!$config->allowanonymousembed) {
 }
 
 $PAGE->set_context(context_system::instance());
-$PAGE->requires->css('/local/video_directory/styles/video-js.min.css'));
+$PAGE->requires->css('/local/video_directory/styles/video-js.min.css');
 $PAGE->set_pagelayout('embedded');
 $PAGE->set_url('/local/video_directory/embed.php');
 
