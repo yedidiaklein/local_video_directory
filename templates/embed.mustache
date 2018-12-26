@@ -8,13 +8,13 @@ html, body { overflow: hidden; }
         src="{{wwwroot}}/local/video_directory/subs.php?video_id={{videoid}}" default>
 </video>
 
-<script src="https://vjs.zencdn.net/6.6.3/video.js"></script>
+<script src="{{wwwroot}}/local/video_directory/videojs/video.min.js"></script>
 {{#dash}}
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/dashjs/2.6.8/dash.all.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/videojs-contrib-dash/2.9.3/videojs-dash.min.js"></script>
+    <script src="{{wwwroot}}/local/video_directory/videojs/dash.all.min.js"></script>
+    <script src="{{wwwroot}}/local/video_directory/videojs/videojs-dash.min.js"></script>
 {{/dash}}
 {{#hls}}
-    <script src="https://unpkg.com/videojs-contrib-hls/dist/videojs-contrib-hls.js"></script>
+    <script src="{{wwwroot}}/local/video_directory/videojs/videojs-contrib-hls.min.js"></script>
 {{/hls}}
 <script>
     var player = videojs("videostream-{{videoid}}",{      

@@ -40,7 +40,7 @@ function local_video_directory_get_tagged_pages($tag, $exclusivemode = false, $f
 
     // Include font awesome in case of moodle 32 and older.
     if ($CFG->branch < 33) {
-        $PAGE->requires->css(new moodle_url('https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css'));
+        $PAGE->requires->css('/local/video_directory/font_awesome/css/all.min.css');
     }
     $perpage = 10;
     $query = '';

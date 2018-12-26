@@ -36,7 +36,7 @@ class local_video_directory_external extends external_api {
      */
     public static function edit_parameters() {
         return new external_function_parameters(
-                array('videoid' => new external_value(PARAM_INT,  'Video ID', VALUE_DEFAULT, 0),
+                array('videoid' => new external_value(PARAM_INT, 'Video ID', VALUE_DEFAULT, 0),
                       'value'   => new external_value(PARAM_RAW, 'Video new name', VALUE_DEFAULT, ''),
                       'field'   => new external_value(PARAM_RAW, 'Field name to update', VALUE_DEFAULT, ''),
                       'status'  => new external_value(PARAM_BOOL, 'Video new name', VALUE_DEFAULT, '0')
@@ -248,7 +248,7 @@ class local_video_directory_external extends external_api {
                                                   WHERE videoid=?',[$video->id]);
                     foreach ($used as $singlecourse) {
                         $video->convert_status .= "<a title='" . $singlecourse->fullname . "' href='" . $CFG->wwwroot
-                        . "/course/view.php?id=" . $singlecourse->course . "'>" . $singlecourse->course . "</a>";
+                        . "/course/view.php?id=" . $singlecourse->course . "'>" . $singlecourse->course . "</a> ";
                     }
                 }
 
