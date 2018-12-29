@@ -164,6 +164,15 @@ if ($hassiteconfig) {
         new admin_setting_configselect('local_video_directory/embedtype',
         get_string('embed_type', 'local_video_directory'), '', '', array("none" => "none", "dash" => "dash", "hls" => "hls")));
 
+    $settings->add( new admin_setting_configtext(
+        'local_video_directory/embedoptions',
+        get_string('embed', 'local_video_directory'),
+        '',
+        'style="width: 99vw; height: 56vw; max-width: 1280px; max-height: 720px;" frameBorder="0" allowfullscreen="true" webkitallowfullscreen="true" mozallowfullscreen="true"',
+         PARAM_TEXT
+    ));
+    
+
     $settings->add( new admin_setting_configcheckbox(
         'local_video_directory/allowanonymousembed',
         get_string('allowanonymousembed', 'local_video_directory'),
