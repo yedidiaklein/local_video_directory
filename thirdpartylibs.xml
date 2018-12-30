@@ -35,4 +35,11 @@
         <license>Apache</license>
         <licenseversion>2.0</licenseversion>
     </library>
+    <library>
+        <location>https://sourceforge.net/projects/phpqrcode/</location>
+        <name>PHP QR code</name>
+        <version>1.1.4</version>
+        <license>LPGL</license>
+        <licenseversion>3</licenseversion>
+    </library>
 </libraries>

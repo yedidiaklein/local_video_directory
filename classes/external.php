@@ -301,7 +301,7 @@ class local_video_directory_external extends external_api {
             }
             //QR
             if ($settings->showqr != 0) {
-                $video->streaming_url .= '<a href=https://chart.googleapis.com/chart?cht=qr&chld=H|1&chs=300&chl=' . urlencode($embedurl)
+                $video->streaming_url .= '<a href=' . $CFG->wwwroot . '/local/video_directory/qr.php?id=' . $video->id
                     . ' target="_blank">QR</a>';
             }
 
