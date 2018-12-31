@@ -297,7 +297,7 @@ class local_video_directory_external extends external_api {
             //embed
             if ($settings->showembed != 0) {
                 $video->streaming_url .= '<div style="direction:ltr">&lt;iframe src="' . $embedurl
-                    . ' ' . $settings->embedoptions . '" >&lt;/iframe></div>';
+                    . '" ' . $settings->embedoptions . '" >&lt;/iframe></div>';
             }
             //QR
             if ($settings->showqr != 0) {
