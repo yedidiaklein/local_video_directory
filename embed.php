@@ -37,6 +37,7 @@ $PAGE->set_pagelayout('embedded');
 $PAGE->set_url('/local/video_directory/embed.php');
 
 $uniqid = required_param('id', PARAM_RAW);
+$nostreaming = 0;
 $video = $DB->get_record('local_video_directory', array('uniqid' => $uniqid));
 if (is_numeric($uniqid) && (!$video)) {
     $videobyid = $DB->get_record('local_video_directory', array('id' => $uniqid));

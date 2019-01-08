@@ -162,11 +162,15 @@ function local_video_directory_get_hls_url($videoid) {
 
     $id = $videoid;
     $streams = $DB->get_records("local_video_directory_multi", array("video_id" => $id));
+    if (!$streams) {
+        return;
+    }
     foreach ($streams as $stream) {
         $files[] = $stream->filename;
     }
 
     $parts = array();
+
     foreach ($files as $file) {
         $parts[] = preg_split("/[_.]/", $file);
     }
