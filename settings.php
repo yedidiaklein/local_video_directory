@@ -152,6 +152,13 @@ if ($hassiteconfig) {
         '0'
     ));
 
+    $settings->add( new admin_setting_configcheckbox(
+        'local_video_directory/embedcolumn',
+        get_string('embedcolumn', 'local_video_directory'),
+        get_string('embedcolumndesc', 'local_video_directory'),
+        '0'
+    ));
+
      $settings->add( new admin_setting_configcheckbox(
         'local_video_directory/showembed',
         get_string('showembed', 'local_video_directory'),

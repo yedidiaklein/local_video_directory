@@ -67,7 +67,7 @@ function local_video_directory_get_tagged_pages($tag, $exclusivemode = false, $f
 function local_video_edit_right($videoid) {
     global $DB, $CFG, $USER;
     $video = $DB->get_record("local_video_directory", array('id' => $videoid));
-    if ((is_siteadmin() || $video->owner_id == $USER->id)) {
+    if ((is_video_admin() || $video->owner_id == $USER->id)) {
         return 1;
     } else {
         redirect($CFG->wwwroot . '/local/video_directory/list.php', get_string('accessdenied', 'admin'));
@@ -168,7 +168,7 @@ function local_video_directory_get_videos_by_tags($list, $tagid=0, $start = null
     }
 
 
-    if (is_siteadmin()) {
+    if (is_video_admin()) {
         $videos = $DB->get_records_sql('SELECT DISTINCT v.*, ' . $DB->sql_concat_join("' '", array("firstname", "lastname")) . ' AS name
                                                 FROM {local_video_directory} v
                                                 LEFT JOIN {user} u on v.owner_id = u.id
@@ -212,7 +212,7 @@ function local_video_directory_get_videos($order = 0, $start = null, $length = n
         $whereor = "";
     }
 
-    if (is_siteadmin()) {
+    if (is_video_admin()) {
         $sql = 
         $videos = $DB->get_records_sql('SELECT v.*, ' . $DB->sql_concat_join("' '", array("firstname", "lastname")) .
                                     ' AS name FROM {local_video_directory} v
@@ -270,3 +270,116 @@ function local_video_directory_check_android_version($version = '4.5.0') {
 	}
 
 }
+
+function local_video_directory_studio_tasks($id, $table, $metadata) {
+    global $DB, $USER;
+    $datas = $DB->get_records('local_video_directory_' . $table, ['user_id' => $USER->id, 'video_id' => $id]);   
+    $tasks = [];
+    foreach ($datas as $data) { // startx starty endx endy
+        $metacat = "";
+        foreach ($metadata as $metdat) {
+            $metacat .= $data->$metdat . " ";
+        }
+        $tasks[] = [ 'task' => get_string($table, 'local_video_directory'),
+                'state' => get_string('textstate_' . $data->state, 'local_video_directory'),
+                'metadata' => $metacat,
+                'date' => strftime("%A, %d %B %Y %H:%M", $data->datecreated)
+             ];
+    }
+    return $tasks;
+}
+
+function local_video_directory_studio_action($data, $type) {
+  global $DB;
+  $dirs = get_directories();
+  $settings = get_settings();
+  $ffmpeg = $settings->ffmpeg;
+  $origdir = $dirs['uploaddir'];
+  $streamingdir = $dirs['converted'];
+
+  foreach ($data as $dat) {
+    // first of all set state to 1
+    $DB->update_record('local_video_directory_' . $type, ['id' => $dat->id, 'state' => 1]);
+    if ($type == "crop") {
+        if ($dat->startx < $dat->endx) {
+            $startx = $dat->startx;
+        } else {
+            $startx = $dat->endx;
+        }
+
+        if ($dat->starty < $dat->endy) {
+            $starty = $dat->starty;
+        } else {
+            $starty = $dat->endy;
+        }
+    
+        $width = abs($dat->endx - $dat->startx);
+        $height = abs($dat->endy - $dat->starty);
+    }
+
+    if ($dat->save == "new") {
+        $name = $DB->get_field('local_video_directory', 'orig_filename', ['id' => $dat->video_id]);
+        $record = array('orig_filename' => $type . ' ' . $name,
+                    'owner_id' => $dat->user_id,
+                    'private' => 1,
+                    'uniqid' => uniqid('', true));
+        $newid = $DB->insert_record('local_video_directory' , $record);
+    } else { // version 
+        $record = array('id' => $dat->video_id,
+                        'convert_status' => 1);
+        $DB->update_record('local_video_directory' , $record);
+        $newid = $dat->video_id;
+
+    }
+    if ($type == "crop") {
+        $cmd[] = $ffmpeg . " -i " . $streamingdir . "/" . $dat->video_id . ".mp4 -filter:v \"crop=$width:$height:$startx:$starty\" " . $origdir . "/" . $newid . ".mp4";
+    } elseif ($type == "cat") {
+        $cmd[] = $ffmpeg . " -i " . $streamingdir . "/" . $dat->video_id . ".mp4 -c copy -bsf:v h264_mp4toannexb -f mpegts /tmp/intermediate1.ts";
+        $cmd[] = $ffmpeg . " -i " . $streamingdir . "/" . $dat->video_id_cat . ".mp4 -c copy -bsf:v h264_mp4toannexb -f mpegts /tmp/intermediate2.ts";
+        $cmd[] = $ffmpeg . ' -i "concat:/tmp/intermediate1.ts|/tmp/intermediate2.ts" -c copy -bsf:a aac_adtstoasc ' . $origdir . "/" . $newid . ".mp4"; 
+    } elseif ($type == "cut") {
+        $start = gmdate("H:i:s", $dat->secbefore);
+        $length = $DB->get_field('local_video_directory', 'length', ['id' => $dat->video_id]); //"00:05:32";
+        $time = strtotime($length);
+        $newlength = date("H:i:s", $time - $dat->secafter);
+        $cmd[] = $ffmpeg . " -ss " . $start .  " -i " . $streamingdir . "/" . $dat->video_id . ".mp4 -to $newlength -c copy -copyts " . $origdir . "/" . $newid . ".mp4";
+    } elseif ($type == "merge") {
+        $cmd[] = $ffmpeg . " -i " . $streamingdir . "/" . $dat->video_id . ".mp4 -i " . $dirs['multidir'] . $dat->video_id_small . "_" . $dat->height . ".mp4 -map 0:0 -map " . $dat->audio . ":1" .
+        ' -strict -2 -vf "movie='. $dirs['multidir'] . $dat->video_id_small . "_" . $dat->height . ".mp4" .'[inner]; [in][inner] overlay=' . $dat->border . ':' . $dat->border . '[out]" ' .
+        $origdir . "/" . $newid . ".mp4";
+    }
+
+
+
+    foreach ($cmd as $cm) {
+        echo "CMD: $cm";
+        exec($cm);
+    }
+    copy($origdir . "/" . $newid . ".mp4", $origdir . "/" . $newid);
+    unlink($origdir . "/" . $newid . ".mp4");
+    if ($type == "cat") {
+        unlink("/tmp/intermediate1.ts");
+        unlink("/tmp/intermediate2.ts");
+    }
+    $DB->update_record('local_video_directory_' . $type, ['id' => $dat->id, 'state' => 2]);
+  }
+}
+
+function is_video_admin($user = '') {
+    global $USER;
+    if (is_siteadmin($USER)) {
+        return TRUE;
+    }
+
+    // Check if user is video admin
+    $context = context_system::instance();
+    $roles = get_user_roles($context, $USER->id, TRUE);
+    $keys = array_keys($roles);
+    foreach ($keys as $key) {
+        if ($roles[$key]->shortname == 'local_video_directory_admin') {
+            return TRUE;
+        }
+    }
+    return FALSE;
+}
+

@@ -1,4 +1,4 @@
-require(['jquery', 'local_video_directory/select2'] , function($) {
+define(['jquery', 'local_video_directory/select2'] , function($) {
     $('#id_owner').select2({
         minimumInputLength: 1, // only start searching when the user has input 3 or more characters
         ajax: {

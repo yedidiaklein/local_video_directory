@@ -14,10 +14,10 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 /**
- * Edit video details.
+ * Crop video by choosing new rectangle.
  *
  * @package    local_video_directory
- * @copyright  2017 Yedidia Klein <yedidia@openapp.co.il>
+ * @copyright  2019 Yedidia Klein <yedidia@openapp.co.il>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
@@ -45,57 +45,45 @@ $streamingurl = get_settings()->streaming;
 $id = optional_param('video_id', 0, PARAM_INT);
 
 $PAGE->set_context(context_system::instance());
-$PAGE->set_heading(get_string('edit', 'local_video_directory'));
-$PAGE->set_title(get_string('edit', 'local_video_directory'));
-$PAGE->set_url('/local/video_directory/edit.php?video_id=' . $id);
+$PAGE->set_heading(get_string('crop', 'local_video_directory'));
+$PAGE->set_title(get_string('crop', 'local_video_directory'));
+$PAGE->set_url('/local/video_directory/studio_crop.php?video_id=' . $id);
 $PAGE->set_pagelayout('standard');
 
 $PAGE->requires->css('/local/video_directory/style.css');
 
-//$PAGE->requires->js('/local/video_directory/js/edit.js');
-$PAGE->requires->css('/local/video_directory/styles/select2.min.css');
-
+$PAGE->requires->js('/local/video_directory/js/crop.js');
 
 $PAGE->navbar->add(get_string('pluginname', 'local_video_directory'), new moodle_url('/local/video_directory/'));
-$PAGE->navbar->add(get_string('edit', 'local_video_directory'));
+$PAGE->navbar->add(get_string('studio', 'local_video_directory'), new moodle_url('/local/video_directory/studio.php?video_id=' . $id));
+$PAGE->navbar->add(get_string('crop', 'local_video_directory'));
 
-class edit_form extends moodleform {
+class crop_form extends moodleform {
     public function definition() {
         global $CFG, $DB, $USER;
 
         $id = optional_param('video_id', 0, PARAM_INT);
 
-        if ($id != 0) {
+/*        if ($id != 0) {
             $video = $DB->get_record('local_video_directory', array("id" => $id));
-            $origfilename = $video->orig_filename;
-            $owner = array();
         } else {
             $origfilename = "";
             $owner = 0;
         }
+        */
         $mform = $this->_form;
 
-        $mform->addElement('text', 'origfilename', get_string('filename', 'local_video_directory'));
-        $mform->setType('origfilename', PARAM_RAW);
-        $mform->setDefault('origfilename', $origfilename ); // Default value.
-
+        
         $mform->addElement('hidden', 'id', $id);
         $mform->setType('id', PARAM_INT);
 
-        $mform->addElement('tags', 'tags', get_string('tags'),
-                    array('itemtype' => 'local_video_directory', 'component' => 'local_video_directory'));
-        if ($id != 0) {
-            $data = $DB->get_record('local_video_directory', array('id' => $id));
-            $data->tags = core_tag_tag::get_item_tags_array('local_video_directory', 'local_video_directory', $id);
-            $mform->setDefault('tags', $data->tags);
-        }
+        $mform->addElement('html', '<div id="rectangleData"></div><br><br>');
 
-        if (is_video_admin($USER) && (is_array($owner))) {
-            $owneruser = $DB->get_record('user',['id'=>$video->owner_id]);
-            $owner[$video->owner_id] = $owneruser->firstname . " " . $owneruser->lastname; 
-            $mform->addElement('select', 'owner', get_string('owner', 'local_video_directory'), $owner);
 
-        }
+        $mform->addElement('select', 'save', get_string('save', 'moodle'),
+            [ 'version' => get_string('newversion', 'local_video_directory'), 
+              'new' => get_string('newvideo', 'local_video_directory')
+            ]);
 
         $buttonarray = array();
         $buttonarray[] =& $mform->createElement('submit', 'submitbutton', get_string('savechanges'));
@@ -108,7 +96,9 @@ class edit_form extends moodleform {
     }
 }
 
-$mform = new edit_form();
+$mform = new crop_form();
+
+$width = 640; // default width, very important for crop calculation
 
 if ($mform->is_cancelled()) {
     redirect($CFG->wwwroot . '/local/video_directory/list.php');
@@ -116,24 +106,42 @@ if ($mform->is_cancelled()) {
 
     // Check that user has rights to edit this video.
     local_video_edit_right($fromform->id);
-
-    $record = array("id" => $fromform->id, "orig_filename" => $fromform->origfilename );
-    if ((isset($_POST['owner'])) && (is_video_admin($USER))) { //only admins updates owners
-        $record['owner_id'] = $_POST['owner'];
-    }
-    $update = $DB->update_record("local_video_directory", $record);
-    $context = context_system::instance();
-    core_tag_tag::set_item_tags('local_video_directory', 'local_video_directory', $fromform->id, $context, $fromform->tags);
-    redirect($CFG->wwwroot . '/local/video_directory/list.php');
+    $video = $DB->get_record('local_video_directory', array("id" => $fromform->id));
+    $ratio = $video->width / $width;
+    $now = time();
+    $record = array("video_id" => $fromform->id,
+                    "user_id" => $USER->id,
+                    "timecreated" => $now,
+                    "timemodified" => $now,
+                    "state" => 0,
+                    "save" => $fromform->save,
+                    "startx" => ($_POST['StartX'] * $ratio),
+                    "starty" => ($_POST['StartY'] * $ratio),
+                    "endx" => ($_POST['EndX'] * $ratio),
+                    "endy" => ($_POST['EndY'] * $ratio));
+    $insert = $DB->insert_record("local_video_directory_crop", $record);
+    redirect($CFG->wwwroot . '/local/video_directory/studio.php?video_id=' . $fromform->id,
+                get_string('inqueue', 'local_video_directory'));
 } else {
     echo $OUTPUT->header();
 
     $video = $DB->get_record('local_video_directory', array("id" => $id));
-    $versions = $DB->get_records("local_video_directory_vers", array("file_id" => $id));
 
-    echo $OUTPUT->render_from_template('local_video_directory/edit',
-    ['wwwroot' => $CFG->wwwroot, 'versions' => $versions, 'id' => $id, 'thumb' => str_replace("-", "&second=", $video->thumb)]);
+    $height = $width / ($video->width / $video->height);
 
+    if ($streaming = get_streaming_server_url()) {
+        $url = $streaming . "/" . $id . ".mp4";
+    } else {
+        $url = $CFG->wwwroot . "/local/video_directory/play.php?video_id=" . $id;
+    }
+
+    echo $OUTPUT->render_from_template('local_video_directory/studio_crop',
+    ['wwwroot' => $CFG->wwwroot, 
+     'url' => $url,
+     'id' => $id, 
+     'thumb' => str_replace("-", "&second=", $video->thumb), 
+     'height' => $height, 
+     'width' => $width]);
 
 
     $mform->display();

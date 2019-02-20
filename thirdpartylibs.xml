@@ -1,45 +1,56 @@
 <?xml version="1.0"?>
 <libraries>
     <library>
-        <location>https://cdn.datatables.net/1.10.7</location>
+        <url>https://cdn.datatables.net/1.10.7</url>
+        <location>datatables</location>
         <name>DataTables</name>
         <version>1.10.7</version>
         <license>MIT</license>
         <licenseversion>1</licenseversion>
     </library>
     <library>
-        <location>https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/</location>
+        <url>https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/</url>
+        <location>font-awesome</location>
         <name>Font Awesome</name>
         <version>4.7.0</version>
         <license>SIL OFL</license>
         <licenseversion>1.1</licenseversion>
     </library>
     <library>
-        <location>https://vjs.zencdn.net/6.6.3/video.js</location>
+        <url>https://vjs.zencdn.net/6.6.3/video.js</url>
+        <location>videojs/</location>
         <name>Video.js</name>
         <version>6.6.3</version>
         <license>Apache</license>
         <licenseversion>2.0</licenseversion>
     </library>
     <library>
-        <location>https://cloud.google.com/speech-to-text/</location>
+        <url>https://cloud.google.com/speech-to-text/</url>
         <name>Google Speech Cloud API</name>
         <version>0.17.1</version>
         <license>Apache</license>
         <licenseversion>2.0</licenseversion>
     </library>
     <library>
-        <location>https://cloud.google.com/storage/</location>
+        <url>https://cloud.google.com/storage/</url>
+        <location>classes/task/googleSpeech/</location>
         <name>Google Storage Cloud API</name>
         <version>1.9.2</version>
         <license>Apache</license>
         <licenseversion>2.0</licenseversion>
     </library>
     <library>
-        <location>https://sourceforge.net/projects/phpqrcode/</location>
+        <url>https://sourceforge.net/projects/phpqrcode/</url>
         <name>PHP QR code</name>
+        <location>includes/phpqrcode.php</location>
         <version>1.1.4</version>
         <license>LPGL</license>
         <licenseversion>3</licenseversion>
+    </library>
+    <library>
+        <url>https://select2.org</url>
+        <name>Select2</name>
+        <location>amd/src/select2.js</location>
+        <license>MIT</license>
     </library>
 </libraries>

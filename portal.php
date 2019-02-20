@@ -89,7 +89,7 @@ if ($mform->is_cancelled()) {
     $streaming = get_streaming_server_url();
 
     if ($search) {
-        $admin = is_siteadmin($USER);
+        $admin = is_video_admin($USER);
         $videos = $DB->get_records_sql('SELECT DISTINCT v.* FROM {local_video_directory} v
                                         LEFT JOIN {local_video_directory_txtsec} t
                                         ON v.id = t.video_id

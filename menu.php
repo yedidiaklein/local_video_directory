@@ -34,7 +34,7 @@ if (!CLI_SCRIPT) {
     // Check if user have permissionss.
     $context = context_system::instance();
 
-    if (!has_capability('local/video_directory:video', $context) && !is_siteadmin($USER)) {
+    if (!has_capability('local/video_directory:video', $context) && !is_video_admin($USER)) {
         die("Access Denied. You must be a member of the designated cohort. Please see your site admin.");
     }
 
@@ -55,4 +55,6 @@ echo $OUTPUT->render_from_template('local_video_directory/menu',
                                     ['size' => local_video_directory_human_filesize(
                                         disk_free_space($CFG->dataroot), 2, $settings->df),
                                      'selected' => $selected,
-                                     'menu' => $tabs]);
+                                     'menu' => $tabs,
+                                     'admin' => is_siteadmin($USER) 
+                                    ]);

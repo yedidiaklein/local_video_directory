@@ -36,7 +36,7 @@ if (!CLI_SCRIPT) {
     // Check if user have permissions.
     $context = context_system::instance();
 
-    if (!has_capability('local/video_directory:video', $context) && !is_siteadmin($USER)) {
+    if (!has_capability('local/video_directory:video', $context) && !is_video_admin($USER)) {
         die("Access Denied. You must be a member of the designated cohort. Please see your site admin.");
     }
 
@@ -49,13 +49,16 @@ $PAGE->set_url('/local/video_directory/upload.php');
 $PAGE->navbar->add(get_string('pluginname', 'local_video_directory'), new moodle_url('/local/video_directory/'));
 $PAGE->navbar->add(get_string('upload', 'local_video_directory'));
 $PAGE->requires->css('/local/video_directory/style.css');
+$PAGE->requires->css('/local/video_directory/styles/select2.min.css');
 $PAGE->set_context(context_system::instance());
+$PAGE->requires->js_amd_inline('require([\'jquery\',\'local_video_directory/edit\'])');
+
 $context = context_user::instance($USER->id);
 
 class upload_form extends moodleform {
     // Add elements to form.
     public function definition() {
-        global $CFG, $DB, $context;
+        global $CFG, $DB, $context, $USER;
 
         $id = optional_param('video_id', 0, PARAM_INT);
 
@@ -73,6 +76,23 @@ class upload_form extends moodleform {
 
         $mform->addElement('checkbox', 'private', get_string('private', 'local_video_directory'));
         $mform->setDefault('private', 'checked');
+
+        $mform->addElement('text', 'origfilename', get_string('orig_filename', 'local_video_directory'));
+        $mform->setType('origfilename', PARAM_RAW);
+
+        $mform->addElement('tags', 'tags', get_string('tags'),
+                    array('itemtype' => 'local_video_directory', 'component' => 'local_video_directory'));
+        if ($id) {
+            $data->tags = core_tag_tag::get_item_tags_array('local_video_directory', 'local_video_directory', $id);
+            $mform->setDefault('tags', $data->tags);
+        }
+
+        if (is_video_admin($USER)) {
+            $owner[0] = $USER->firstname . " " . $USER->lastname; 
+            $mform->addElement('select', 'owner', get_string('owner', 'local_video_directory'), $owner);
+        }
+
+
         $mform->addElement('filemanager', 'attachments', get_string('file', 'moodle'), null,
                     array('subdirs' => 3, 'maxfiles' => 50,
                           'accepted_types' => array('audio' , 'video'), 'return_types' => FILE_INTERNAL | FILE_EXTERNAL));
@@ -114,23 +134,45 @@ if ($mform->is_cancelled()) {
     $dirs = get_directories();
     $files = $DB->get_records_select('files', "itemid = $fromform->attachments and filename <> '.'",
                 null , 'contenthash , filename');
+    $counter = 0;
     foreach ($files as $file) {
-        $record = array('orig_filename' => $file->filename, 'owner_id' => $USER->id, 'uniqid' => uniqid('', true));
+        if (isset($_POST['owner']) && ($_POST['owner'] != 0)) {
+            $owner = $_POST['owner'];
+        } else {
+            $owner = $USER->id;
+        }
+        
+        if ($fromform->origfilename != '') {
+            $name = $fromform->origfilename;
+            if ($counter != 0) {
+                $name  .= "_" . $counter;
+            }
+        } else {
+            $name = $file->filename;
+        }
+        $counter++;
+        $record = array('orig_filename' => $name, 'owner_id' => $owner, 'uniqid' => uniqid('', true));
         if ((isset($fromform->private)) && ($fromform->private)) {
             $record['private'] = 1;
         }
         // New video.
         if ($fromform->id == 0) {
             $lastinsertid = $DB->insert_record('local_video_directory', $record);
+            core_tag_tag::set_item_tags('local_video_directory', 'local_video_directory', $lastinsertid, $context, $fromform->tags);
+
             // Uploading new video on existing ID.
         } else {
             // Check that user has rights to edit this video.
             local_video_edit_right($fromform->id);
 
+            if (isset($_POST['owner']) && ($_POST['owner'] != 0)) {
+                $record['owner_id'] = $_POST['owner'];
+            }
             $lastinsertid = $fromform->id;
             $record['id'] = $fromform->id;
             $record['convert_status'] = 1;
             $DB->update_record('local_video_directory', $record);
+            core_tag_tag::set_item_tags('local_video_directory', 'local_video_directory', $lastinsertid, $context, $fromform->tags);
         }
         $path = substr($file->contenthash, 0, 2) . "/" . substr($file->contenthash, 2, 2) . "/";
         copy($CFG->dataroot . "/filedir/" . $path . $file->contenthash, $dirs['uploaddir'] . $lastinsertid);

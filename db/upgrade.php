@@ -196,7 +196,7 @@ function xmldb_local_video_directory_upgrade($oldversion) {
         require_once($CFG->dirroot . '/lib/accesslib.php');
         $role = $DB->get_record('role', array('shortname' => 'local_video_directory'));
         if (empty($role)) {
-            $roleid = create_role('local_video_directory', 'local_video_directory', 'video system roll');
+            $roleid = create_role('local_video_directory', 'local_video_directory', 'video system role');
                 if (is_int($roleid)) {
                     $contextsids = array(CONTEXT_SYSTEM);
                     set_role_contextlevels($roleid, $contextsids);
@@ -204,6 +204,101 @@ function xmldb_local_video_directory_upgrade($oldversion) {
                 }
         }
         upgrade_plugin_savepoint(true, 2018110705, 'local', 'video_directory');
+    }
+    
+    if ($oldversion < 2019011200) {
+        $table = new xmldb_table('local_video_directory_crop');
+
+        $table->add_field('id', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, XMLDB_SEQUENCE, null);
+        $table->add_field('video_id', XMLDB_TYPE_INTEGER, '20', null, XMLDB_NOTNULL, null, null);
+        $table->add_field('user_id', XMLDB_TYPE_INTEGER, '20', null, XMLDB_NOTNULL, null, null);
+        $table->add_field('save', XMLDB_TYPE_CHAR, '10', null, XMLDB_NOTNULL, null, null);
+        $table->add_field('state', XMLDB_TYPE_INTEGER, '2', null, XMLDB_NOTNULL, null, null);
+        $table->add_field('datecreated', XMLDB_TYPE_INTEGER, '20', null, null, null, null);
+        $table->add_field('datemodified', XMLDB_TYPE_INTEGER, '20', null, null, null, null);
+        $table->add_field('startx', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, null);
+        $table->add_field('starty', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, null);
+        $table->add_field('endx', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, null);
+        $table->add_field('endy', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, null);
+        $table->add_key('primary', XMLDB_KEY_PRIMARY, array('id'));
+    
+        if (!$dbman->table_exists($table)) {
+            $dbman->create_table($table);
+        }
+        upgrade_plugin_savepoint(true, 2019011200, 'local', 'video_directory');
+    }
+
+    if ($oldversion < 2019012700) {
+        $table = new xmldb_table('local_video_directory_merge');
+
+        $table->add_field('id', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, XMLDB_SEQUENCE, null);
+        $table->add_field('video_id', XMLDB_TYPE_INTEGER, '20', null, XMLDB_NOTNULL, null, null);
+        $table->add_field('user_id', XMLDB_TYPE_INTEGER, '20', null, XMLDB_NOTNULL, null, null);
+        $table->add_field('save', XMLDB_TYPE_CHAR, '10', null, XMLDB_NOTNULL, null, null);
+        $table->add_field('state', XMLDB_TYPE_INTEGER, '2', null, XMLDB_NOTNULL, null, null);
+        $table->add_field('datecreated', XMLDB_TYPE_INTEGER, '20', null, null, null, null);
+        $table->add_field('datemodified', XMLDB_TYPE_INTEGER, '20', null, null, null, null);
+        $table->add_field('video_id_small', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, null);
+        $table->add_field('height', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, null);
+        $table->add_field('border', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, null);
+        $table->add_field('fade', XMLDB_TYPE_INTEGER, '2', null, XMLDB_NOTNULL, null, null);
+        $table->add_field('location', XMLDB_TYPE_INTEGER, '2', null, XMLDB_NOTNULL, null, null);
+        $table->add_field('audio', XMLDB_TYPE_INTEGER, '2', null, XMLDB_NOTNULL, null, null);
+        $table->add_key('primary', XMLDB_KEY_PRIMARY, array('id'));
+    
+        if (!$dbman->table_exists($table)) {
+            $dbman->create_table($table);
+        }
+
+        $table = new xmldb_table('local_video_directory_cut');
+
+        $table->add_field('id', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, XMLDB_SEQUENCE, null);
+        $table->add_field('video_id', XMLDB_TYPE_INTEGER, '20', null, XMLDB_NOTNULL, null, null);
+        $table->add_field('user_id', XMLDB_TYPE_INTEGER, '20', null, XMLDB_NOTNULL, null, null);
+        $table->add_field('save', XMLDB_TYPE_CHAR, '10', null, XMLDB_NOTNULL, null, null);
+        $table->add_field('state', XMLDB_TYPE_INTEGER, '2', null, XMLDB_NOTNULL, null, null);
+        $table->add_field('datecreated', XMLDB_TYPE_INTEGER, '20', null, null, null, null);
+        $table->add_field('datemodified', XMLDB_TYPE_INTEGER, '20', null, null, null, null);
+        $table->add_field('secbefore', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, null);
+        $table->add_field('secafter', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, null);
+        $table->add_key('primary', XMLDB_KEY_PRIMARY, array('id'));
+    
+        if (!$dbman->table_exists($table)) {
+            $dbman->create_table($table);
+        }
+
+        $table = new xmldb_table('local_video_directory_cat');
+
+        $table->add_field('id', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, XMLDB_SEQUENCE, null);
+        $table->add_field('video_id', XMLDB_TYPE_INTEGER, '20', null, XMLDB_NOTNULL, null, null);
+        $table->add_field('user_id', XMLDB_TYPE_INTEGER, '20', null, XMLDB_NOTNULL, null, null);
+        $table->add_field('save', XMLDB_TYPE_CHAR, '10', null, XMLDB_NOTNULL, null, null);
+        $table->add_field('state', XMLDB_TYPE_INTEGER, '2', null, XMLDB_NOTNULL, null, null);
+        $table->add_field('datecreated', XMLDB_TYPE_INTEGER, '20', null, null, null, null);
+        $table->add_field('datemodified', XMLDB_TYPE_INTEGER, '20', null, null, null, null);
+        $table->add_field('video_id_cat', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, null);
+        $table->add_key('primary', XMLDB_KEY_PRIMARY, array('id'));
+    
+        if (!$dbman->table_exists($table)) {
+            $dbman->create_table($table);
+        }
+
+        upgrade_plugin_savepoint(true, 2019012700, 'local', 'video_directory');
+    }
+
+    if ($oldversion < 2019021901) {
+        global $CFG;
+        require_once($CFG->dirroot . '/lib/accesslib.php');
+        $role = $DB->get_record('role', array('shortname' => 'local_video_directory_admin'));
+        if (empty($role)) {
+            $roleid = create_role('local_video_directory_admin', 'local_video_directory_admin', 'video admin system role');
+                if (is_int($roleid)) {
+                    $contextsids = array(CONTEXT_SYSTEM);
+                    set_role_contextlevels($roleid, $contextsids);
+                    role_change_permission( $roleid, context_system::instance(), 'local/video_directory:video', 1);
+                }
+        }
+        upgrade_plugin_savepoint(true, 2019021901, 'local', 'video_directory');
     }
 
 

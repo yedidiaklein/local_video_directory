@@ -1,0 +1,32 @@
+{{#taskscount}}
+<div class='tasklist'>
+    <table border=1>
+        <tr>
+            <th>{{#str}}resettask, moodle{{/str}}</th>
+            <th>{{#str}}metadata, atto_media{{/str}}</th>
+            <th>{{#str}}date, moodle{{/str}}</th>
+            <th>{{#str}}convert_status, local_video_directory{{/str}}</th>
+        </tr>
+        {{#tasks}}
+        <tr>
+            <th>{{task}}</th>
+            <th>{{metadata}}</th>
+            <th>{{date}}</th>
+            <th>{{state}}</th>
+        </tr>
+        {{/tasks}}
+    </table>    
+</div>
+{{/taskscount}}
+<div class='local_video_directory_video-table'>
+{{#tools}}
+    <span class="local_video_portal_video">
+        <a href="studio_{{name}}.php?video_id={{id}}">
+        <img src="pix/{{name}}.png" class="local_video_portal_thumb">
+        <div class="local_video_portal_name">
+            {{description}}
+        </div>
+        </a>
+    </span>
+{{/tools}}
+</div>

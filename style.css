@@ -169,9 +169,10 @@ input.hidden_input:hover {
 
 .local_video_portal_name {
     position: relative;
-    top: -40px;
+    top: -45px;
     z-index: 1;
     background-color: white;
+    text-align: center;
 }
 
 .local_video_portal_video {
@@ -219,4 +220,45 @@ input.hidden_input:hover {
 
 .select2-container {
     width: 250px !important;
+}
+
+.rectangle {
+    border: 1px dotted #FF0000;
+    position: absolute;
+    z-index: 1000;
+    background-color: rgba(255,255,255,0.5);
+}
+
+#video-controls {
+    width: 640px;
+	padding: 5px;
+}
+
+#video-controls button {
+	background: rgba(0,0,0,.5);
+	border: 0;
+	color: #EEE;
+	-webkit-border-radius: 3px;
+	-moz-border-radius: 3px;
+	-o-border-radius: 3px;
+	border-radius: 3px;
+}
+
+#video-controls button:hover {
+	cursor: pointer;
+}
+
+#video-controls #seek-bar {
+	width: 300px;
+}
+
+#video-controls #volume-bar {
+	width: 60px;
+}
+
+#video-controls #play-pause {
+    width:70px;
+}
+#page-local-video_directory-list .ui-widget-content a {
+    color: blue;
 }

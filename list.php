@@ -32,7 +32,7 @@ if (!CLI_SCRIPT) {
 
     // Check if user have permissionss.
     $context = context_system::instance();
-    if (!has_capability('local/video_directory:video', $context) && !is_siteadmin($USER)) {
+    if (!has_capability('local/video_directory:video', $context) && !is_video_admin($USER)) {
         die("Access Denied. You must get rights... Please see your site admin.");
     }
 
@@ -112,8 +112,9 @@ $liststrings = array();
 foreach ($listheaders as $liststring) {
             array_push($liststrings, get_string($liststring, 'local_video_directory'));
 }
+
 echo $OUTPUT->render_from_template('local_video_directory/list',
  ['wwwroot' => $CFG->wwwroot, 'alltags' => $alltagsurl, 'existvideotags' => is_array($SESSION->video_tags),
- 'videotags' => $selectedtags, 'liststrings' => $liststrings]);
+ 'videotags' => $selectedtags, 'liststrings' => $liststrings, 'embedcolumn' => !$settings->embedcolumn ]);
 echo $OUTPUT->render_from_template('local_video_directory/player', []);
 echo $OUTPUT->footer();

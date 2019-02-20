@@ -1,0 +1,25 @@
+
+<div id="studio-crop-container">
+		<video 
+			id="video"
+			width="{{width}}"
+            height="{{height}}" 
+            preload="auto"
+            poster="{{wwwroot}}/local/video_directory/thumb.php?id={{thumb}}"
+			src="{{url}}"
+			style="width: {{width}}px; height: {{height}}px; border: 1px solid black;position:absolute; z-index:1;">
+		</video> 
+		<div 
+			id="canvas" 
+			height="{{height}" 
+			width="{{width}}"
+			style="width: {{width}}px; height: {{height}}px; border: 1px solid black;position:relative; z-index:999;"> 		
+		</div> 
+	</div>
+    <div id="video-controls" class="btn-primary">
+        <button type="button" id="play-pause">Play</button>
+        <input type="range" id="seek-bar" value="0">
+        <button type="button" id="mute">Mute</button>
+        <input type="range" id="volume-bar" min="0" max="1" step="0.1" value="1">
+        <button type="button" id="full-screen">Full-Screen</button>
+    </div>

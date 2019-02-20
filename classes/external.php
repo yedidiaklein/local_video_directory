@@ -241,13 +241,15 @@ class local_video_directory_external extends external_api {
             if (is_numeric($video->convert_status)) {
                 $video->convert_status = get_string('state_' . $video->convert_status, 'local_video_directory') ;
                 if (($settings->showwhere != 0) && ($isvideostream > 0)) {
-                    $video->convert_status .= "<br>" . get_string('course','moodle') . ": ";
                     $used = $DB->get_records_sql('SELECT v.course,c.fullname FROM {videostream} v 
                                                                              LEFT JOIN {course} c ON v.course=c.id 
                                                   WHERE videoid=?',[$video->id]);
-                    foreach ($used as $singlecourse) {
-                        $video->convert_status .= "<a title='" . $singlecourse->fullname . "' href='" . $CFG->wwwroot
-                        . "/course/view.php?id=" . $singlecourse->course . "'>" . $singlecourse->course . "</a> ";
+                    if ($used) {
+                        $video->convert_status .= "<br>" . get_string('course','moodle') . ": ";
+                        foreach ($used as $singlecourse) {
+                            $video->convert_status .= "<a title='" . $singlecourse->fullname . "' href='" . $CFG->wwwroot
+                            . "/course/view.php?id=" . $singlecourse->course . "'>" . $singlecourse->course . "</a> ";
+                        }
                     }
                 }
 
@@ -266,7 +268,7 @@ class local_video_directory_external extends external_api {
 
             $video->thumb = local_video_get_thumbnail_url($video->thumb, $video->id);
 
-            if (($video->owner_id != $USER->id) && !is_siteadmin($USER)) {
+            if (($video->owner_id != $USER->id) && !is_video_admin($USER)) {
                 $video->actions = '';
             } else {
                 unset($templateparams);
@@ -312,7 +314,7 @@ class local_video_directory_external extends external_api {
             }
 
             // Do not allow non owner to edit privacy and title.
-            if (($video->owner_id != $USER->id) && !is_siteadmin($USER)) {
+            if (($video->owner_id != $USER->id) && !is_video_admin($USER)) {
                  $video->private = '';
             } else {
                 $video->private = "<p style='display: none'>" . $video->private . '</p><input type="checkbox"

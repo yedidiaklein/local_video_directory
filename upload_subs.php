@@ -37,7 +37,7 @@ if (!CLI_SCRIPT) {
     // Check if user have permissionss.
     $context = context_system::instance();
 
-    if (!has_capability('local/video_directory:video', $context) && !is_siteadmin($USER)) {
+    if (!has_capability('local/video_directory:video', $context) && !is_video_admin($USER)) {
         die("Access Denied. You must be a member of the designated cohort. Please see your site admin.");
     }
 
