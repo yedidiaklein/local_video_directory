@@ -1,19 +1,12 @@
 initDraw(document.getElementById('canvas'));
 
-//var offsets = document.getElementById('canvas').getBoundingClientRect();
-
 function initDraw(canvas) {
     function setMousePosition(e) {
-        var ev = e || window.event; //Moz || IE
-        if (ev.pageX) { //Moz
+        var ev = e || window.event;
+        if (ev.pageX) { 
             mouse.x = ev.offsetX;
             mouse.y = ev.offsetY;
-            //mouse.x = ev.pageX - offsets.x; //+ window.pageXOffset - 35;
-            //console.log(ev);
-            //console.log(ev.layerX);
-            //console.log(ev.offsetX);
-            //mouse.y = ev.pageY - 230; // + window.pageYOffset - 230;
-        } else if (ev.clientX) { //IE
+        } else if (ev.clientX) { 
             mouse.x = ev.clientX + document.body.scrollLeft - 35;
             mouse.y = ev.clientY + document.body.scrollTop - 230;
         }
