@@ -147,6 +147,10 @@ input.hidden_input:hover {
     color: #eee;
 }
 
+.video-thumbnail img {
+    max-width:100px;
+}
+
 #video_table i {
     font-size: 30px;
 }
