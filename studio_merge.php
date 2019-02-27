@@ -106,7 +106,7 @@ $mform = new simplehtml_form();
 //Form processing and displaying is done here
 if ($mform->is_cancelled()) {
     //Handle form cancel operation, if cancel button is present on form
-    redirect($CFG->wwwroot . '/local/video/list.php');
+    redirect($CFG->wwwroot . '/local/video_directory');
 } else if ($fromform = $mform->get_data()) {
   //In this case you process validated data. $mform->get_data() returns data posted in form.
 	$now = time();
