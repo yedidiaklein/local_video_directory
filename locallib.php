@@ -138,7 +138,8 @@ function get_directories() {
 
 function local_video_directory_get_videos_by_tags($list, $tagid=0, $start = null, $length = null, $search = 0, $order=0) {
     global $USER, $DB;
-	
+    $params = [];
+		
     if ($order) {
         $orderby = " ORDER BY $order ";
     } else {
@@ -146,7 +147,9 @@ function local_video_directory_get_videos_by_tags($list, $tagid=0, $start = null
     }
 	
     if ($list != "") {
+        //list($insql, $params) = $DB->get_in_or_equal(explode(",", $list));
         $and = ' AND t.name IN (' . $list . ') ';
+        //$and = ' AND t.name ' . $insql;
     } else if (is_numeric($tagid)) {
         $and = ' AND t.id =' . $tagid . ' ';
     }
@@ -155,13 +158,11 @@ function local_video_directory_get_videos_by_tags($list, $tagid=0, $start = null
         $start = $length = null;
     }
 
-	$params = null;
-	
     if ($search) {
         $match = " (orig_filename LIKE ? OR firstname LIKE ? OR  lastname LIKE ? OR uniqid LIKE ?) ";
         $where = " WHERE " . $match;
         $whereor = " AND " . $match;
-		$params = ["%$search%", "%$search%", "%$search%", "%$search%"];
+	    $params = array_merge($params, ["%$search%", "%$search%", "%$search%", "%$search%"]);
     } else {
         $where = "";
         $whereor = "";

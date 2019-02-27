@@ -57,7 +57,7 @@ $PAGE->navbar->add(get_string('pluginname', 'local_video_directory'), new moodle
 $PAGE->navbar->add(get_string('list', 'local_video_directory'));
 $PAGE->set_pagelayout('base');
 
-$PAGE->requires->js('/local/video_directory/datatables/jquery.dataTables.min.js');
+$PAGE->requires->js('/local/video_directory/datatables/jquery.dataTables.js');
 $PAGE->requires->css('/local/video_directory/datatables/jquery.dataTables.min.css');
 
 require($CFG->libdir . '/jquery/plugins.php'); // Just populates the variable "$plugins" in the next line.
