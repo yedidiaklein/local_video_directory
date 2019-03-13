@@ -184,17 +184,18 @@ function local_video_directory_get_hls_url($videoid) {
     return $hlsurl;
 }
 
+// Adding icon to top
 function local_video_directory_render_navbar_output(\renderer_base $renderer) {
     global $CFG;
     // Check if the user has access to the video directory
     $context = context_system::instance();
     if (has_capability('local/video_directory:video', $context) || is_video_admin($USER)) {
-        return '<div style="padding: .5rem .5rem; float: right;">
+        return '<div style="padding: .5rem .5rem; float: right;" class="nav-link">
                         <a href="' . $CFG->wwwroot . '/local/video_directory/">
                             <i class="icon fa fa-video-camera fa-fw " 
                                title="Video Directory" 
                                aria-label="Video Directory" 
-                               style="color:grey;">
+                               >
                             </i>
                         </a>
                 </div>';
