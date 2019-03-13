@@ -53,4 +53,10 @@
         <location>amd/src/select2.js</location>
         <license>MIT</license>
     </library>
+    <library>
+        <url>https://ffmpeg.org</url>
+        <name>FFmpeg</name>
+        <location>ffmpeg_static_linux</location>
+        <license>GPL2.1</license>
+    </library>
 </libraries>
