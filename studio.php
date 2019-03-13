@@ -52,15 +52,16 @@ $tools = [
         ['name' => 'merge', 'description' => get_string('merge', 'local_video_directory')] ,
         ['name' => 'cut', 'description' => get_string('cut', 'local_video_directory')] ,
         ['name' => 'cat', 'description' => get_string('cat', 'local_video_directory')] ,
+        ['name' => 'speed', 'description' => get_string('speed', 'local_video_directory')] ,
     ];
 
 $tasks_crop = local_video_directory_studio_tasks($id, 'crop', ['startx', 'starty', 'endx', 'endy']);
 $tasks_merge = local_video_directory_studio_tasks($id, 'merge', ['video_id_small', 'height', 'border']);
 $tasks_cut = local_video_directory_studio_tasks($id, 'cut', ['secbefore', 'secafter']);
 $tasks_cat = local_video_directory_studio_tasks($id, 'cat', ['video_id_cat']);
+$tasks_speed = local_video_directory_studio_tasks($id, 'speed', ['speed']);
 
-
-$tasks = array_merge($tasks_crop, $tasks_merge, $tasks_cut, $tasks_cat);
+$tasks = array_merge($tasks_crop, $tasks_merge, $tasks_cut, $tasks_cat, $tasks_speed);
 
 echo $OUTPUT->render_from_template("local_video_directory/studio",
     array('tools' => array_values($tools), 'tasks' => array_values($tasks) , 'id' => $id, 'taskscount' => count($tasks)));

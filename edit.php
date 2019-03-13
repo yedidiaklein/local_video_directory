@@ -130,13 +130,24 @@ if ($mform->is_cancelled()) {
 
     $video = $DB->get_record('local_video_directory', array("id" => $id));
     $versions = $DB->get_records("local_video_directory_vers", array("file_id" => $id));
+    $streaming = get_streaming_server_url() . "/" . $id . ".mp4";
 
     echo $OUTPUT->render_from_template('local_video_directory/edit',
-    ['wwwroot' => $CFG->wwwroot, 'versions' => $versions, 'id' => $id, 'thumb' => str_replace("-", "&second=", $video->thumb)]);
-
-
+    [   'wwwroot' => $CFG->wwwroot, 
+        'versions' => $versions,
+        'id' => $id,
+        'thumb' => str_replace("-", "&second=", $video->thumb),
+        'streaming' => $streaming
+        ]);
 
     $mform->display();
+
+    echo "<img src='qr.php?id=" . $id . "'>";
+    $embedurl = $CFG->wwwroot . '/local/video_directory/embed.php?id=' . $video->uniqid;
+    echo '<div class="video_embed"><h2>' . get_string('embeding', 'local_video_directory') . '</h2>&lt;iframe src="' . $embedurl
+            . '" ' . $settings->embedoptions . ' >&lt;/iframe><br>'
+            . "<a href='$streaming'> $streaming </a> </div>";
+             
 }
 
 echo $OUTPUT->footer();

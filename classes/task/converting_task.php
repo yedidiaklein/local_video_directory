@@ -214,5 +214,8 @@ class converting_task extends \core\task\scheduled_task {
         // Cat
         $cat = $DB->get_records("local_video_directory_cat", array('state' => 0));
         local_video_directory_studio_action($cat, "cat");
+        // Speed
+        $speed = $DB->get_records("local_video_directory_speed", array('state' => 0));
+        local_video_directory_studio_action($speed, "speed");
     }
 }

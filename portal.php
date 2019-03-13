@@ -79,9 +79,12 @@ if ($mform->is_cancelled()) {
 
     echo $OUTPUT->header();
 
-    echo '<p class="local_video_directory_backtolist">
-          <a href="list.php" alt ="' . get_string('list', 'local_video_directory') . '">' . get_string('list', 'local_video_directory') . '</a>
-          </p>';
+    // Menu.
+    require('menu.php');
+
+    //echo '<p class="local_video_directory_backtolist">
+    //      <a href="list.php" alt ="' . get_string('list', 'local_video_directory') . '">' . get_string('list', 'local_video_directory') . '</a>
+    //      </p>';
 
     $mform->display();
 
@@ -163,6 +166,7 @@ if ($mform->is_cancelled()) {
             $video->orig_filename = preg_replace('!(' . $search . ')!i', '<font style="color:red; font-weight:bold;">$1</font>', $video->orig_filename);
         }
     }
+
     if ($search) {
         echo $OUTPUT->render_from_template("local_video_directory/portal_search",
                 array('videos' => array_values($videos), 'streaming' => $streaming));

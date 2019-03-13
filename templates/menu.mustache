@@ -1,16 +1,30 @@
 <div class="alert alert-default alert-block" role="alert">
-    {{#str}}freedisk, local_video_directory {{/str}}: {{{size}}}
-    | <a href="portal.php" alt ="{{#str}}portal, local_video_directory {{/str}}">{{#str}}portal, local_video_directory {{/str}}</a>
-    | <a href="list.php" alt ="{{#str}}list, local_video_directory {{/str}}">{{#str}}list, local_video_directory {{/str}}</a>
+    <a href="list.php" alt="{{#str}}list, local_video_directory {{/str}}" title="{{#str}}list, local_video_directory {{/str}}">
+        <i class="fa fa-list-ul {{^menu.0.selected}}video_menu_selected{{/menu.0.selected}}" aria-hidden="true"></i></a>
+    | <a href="portal.php" alt="{{#str}}portal, local_video_directory {{/str}}" title="{{#str}}portal, local_video_directory {{/str}}">
+        <i class="fa fa-th {{^menu.1.selected}}video_menu_selected{{/menu.1.selected}}" aria-hidden="true"></i></a>
+    | <a href="upload.php" alt="{{#str}}upload, local_video_directory {{/str}}" title="{{#str}}upload, local_video_directory {{/str}}">
+        <i class="fa fa-upload {{^menu.2.selected}}video_menu_selected{{/menu.2.selected}}" aria-hidden="true"></i></a>
+    | <a href="mass.php" alt="{{#str}}mass, local_video_directory {{/str}}" title="{{#str}}mass, local_video_directory {{/str}}">
+        <i class="fa fa-cloud-upload {{^menu.3.selected}}video_menu_selected{{/menu.3.selected}}" aria-hidden="true"></i></a>
+    | <a href="wget.php" alt="{{#str}}wget, local_video_directory {{/str}}" title="{{#str}}wget, local_video_directory {{/str}}">
+        <i class="fa fa-link {{^menu.4.selected}}video_menu_selected{{/menu.4.selected}}" aria-hidden="true"></i></a>
+
     {{#admin}}
-    | <a href="../../admin/settings.php?section=local_video_directory" alt ="{{#str}}settings, moodle {{/str}}">
-        {{#str}}settings, moodle{{/str}}
+    | <a href="../../admin/settings.php?section=local_video_directory" alt="{{#str}}settings, moodle {{/str}}" title="{{#str}}settings, moodle {{/str}}">
+        <i class="fa fa-cog" aria-hidden="true"></i>
       </a>
     {{/admin}}
+
+    | {{#str}}freedisk, local_video_directory {{/str}}: {{{size}}}
 </div>
 
+<!-- div class='video_top_buttons'>
+    <button id="datatable_ajax_reload" class="btn btn-default"> Reload</button>
+    <button id="datatable_ajax_clear_tags" class="btn btn-default"> Show all videos </button>
+</div-->
 
-<ul id='local_video_directory_videomenu' class='nav nav-tabs' role="tablist">
+<!--ul id='local_video_directory_videomenu' class='nav nav-tabs' role="tablist">
 {{#menu}}
     {{#selected}}
         <li id="selected"  class="nav-item">
@@ -22,4 +36,4 @@
     {{/selected}}
 {{/menu}}
 </ul>
-<br>
+<br-->

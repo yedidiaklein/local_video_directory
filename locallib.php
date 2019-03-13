@@ -348,6 +348,12 @@ function local_video_directory_studio_action($data, $type) {
         $cmd[] = $ffmpeg . " -i " . $streamingdir . "/" . $dat->video_id . ".mp4 -i " . $dirs['multidir'] . $dat->video_id_small . "_" . $dat->height . ".mp4 -map 0:0 -map " . $dat->audio . ":1" .
         ' -strict -2 -vf "movie='. $dirs['multidir'] . $dat->video_id_small . "_" . $dat->height . ".mp4" .'[inner]; [in][inner] overlay=' . $dat->border . ':' . $dat->border . '[out]" ' .
         $origdir . "/" . $newid . ".mp4";
+    } elseif ($type == "speed") {
+        $double = ($dat->speed / 100);
+        $half = 1 / $double;
+        $cmd[] = $ffmpeg . " -i " . $streamingdir . "/" . $dat->video_id .
+        '.mp4 -filter_complex "[0:v]setpts=' . $half . '*PTS[v];[0:a]atempo=' . $double . '[a]" -map "[v]" -map "[a]" ' .
+        $origdir . "/" . $newid . ".mp4";  
     }
 
 

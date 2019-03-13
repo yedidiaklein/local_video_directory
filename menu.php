@@ -35,19 +35,19 @@ if (!CLI_SCRIPT) {
     $context = context_system::instance();
 
     if (!has_capability('local/video_directory:video', $context) && !is_video_admin($USER)) {
-        die("Access Denied. You must be a member of the designated cohort. Please see your site admin.");
+        die("Access Denied. You must have rights. Please see your site admin.");
     }
 
 }
 
 $selected = basename($_SERVER['SCRIPT_NAME']);
 $settings = get_config('local_video_directory');
-$menu = array('list', 'upload', 'mass', 'wget');
+$menu = array('list', 'portal', 'upload', 'mass', 'wget');
 $tabs = array();
 
 foreach ($menu as $item) {
     array_push($tabs, array('name' => $item,
-                            'selected' => ($item . '.php' == $selected),
+                            'selected' => ($item . '.php' != $selected),
                             'str' => get_string($item, 'local_video_directory')));
 }
 

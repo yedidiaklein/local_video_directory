@@ -176,3 +176,4 @@ $string['embedcolumn'] = "Show Embed Column";
 $string['cat'] = "Concatenate Videos";
 $string['first'] = "First Video";
 $string['second'] = "Second Video";
+$string['speed'] = "Video Speed";

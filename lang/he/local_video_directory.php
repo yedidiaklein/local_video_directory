@@ -176,3 +176,4 @@ $string['embedcolumn'] = "הצגת קישורי הטמעה";
 $string['cat'] = "הדבקת סרטים";
 $string['first'] = "סרט ראשון";
 $string['second'] = "סרט שני";
+$string['speed'] = "מהירות הסרט";

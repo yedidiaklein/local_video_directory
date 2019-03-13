@@ -42,7 +42,7 @@ if ($hassiteconfig) {
         'local_video_directory/ffmpeg',
         get_string('ffmpegpath', 'local_video_directory'),
         get_string('ffmpegpathdesc', 'local_video_directory'),
-        $iswin ? '/ffmpeg/bin/ffmpeg.exe' : '/usr/bin/ffmpeg',
+        $iswin ? '/ffmpeg/bin/ffmpeg.exe' : $CFG->dirroot . '/local/video_directory/ffmpeg_static_linux/ffmpeg',
         PARAM_PATH
     ));
 
@@ -60,7 +60,7 @@ if ($hassiteconfig) {
         'local_video_directory/ffprobe',
         get_string('ffprobepath', 'local_video_directory'),
         get_string('ffprobepathdesc', 'local_video_directory'),
-        $iswin ? '/ffmpeg/bin/ffprobe.exe' : '/usr/bin/ffprobe',
+        $iswin ? '/ffmpeg/bin/ffprobe.exe' : $CFG->dirroot . '/local/video_directory/ffmpeg_static_linux/ffprobe',
         PARAM_PATH
     ));
 

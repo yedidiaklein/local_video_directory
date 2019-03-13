@@ -166,7 +166,7 @@ input.hidden_input:hover {
 
 .local_video_portal_thumb {
     height: 10vw;
-    width: 18vw;
+    width: 14vw;
     margin: 1vw;
     position: relative;
 }
@@ -177,6 +177,7 @@ input.hidden_input:hover {
     z-index: 1;
     background-color: white;
     text-align: center;
+    width: 16vw;
 }
 
 .local_video_portal_video {
@@ -185,6 +186,7 @@ input.hidden_input:hover {
     padding: 10px;
     margin: 10px;
     height: fit-content;
+    max-height: 16vw;
 }
 
 .local_video_portal_texts {
@@ -265,4 +267,25 @@ input.hidden_input:hover {
 }
 #page-local-video_directory-list .ui-widget-content a {
     color: blue;
+}
+
+.video_menu_selected {
+    font-weight: bolder;
+    background-color: yellow;
+}
+
+.video_float {
+    float: left;
+}
+
+.video_embed {
+    direction: ltr;
+    float: left;
+    width: 42%;
+    padding-left: 20px;
+    text-align: left;
+}
+
+.dir-rtl .video_embed h2 {
+    text-align: right;
 }
