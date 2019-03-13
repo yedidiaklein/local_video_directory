@@ -289,8 +289,3 @@ input.hidden_input:hover {
 .dir-rtl .video_embed h2 {
     text-align: right;
 }
-
-.nav-link a {
-    color: inherit; /* blue colors for links too */
-    text-decoration: inherit; /* no underline */
-  }
