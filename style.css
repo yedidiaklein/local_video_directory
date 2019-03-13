@@ -289,3 +289,7 @@ input.hidden_input:hover {
 .dir-rtl .video_embed h2 {
     text-align: right;
 }
+
+.local_video_menu_icons {
+    font-size: x-large;
+}
