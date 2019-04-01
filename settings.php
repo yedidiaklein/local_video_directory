@@ -234,7 +234,23 @@ if ($hassiteconfig) {
         PARAM_TEXT
     ));
 
-     // Create.
+    $settings->add(
+        new admin_setting_configselect('local_video_directory/group',
+        get_string('group', 'moodle'), '', '', array("none" => get_string('none', 'moodle'),
+                                                     "department" => get_string('department', 'moodle'), 
+                                                     "institution" => get_string('institution', 'moodle'), 
+                                                     "custom" => get_string('customgroup', 'local_video_directory'),
+    )));
+
+    $settings->add( new admin_setting_configtext(
+        'local_video_directory/customgroup',
+        get_string('customgroup', 'local_video_directory'),
+        get_string('customgroupdesc', 'local_video_directory'),
+        'group1, group2, group3',
+        PARAM_TEXT
+    ));
+
+    // Create.
     $ADMIN->add( 'localplugins', $settings );
 
      $ADMIN->add('server', new admin_externalpage('local_video_directory_list',

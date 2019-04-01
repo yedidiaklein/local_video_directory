@@ -68,16 +68,32 @@ class edit_form extends moodleform {
         if ($id != 0) {
             $video = $DB->get_record('local_video_directory', array("id" => $id));
             $origfilename = $video->orig_filename;
+            $usergroup = $video->usergroup;
             $owner = array();
         } else {
             $origfilename = "";
             $owner = 0;
+            $usergroup = "";
         }
         $mform = $this->_form;
 
         $mform->addElement('text', 'origfilename', get_string('filename', 'local_video_directory'));
         $mform->setType('origfilename', PARAM_RAW);
         $mform->setDefault('origfilename', $origfilename ); // Default value.
+
+        $settings = get_settings();
+
+        if ($settings->group != "none") {
+            $g = local_video_get_groups($settings);
+
+            $option = array();
+            if (!is_video_admin($USER)) {
+                $option = ['disabled' => true];
+            }
+
+            $select = $mform->addElement('select', 'usergroup', get_string('group', 'moodle'), $g, $option);
+            $select->setSelected($usergroup);
+        }
 
         $mform->addElement('hidden', 'id', $id);
         $mform->setType('id', PARAM_INT);
@@ -94,7 +110,6 @@ class edit_form extends moodleform {
             $owneruser = $DB->get_record('user',['id'=>$video->owner_id]);
             $owner[$video->owner_id] = $owneruser->firstname . " " . $owneruser->lastname; 
             $mform->addElement('select', 'owner', get_string('owner', 'local_video_directory'), $owner);
-
         }
 
         $buttonarray = array();
@@ -117,7 +132,9 @@ if ($mform->is_cancelled()) {
     // Check that user has rights to edit this video.
     local_video_edit_right($fromform->id);
 
-    $record = array("id" => $fromform->id, "orig_filename" => $fromform->origfilename );
+    $record = array("id" => $fromform->id, 
+                    "orig_filename" => $fromform->origfilename,
+                    "usergroup" => $fromform->usergroup);
     if ((isset($_POST['owner'])) && (is_video_admin($USER))) { //only admins updates owners
         $record['owner_id'] = $_POST['owner'];
     }

@@ -4,12 +4,7 @@
 {{#versions}}
     <a href=versions.php?id={{id}}> {{#str}}versions, local_video_directory{{/str}} </a>
 {{/versions}}
-<div class="video_float">
-<video  width="655" controls preload="auto"
-            poster="{{wwwroot}}/local/video_directory/thumb.php?id={{thumb}}">
-            <source src="{{streaming}}" type="video/mp4"">
-</video>
-</div>
+{{> local_video_directory/video_float}}
 {{#js}}
 require(['jquery','local_video_directory/edit']);
 {{/js}}

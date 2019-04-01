@@ -8,6 +8,7 @@
       <FIELDS>
         <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true"/>
         <FIELD NAME="owner_id" TYPE="int" LENGTH="10" NOTNULL="false" SEQUENCE="false"/>
+        <FIELD NAME="usergroup" TYPE="char" LENGTH="100" NOTNULL="false" SEQUENCE="false"/>
         <FIELD NAME="orig_filename" TYPE="char" LENGTH="200" NOTNULL="true" SEQUENCE="false"/>
         <FIELD NAME="filename" TYPE="char" LENGTH="250" NOTNULL="true" SEQUENCE="false" COMMENT="name of converted file name"/>
         <FIELD NAME="convert_status" TYPE="number" LENGTH="1" NOTNULL="true" DEFAULT="1" SEQUENCE="false" COMMENT="1- uploading, 2 - converting, 3 - ready"/>

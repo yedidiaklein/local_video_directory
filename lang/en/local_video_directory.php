@@ -177,3 +177,6 @@ $string['cat'] = "Concatenate Videos";
 $string['first'] = "First Video";
 $string['second'] = "Second Video";
 $string['speed'] = "Video Speed";
+$string['group'] = "Group";
+$string['customgroup'] = "Custom Group List";
+$string['customgroupdesc'] = "Enter here custom group list separated by comma";

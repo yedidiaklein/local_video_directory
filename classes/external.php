@@ -1,4 +1,4 @@
-<?php
+                                                                                                        <?php
 // This file is part of Moodle - http://moodle.org/
 //
 // Moodle is free software: you can redistribute it and/or modify
@@ -313,6 +313,7 @@ class local_video_directory_external extends external_api {
                 $checked = "";
             }
 
+            //  && ($video->usergroup != $USER->{$settings->group})
             // Do not allow non owner to edit privacy and title.
             if (($video->owner_id != $USER->id) && !is_video_admin($USER)) {
                  $video->private = '';

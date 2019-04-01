@@ -159,10 +159,10 @@ function local_video_directory_get_videos_by_tags($list, $tagid=0, $start = null
     }
 
     if ($search) {
-        $match = " (orig_filename LIKE ? OR firstname LIKE ? OR  lastname LIKE ? OR uniqid LIKE ?) ";
+        $match = " (usergroup LIKE ? OR orig_filename LIKE ? OR firstname LIKE ? OR  lastname LIKE ? OR uniqid LIKE ?) ";
         $where = " WHERE " . $match;
         $whereor = " AND " . $match;
-	    $params = array_merge($params, ["%$search%", "%$search%", "%$search%", "%$search%"]);
+	    $params = array_merge($params, ["%$search%", "%$search%", "%$search%", "%$search%", "%$search%"]);
     } else {
         $where = "";
         $whereor = "";
@@ -204,10 +204,10 @@ function local_video_directory_get_videos($order = 0, $start = null, $length = n
 	$params = null;
 	
     if ($search) {
-        $match = " (orig_filename LIKE ? OR firstname LIKE ? OR  lastname LIKE ? OR uniqid LIKE ?) ";
+        $match = " (usergroup LIKE ? OR orig_filename LIKE ? OR firstname LIKE ? OR  lastname LIKE ? OR uniqid LIKE ?) ";
         $where = " WHERE " . $match;
         $whereor = " AND " . $match;
-		$params = ["%$search%", "%$search%", "%$search%", "%$search%"];
+		$params = ["%$search%", "%$search%", "%$search%", "%$search%", "%$search%"];
     } else {
         $where = "";
         $whereor = "";
@@ -389,4 +389,21 @@ function is_video_admin($user = '') {
     }
     return FALSE;
 }
+
+function local_video_get_groups($settings) {
+    global $DB;
+    if ($settings->group != "custom") {
+        $group = $DB->get_records_sql("SELECT DISTINCT $settings->group from {user} ORDER BY $settings->group");
+        foreach ($group as $k=>$v) {
+            $g[$v->{$settings->group}] = $v->{$settings->group};
+        }
+    } else {
+        $group = explode(",", $settings->customgroup);
+        foreach ($group as $k=>$v) {
+            $g[trim($v)] = trim($v);
+        }
+    }
+    return $g;
+}
+
 

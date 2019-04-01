@@ -58,7 +58,7 @@ $context = context_user::instance($USER->id);
 class upload_form extends moodleform {
     // Add elements to form.
     public function definition() {
-        global $CFG, $DB, $context, $USER;
+        global $CFG, $DB, $context, $USER, $settings;
 
         $id = optional_param('video_id', 0, PARAM_INT);
 
@@ -90,6 +90,18 @@ class upload_form extends moodleform {
         if (is_video_admin($USER)) {
             $owner[0] = $USER->firstname . " " . $USER->lastname; 
             $mform->addElement('select', 'owner', get_string('owner', 'local_video_directory'), $owner);
+        }
+
+        if ($settings->group != "none") {
+            $g = local_video_get_groups($settings);
+
+            $option = array();
+            if (!is_video_admin($USER)) {
+                $option = ['disabled' => true];
+            }
+
+            $select = $mform->addElement('select', 'usergroup', get_string('group', 'moodle'), $g, $option);
+            $select->setSelected($USER->{$settings->group});
         }
 
 
@@ -151,7 +163,7 @@ if ($mform->is_cancelled()) {
             $name = $file->filename;
         }
         $counter++;
-        $record = array('orig_filename' => $name, 'owner_id' => $owner, 'uniqid' => uniqid('', true));
+        $record = array('orig_filename' => $name, 'owner_id' => $owner, 'uniqid' => uniqid('', true), 'usergroup' =>  $fromform->usergroup);
         if ((isset($fromform->private)) && ($fromform->private)) {
             $record['private'] = 1;
         }

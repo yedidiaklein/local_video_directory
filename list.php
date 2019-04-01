@@ -106,15 +106,22 @@ if (is_array($SESSION->video_tags)) {
     }
 }
 
-$listheaders = array('actions', 'thumb', 'id', 'owner', 'orig_filename', 'length',
+$listheaders = array('actions', 'thumb', 'id', 'owner', 'group', 'orig_filename', 'length',
                     'convert_status', 'private', 'streaming_url', 'tags');
 $liststrings = array();
 foreach ($listheaders as $liststring) {
             array_push($liststrings, get_string($liststring, 'local_video_directory'));
 }
 
+if ($settings->group == 'none') {
+    $usergroup = true;
+} else {
+    $usergroup = false;
+}
+
 echo $OUTPUT->render_from_template('local_video_directory/list',
  ['wwwroot' => $CFG->wwwroot, 'alltags' => $alltagsurl, 'existvideotags' => is_array($SESSION->video_tags),
- 'videotags' => $selectedtags, 'liststrings' => $liststrings, 'embedcolumn' => !$settings->embedcolumn ]);
+ 'videotags' => $selectedtags, 'liststrings' => $liststrings, 
+ 'embedcolumn' => !$settings->embedcolumn, 'usergroup' => $usergroup ]);
 echo $OUTPUT->render_from_template('local_video_directory/player', []);
 echo $OUTPUT->footer();

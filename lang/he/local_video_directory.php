@@ -177,3 +177,6 @@ $string['cat'] = "הדבקת סרטים";
 $string['first'] = "סרט ראשון";
 $string['second'] = "סרט שני";
 $string['speed'] = "מהירות הסרט";
+$string['group'] = "קבוצה";
+$string['customgroup'] = "רשימה מקומית של קבוצות";
+$string['customgroupdesc'] = "רשימה מקומית של קבוצות מופרדות בפסיק";

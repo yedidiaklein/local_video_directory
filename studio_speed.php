@@ -116,7 +116,14 @@ if ($mform->is_cancelled()) {
   //  $mform->set_data($toform);
   //displays the form
 	echo $OUTPUT->header();
-  		
+          
+    $video = $DB->get_record('local_video_directory', array("id" => $id));
+    $streaming = get_streaming_server_url() . "/" . $id . ".mp4";
+    echo $OUTPUT->render_from_template('local_video_directory/video_float',
+    ['wwwroot' => $CFG->wwwroot,  'id' => $id,
+    'thumb' => str_replace("-", "&second=", $video->thumb),
+    'streaming' => $streaming ]);
+    
     $mform->display();
 }
 
