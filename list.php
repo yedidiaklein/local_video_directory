@@ -122,6 +122,6 @@ if ($settings->group == 'none') {
 echo $OUTPUT->render_from_template('local_video_directory/list',
  ['wwwroot' => $CFG->wwwroot, 'alltags' => $alltagsurl, 'existvideotags' => is_array($SESSION->video_tags),
  'videotags' => $selectedtags, 'liststrings' => $liststrings, 
- 'embedcolumn' => !$settings->embedcolumn, 'usergroup' => $usergroup ]);
+ 'embedcolumn' => !$settings->embedcolumn, 'usergroup' => $usergroup, 'lang' => current_language() ]);
 echo $OUTPUT->render_from_template('local_video_directory/player', []);
 echo $OUTPUT->footer();

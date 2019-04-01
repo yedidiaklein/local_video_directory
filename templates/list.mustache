@@ -57,6 +57,9 @@ require(['jquery', 'jqueryui', 'datatables', 'core/ajax'], function($, jqueryui,
         var table = $("#video_table").DataTable({
             "processing": true,
             "serverSide": true,
+            "language": {
+                "url": M.cfg.wwwroot + "/local/video_directory/datatables/{{lang}}.json"
+            },
             "ajax": {
                 method: "POST",
                 data : function ( d ) {
