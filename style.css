@@ -271,7 +271,8 @@ input.hidden_input:hover {
 
 .video_menu_selected {
     font-weight: bolder;
-    background-color: yellow;
+    border: solid 2px;
+    padding: 3px;
 }
 
 .video_float {

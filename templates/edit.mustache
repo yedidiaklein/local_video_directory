@@ -1,5 +1,5 @@
 
-<a href=upload.php?video_id={{id}}>{{#str}}upload_new_version, local_video_directory{{/str}}</a><br><br>
+<button class="btn btn-primary" onclick="window.location.href='upload.php?video_id={{id}}'">{{#str}}upload_new_version, local_video_directory{{/str}}</button><br><br>
 
 {{#versions}}
     <a href=versions.php?id={{id}}> {{#str}}versions, local_video_directory{{/str}} </a>

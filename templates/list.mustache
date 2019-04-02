@@ -1,13 +1,3 @@
-{{#embedcolumn}}
-<style>
-td:nth-child(9), th:nth-child(9) { display: none; }
-</style>
-{{/embedcolumn}}
-{{#usergroup}}
-<style>
-td:nth-child(5), th:nth-child(5) { display: none; }
-</style>
-{{/usergroup}}
 <div id="tools" class="local_video_directory_tools">
     <button id="datatable_ajax_reload" class="btn btn-default"> {{#str}}reload, local_video_directory{{/str}}</button>
     <button id="datatable_ajax_clear_tags" class="btn btn-default"> {{#str}}show_all, local_video_directory{{/str}} </button>
@@ -88,17 +78,9 @@ require(['jquery', 'jqueryui', 'datatables', 'core/ajax'], function($, jqueryui,
             },
             "order": [[2, "desc"]],
             "columns": [
-                {"data": "actions"},
-                {"data": "thumb"},
-                {"data": "id"},
-                {"data": "name"},
-                {"data": "usergroup"},
-                {"data": "orig_filename"},
-                {"data": "length"},
-                {"data": "convert_status"},
-                {"data": "private"},
-                {"data": "streaming_url"},
-                {"data": "tags"}
+                {{#fields}}
+                {"data": "{{name}}"},
+                {{/fields}}
             ],
             initComplete: function(){
                 $('.showembed').click(function(e) {

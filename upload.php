@@ -101,7 +101,9 @@ class upload_form extends moodleform {
             }
 
             $select = $mform->addElement('select', 'usergroup', get_string('group', 'moodle'), $g, $option);
-            $select->setSelected($USER->{$settings->group});
+            if ($settings->group != "custom") {
+                $select->setSelected($USER->{$settings->group});
+            }
         }
 
 

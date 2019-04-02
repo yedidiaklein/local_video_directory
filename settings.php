@@ -25,7 +25,7 @@
 defined('MOODLE_INTERNAL') || die();
 
 if ($hassiteconfig) {
-    $settings = new admin_settingpage( 'local_video_directory', 'Video Directory Settings' );
+    $settings = new admin_settingpage( 'local_video_directory', get_string('settings', 'local_video_directory') );
     $iswin = strtoupper(substr(PHP_OS, 0, 3)) === 'WIN';
 
     if ($iswin) {
@@ -247,6 +247,14 @@ if ($hassiteconfig) {
         get_string('customgroup', 'local_video_directory'),
         get_string('customgroupdesc', 'local_video_directory'),
         'group1, group2, group3',
+        PARAM_TEXT
+    ));
+
+    $settings->add( new admin_setting_configtext(
+        'local_video_directory/fieldorder',
+        get_string('fieldorder', 'local_video_directory'),
+        get_string('fieldorder', 'local_video_directory'),
+        'actions, thumb, id, name, usergroup, orig_filename, length, convert_status, private, streaming_url, tags',
         PARAM_TEXT
     ));
 

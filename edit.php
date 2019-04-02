@@ -70,14 +70,18 @@ class edit_form extends moodleform {
             $origfilename = $video->orig_filename;
             $usergroup = $video->usergroup;
             $owner = array();
+            $length = $video->length;
+            $timecreated = strftime("%A, %d %B %Y %H:%M", $video->timecreated);
         } else {
             $origfilename = "";
             $owner = 0;
             $usergroup = "";
+            $length =0;
+            $timecreated = 0;
         }
         $mform = $this->_form;
 
-        $mform->addElement('text', 'origfilename', get_string('filename', 'local_video_directory'));
+        $mform->addElement('text', 'origfilename', get_string('orig_filename', 'local_video_directory'));
         $mform->setType('origfilename', PARAM_RAW);
         $mform->setDefault('origfilename', $origfilename ); // Default value.
 
@@ -111,6 +115,14 @@ class edit_form extends moodleform {
             $owner[$video->owner_id] = $owneruser->firstname . " " . $owneruser->lastname; 
             $mform->addElement('select', 'owner', get_string('owner', 'local_video_directory'), $owner);
         }
+
+        $mform->addElement('text', 'length', get_string('length', 'local_video_directory'), ['disabled' => true]);
+        $mform->setType('length', PARAM_RAW);
+        $mform->setDefault('length', $length ); // Default value.
+
+        $mform->addElement('text', 'timecreated', get_string('timecreated', 'local_video_directory'), ['disabled' => true]);
+        $mform->setType('timecreated', PARAM_RAW);
+        $mform->setDefault('timecreated', $timecreated ); // Default value.
 
         $buttonarray = array();
         $buttonarray[] =& $mform->createElement('submit', 'submitbutton', get_string('savechanges'));
