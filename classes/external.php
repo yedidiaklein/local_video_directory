@@ -197,27 +197,9 @@ class local_video_directory_external extends external_api {
             } else {
                 $dir = " DESC ";
             }
-            switch ($videodata->order[0]->column) {
-                case 2:
-                    $order = ' id ' . $dir;
-                    break;
-                case 3:
-                    $order = ' name ' . $dir;
-                    break;
-                case 4:
-                    $order = ' orig_filename ' . $dir;
-                    break;
-                case 5:
-                    $order = ' length ' . $dir;
-                    break;
-                case 6:
-                    $order = ' convert_status ' . $dir;
-                    break;
-                case 7:
-                    $order = ' private ' . $dir;
-                    break;
-
-            }
+            $settings = get_settings();
+            $fields = explode(",", $settings->fieldorder);
+            $order = ' ' . $fields[$videodata->order[0]->column] . ' ' . $dir;
         } else {
             $order = 0;
         }
