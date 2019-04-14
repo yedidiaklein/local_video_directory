@@ -148,9 +148,8 @@ function local_video_directory_get_videos_by_tags($list, $tagid=0, $start = null
     }
 	
     if ($list != "") {
-        //list($insql, $params) = $DB->get_in_or_equal(explode(",", $list));
-        $and = ' AND t.name IN (' . $list . ') ';
-        //$and = ' AND t.name ' . $insql;
+        list($insql, $params) = $DB->get_in_or_equal($list);
+        $and = ' AND t.name ' . $insql;
     } else if (is_numeric($tagid)) {
         $and = ' AND t.id =' . $tagid . ' ';
     }

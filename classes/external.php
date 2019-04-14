@@ -205,8 +205,7 @@ class local_video_directory_external extends external_api {
         }
 
         if (isset($SESSION->video_tags) && is_array($SESSION->video_tags)) {
-            $list = implode("', '", $SESSION->video_tags);
-            $list = "'" . $list . "'";
+            $list = $SESSION->video_tags;
             $total = count(local_video_directory_get_videos_by_tags($list, 0, null, null, $search));
             $videos = local_video_directory_get_videos_by_tags($list, 0, $videodata->start, $videodata->length, $search, $order);
         } else {
@@ -214,15 +213,14 @@ class local_video_directory_external extends external_api {
             $videos = local_video_directory_get_videos($order, $videodata->start, $videodata->length, $search);
         }
         //check if mod_videostream is enabled
-        $videostream = $DB->get_record('modules',['name'=>'videostream']);
-        $isvideostream = count($videostream);
+        $isvideostream = $DB->get_record('modules',['name'=>'videostream']);
 
         foreach ($videos as $video) {
             // Do not show filename.
             unset($video->filename);
             if (is_numeric($video->convert_status)) {
                 $video->convert_status = get_string('state_' . $video->convert_status, 'local_video_directory') ;
-                if (($settings->showwhere != 0) && ($isvideostream > 0)) {
+                if (($settings->showwhere != 0) && ($isvideostream)) {
                     $used = $DB->get_records_sql('SELECT v.course,c.fullname FROM {videostream} v 
                                                                              LEFT JOIN {course} c ON v.course=c.id 
                                                   WHERE videoid=?',[$video->id]);
