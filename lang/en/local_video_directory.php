@@ -185,3 +185,5 @@ $string['customgroupdesc'] = "Enter here custom group list separated by comma";
 $string['fieldorder'] = "View and order of field to view on video list (comma separated)";
 $string['settings'] = 'Video Directory Settings';
 $string['timecreated'] = 'Upload Time';
+$string['allowxmlexport'] = 'Allow XML export of video list';
+$string['allowxmlexportdesc'] = 'If you will allow this, the list will be available at ';

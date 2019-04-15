@@ -187,6 +187,13 @@ if ($hassiteconfig) {
         '0'
     ));
 
+    $settings->add( new admin_setting_configcheckbox(
+        'local_video_directory/allowxmlexport',
+        get_string('allowxmlexport', 'local_video_directory'),
+        get_string('allowxmlexportdesc', 'local_video_directory') . ' ' . $CFG->wwwroot . '/local/video_directory/xmlexport.php',
+        '0'
+    ));
+
     $settings->add( new admin_setting_configtext(
         'local_video_directory/nginxmultiuri',
         get_string('nginxmultiuri', 'local_video_directory'),

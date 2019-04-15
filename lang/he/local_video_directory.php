@@ -185,3 +185,5 @@ $string['customgroupdesc'] = "רשימה מקומית של קבוצות מופר
 $string['fieldorder'] = "תצוגה וסדר השדות ברשימת הסרטונים (רשימה מופרדת בפסיקים)";
 $string['settings'] = 'הגדרות רכיב ספריית וידאו';
 $string['timecreated'] = 'תאריך העלאה';
+$string['allowxmlexport'] = 'אפשרו יצוא רשימת סרטים ב-XML';
+$string['allowxmlexportdesc'] = 'במידה ותאפשרו יכולת זו - רשימת הסרטים תהיה זמינה בכתובת ';
