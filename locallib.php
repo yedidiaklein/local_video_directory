@@ -412,7 +412,15 @@ function is_video_admin($user = '') {
 
 function local_video_get_groups($settings) {
     global $DB;
-    if ($settings->group != "custom") {
+    if (substr($settings->group,0,6) == 'local_') {
+        $local = substr($settings->group,6);
+        $group = $DB->get_records_sql("SELECT DISTINCT data FROM {user_info_data} uid
+                                        LEFT JOIN {user_info_field} uif ON uid.fieldid = uif.id 
+                                        WHERE shortname = '$local'");
+        foreach ($group as $k=>$v) {
+            $g[$v->data] = $v->data;
+        }
+    } else if ($settings->group != "custom") {
         $group = $DB->get_records_sql("SELECT DISTINCT $settings->group from {user} ORDER BY $settings->group");
         foreach ($group as $k=>$v) {
             $g[$v->{$settings->group}] = $v->{$settings->group};

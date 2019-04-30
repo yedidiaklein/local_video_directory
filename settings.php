@@ -241,13 +241,18 @@ if ($hassiteconfig) {
         PARAM_TEXT
     ));
 
+    $ar_group = array("none" => get_string('none', 'moodle'),
+            "department" => get_string('department', 'moodle'), 
+            "institution" => get_string('institution', 'moodle'), 
+            "custom" => get_string('customgroup', 'local_video_directory'));
+    $locals = $DB->get_records('user_info_field', ['datatype' => 'text'], 'name');
+    foreach ($locals as $local) {
+        $ar_group['local_' . $local->shortname] = $local->name;
+    }
     $settings->add(
         new admin_setting_configselect('local_video_directory/group',
-        get_string('group', 'moodle'), '', '', array("none" => get_string('none', 'moodle'),
-                                                     "department" => get_string('department', 'moodle'), 
-                                                     "institution" => get_string('institution', 'moodle'), 
-                                                     "custom" => get_string('customgroup', 'local_video_directory'),
-    )));
+        get_string('group', 'moodle'), '', '', $ar_group
+    ));
 
     $settings->add( new admin_setting_configtext(
         'local_video_directory/customgroup',
