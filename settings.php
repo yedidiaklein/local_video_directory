@@ -262,6 +262,13 @@ if ($hassiteconfig) {
         PARAM_TEXT
     ));
 
+    $settings->add( new admin_setting_configcheckbox(
+        'local_video_directory/groupcloud',
+        get_string('groupcloud', 'local_video_directory'),
+        get_string('groupclouddesc', 'local_video_directory'),
+        '0'
+    ));
+
     $settings->add( new admin_setting_configtext(
         'local_video_directory/fieldorder',
         get_string('fieldorder', 'local_video_directory'),
@@ -269,13 +276,12 @@ if ($hassiteconfig) {
         'actions, thumb, id, name, usergroup, orig_filename, length, convert_status, private, streaming_url, tags',
         PARAM_TEXT
     ));
-
+ 
     // Create.
     $ADMIN->add( 'localplugins', $settings );
 
      $ADMIN->add('server', new admin_externalpage('local_video_directory_list',
         get_string('pluginname', 'local_video_directory'),
         new moodle_url('/local/video_directory/')));
-
 
 }

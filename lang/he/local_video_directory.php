@@ -187,3 +187,7 @@ $string['settings'] = 'הגדרות רכיב ספריית וידאו';
 $string['timecreated'] = 'תאריך העלאה';
 $string['allowxmlexport'] = 'אפשרו יצוא רשימת סרטים ב-XML';
 $string['allowxmlexportdesc'] = 'במידה ותאפשרו יכולת זו - רשימת הסרטים תהיה זמינה בכתובת ';
+$string['groupcloud'] = 'הצגת ענן קבוצות מתחת לענן התגיות';
+$string['groupclouddesc'] = 'אם תסומן אפשרות זו תהיה תצוגה של ענן קבוצות מתחת לענן התגיות';
+$string['categories'] = 'קטגוריות';
+$string['selected_cats'] = 'קטגוריות שנבחרו';

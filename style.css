@@ -22,7 +22,7 @@
 }
 
 .local_video_directory_tools {
-    padding-bottom: 1vw;
+/*    padding-bottom: 1vw;*/
 }
 
 .local_video_directory_thumb {
@@ -294,3 +294,8 @@ input.hidden_input:hover {
 .local_video_menu_icons {
     font-size: x-large;
 }
+
+.brown, .brown[href]:hover {
+    background-color: brown;
+}
+

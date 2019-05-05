@@ -40,6 +40,20 @@ if (!CLI_SCRIPT) {
 
 $tags = optional_param('tag', 0, PARAM_RAW);
 $tc = optional_param('tc', 0, PARAM_INT);
+$action = optional_param('action', 0, PARAM_RAW);
+$group = optional_param('group', 0, PARAM_RAW);
+
+if (!is_array($SESSION->groups)) {
+    $SESSION->groups = [];
+}
+
+if ($action) {
+    if ($action == "addgroup") {
+        $SESSION->groups[$group] = ['name' => $group];
+    } else if ($action == "removegroup") {
+        unset($SESSION->groups[$group]);
+    }
+}
 
 if ($tc == 1) {
     redirect($CFG->wwwroot . "/local/video_directory/tag.php?action=add&tag=".$tags);
@@ -120,9 +134,18 @@ foreach ($fields as $key => $value) {
         }
 } 
 
+$groups = local_video_get_groups($settings);
+foreach ($groups as $key => $value) {
+    $g[$key]['name'] = $value;
+}
+
 echo $OUTPUT->render_from_template('local_video_directory/list',
  ['wwwroot' => $CFG->wwwroot, 'alltags' => $alltagsurl, 'existvideotags' => is_array($SESSION->video_tags),
  'videotags' => $selectedtags, 'liststrings' => $liststrings, 
- 'lang' => current_language(), 'fields' => array_values($fieldsv) ]);
+ 'lang' => current_language(), 'fields' => array_values($fieldsv),
+ 'showgroupcloud' => $settings->groupcloud, 'groups' => array_values($g),
+ 'existselectedgroups' => count($SESSION->groups), 'selectedgroups' => array_values($SESSION->groups),
+ 'tags' => $tags
+ ]);
 echo $OUTPUT->render_from_template('local_video_directory/player', []);
 echo $OUTPUT->footer();

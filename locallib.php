@@ -137,10 +137,21 @@ function get_directories() {
 }
 
 function local_video_directory_get_videos_by_tags($list, $tagid=0, $start = null, $length = null, $search = 0, $order=0) {
-    global $USER, $DB;
+    global $USER, $DB, $SESSION;
     $settings = get_settings();
     $params = [];
-		
+        
+    if (count($SESSION->groups)) {
+        foreach ($SESSION->groups as $key => $value) {
+            $g[]=$value['name'];
+        }
+        list($insql, $groupsparams) = $DB->get_in_or_equal($g);
+        $groups = ' usergroup ' . $insql;
+    } else {
+        $groups = '';
+        $groupsparams = [];
+    }
+
     if ($order) {
         $orderby = " ORDER BY $order ";
     } else {
@@ -160,12 +171,21 @@ function local_video_directory_get_videos_by_tags($list, $tagid=0, $start = null
 
     if ($search) {
         $match = " (usergroup LIKE ? OR orig_filename LIKE ? OR firstname LIKE ? OR  lastname LIKE ? OR uniqid LIKE ?) ";
+        if ($groups != '') {
+            $match .= " AND (" . $groups . ") ";
+        }
         $where = " WHERE " . $match;
         $whereor = " AND " . $match;
-	    $params = array_merge($params, ["%$search%", "%$search%", "%$search%", "%$search%", "%$search%"]);
+	    $params = array_merge($params, ["%$search%", "%$search%", "%$search%", "%$search%", "%$search%"], $groupsparams);
     } else {
-        $where = "";
-        $whereor = "";
+        if ($groups != '') {
+            $where = " WHERE (" . $groups . ") ";
+            $whereor = " AND (" . $groups . ") ";
+        } else {
+            $where = "";
+            $whereor = "";
+        }
+        $params = array_merge($params,$groupsparams);
     }
 
 
@@ -202,7 +222,7 @@ function local_video_directory_get_videos_by_tags($list, $tagid=0, $start = null
 }
 
 function local_video_directory_get_videos($order = 0, $start = null, $length = null, $search=0) {
-    global $USER, $DB;
+    global $USER, $DB, $SESSION;
     $settings = get_settings();
     if ($order) {
         $orderby = " ORDER BY $order ";
@@ -215,15 +235,35 @@ function local_video_directory_get_videos($order = 0, $start = null, $length = n
     }
 
 	$params = null;
-	
+    
+    if (count($SESSION->groups)) {
+        foreach ($SESSION->groups as $key => $value) {
+            $g[]=$value['name'];
+        }
+        list($insql, $groupsparams) = $DB->get_in_or_equal($g);
+        $groups = ' usergroup ' . $insql;
+    } else {
+        $groups = '';
+        $groupsparams = [];
+    }
+    
     if ($search) {
         $match = " (usergroup LIKE ? OR orig_filename LIKE ? OR firstname LIKE ? OR  lastname LIKE ? OR uniqid LIKE ?) ";
+        if ($groups != '') {
+            $match .= " AND (" . $groups . ") ";
+        }
         $where = " WHERE " . $match;
         $whereor = " AND " . $match;
-		$params = ["%$search%", "%$search%", "%$search%", "%$search%", "%$search%"];
+		$params = array_merge(["%$search%", "%$search%", "%$search%", "%$search%", "%$search%"], $groupsparams);
     } else {
-        $where = "";
-        $whereor = "";
+        if ($groups != '') {
+            $where = " WHERE (" . $groups . ") ";
+            $whereor = " AND (" . $groups . ") ";
+        } else {
+            $where = "";
+            $whereor = "";
+        }
+        $params = $groupsparams;
     }
 
     if (is_video_admin()) {

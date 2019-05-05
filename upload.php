@@ -53,6 +53,11 @@ $PAGE->requires->css('/local/video_directory/styles/select2.min.css');
 $PAGE->set_context(context_system::instance());
 $PAGE->requires->js_amd_inline('require([\'jquery\',\'local_video_directory/edit\'])');
 
+// Include font awesome in case of moodle 32 and older.
+if ($CFG->branch < 33) {
+    $PAGE->requires->css('/local/video_directory/font_awesome/css/all.min.css');
+}
+
 $context = context_user::instance($USER->id);
 
 class upload_form extends moodleform {
