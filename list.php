@@ -43,7 +43,7 @@ $tc = optional_param('tc', 0, PARAM_INT);
 $action = optional_param('action', 0, PARAM_RAW);
 $group = optional_param('group', 0, PARAM_RAW);
 
-if (!is_array($SESSION->groups)) {
+if (!property_exists($SESSION,'groups')) {
     $SESSION->groups = [];
 }
 

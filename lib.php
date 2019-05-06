@@ -186,7 +186,7 @@ function local_video_directory_get_hls_url($videoid) {
 
 // Adding icon to top
 function local_video_directory_render_navbar_output(\renderer_base $renderer) {
-    global $CFG;
+    global $CFG, $USER;
     // Check if the user has access to the video directory
     $context = context_system::instance();
     if (has_capability('local/video_directory:video', $context) || is_video_admin($USER)) {
