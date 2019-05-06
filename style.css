@@ -21,10 +21,6 @@
     border: 2px solid gray;
 }
 
-.local_video_directory_tools {
-/*    padding-bottom: 1vw;*/
-}
-
 .local_video_directory_thumb {
     height: 3vw;
     display: block;
@@ -299,3 +295,6 @@ input.hidden_input:hover {
     background-color: brown;
 }
 
+.local_video_directory_actions {
+    min-width:215px;
+}

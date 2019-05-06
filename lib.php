@@ -26,6 +26,11 @@ require_once( __DIR__ . '/locallib.php');
 function local_video_directory_extend_settings_navigation($settingsnav, $context) {
     global $CFG, $PAGE, $USER;
 
+    if (is_siteadmin()) {
+        $settingsnav->add(get_string('pluginname', 'local_video_directory'), new moodle_url('/local/video_directory/'));
+    }
+
+
     if ($settingnode = $settingsnav->find('courseadmin', navigation_node::TYPE_COURSE)) {
         $settings = get_config('local_video_directory');
 
