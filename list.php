@@ -135,8 +135,11 @@ foreach ($fields as $key => $value) {
 } 
 
 $groups = local_video_get_groups($settings);
-foreach ($groups as $key => $value) {
-    $g[$key]['name'] = $value;
+$g = [];
+if ($groups) {
+    foreach ($groups as $key => $value) {
+        $g[$key]['name'] = $value;
+    }
 }
 
 echo $OUTPUT->render_from_template('local_video_directory/list',

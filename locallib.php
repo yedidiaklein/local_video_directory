@@ -452,6 +452,9 @@ function is_video_admin($user = '') {
 
 function local_video_get_groups($settings) {
     global $DB;
+    if ($settings->group == "none") {
+        return;
+    }
     if (substr($settings->group,0,6) == 'local_') {
         $local = substr($settings->group,6);
         $group = $DB->get_records_sql("SELECT DISTINCT data FROM {user_info_data} uid
