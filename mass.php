@@ -48,6 +48,11 @@ $PAGE->set_title(get_string('mass', 'local_video_directory'));
 $PAGE->set_url('/local/video_directory/mass.php');
 $PAGE->set_pagelayout('standard');
 
+// Include font awesome in case of moodle 32 and older.
+if ($CFG->branch < 33) {
+    $PAGE->requires->css('/local/video_directory/font_awesome/css/all.min.css');
+}
+
 $PAGE->navbar->add(get_string('pluginname', 'local_video_directory'), new moodle_url('/local/video_directory/'));
 $PAGE->navbar->add(get_string('mass', 'local_video_directory'));
 
