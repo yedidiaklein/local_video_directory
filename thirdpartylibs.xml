@@ -9,11 +9,11 @@
         <licenseversion>1</licenseversion>
     </library>
     <library>
-        <url>https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/</url>
+        <url>https://fontawesome.com/</url>
         <location>font-awesome</location>
         <name>Font Awesome</name>
         <version>4.7.0</version>
-        <license>SIL OFL</license>
+        <license>fonts : SIL OFL, CSS : MIT</license>
         <licenseversion>1.1</licenseversion>
     </library>
     <library>
