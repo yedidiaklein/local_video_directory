@@ -191,3 +191,4 @@ $string['groupcloud'] = 'הצגת ענן קבוצות מעל לענן התגיו
 $string['groupclouddesc'] = 'אם תסומן אפשרות זו תהיה תצוגה של ענן קבוצות מעל לענן התגיות';
 $string['categories'] = 'קטגוריות';
 $string['selected_cats'] = 'קטגוריות שנבחרו';
+$string['views'] = 'צפיות';

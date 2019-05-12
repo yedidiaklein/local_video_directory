@@ -191,3 +191,4 @@ $string['groupcloud'] = 'Show cloud of groups near tags';
 $string['groupclouddesc'] = 'I this option is set there will be a cloud of groups near tags';
 $string['categories'] = 'Categories';
 $string['selected_cats'] = 'Selected Categories';
+$string['views'] = 'Views';
