@@ -1,6 +1,6 @@
 {
     "name": "yedidiaklein/moodle-local_video_directory",
-    "description": " This is a template for Moodle local plugins",
+    "description": "Moodle local plugin : Video Directory",
     "license": "GPLv3",
     "authors": [
         {

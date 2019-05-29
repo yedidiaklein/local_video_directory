@@ -116,6 +116,14 @@ class upload_form extends moodleform {
             }
         }
 
+        if ($settings->categories) {
+            $allcats = $DB->get_records('local_video_directory_cats',[]);
+            foreach ($allcats as $cat) {
+                $c[$cat->id] = $cat->cat_name;
+            }
+            $mform->addElement('select', 'category', get_string('category', 'moodle'), $c);
+            $mform->getElement('category')->setMultiple(true);
+        }
 
         $mform->addElement('filemanager', 'attachments', get_string('file', 'moodle'), null,
                     array('subdirs' => 3, 'maxfiles' => 50,
@@ -198,6 +206,14 @@ if ($mform->is_cancelled()) {
             $DB->update_record('local_video_directory', $record);
             core_tag_tag::set_item_tags('local_video_directory', 'local_video_directory', $lastinsertid, $context, $fromform->tags);
         }
+        //categories
+        if (isset($fromform->category)) {
+            // Delete all multi groups records
+            $DB->delete_records('local_video_directory_catvid', ['video_id' => $lastinsertid]);
+            foreach ($fromform->category as $cat) {
+                $DB->insert_record('local_video_directory_catvid', ['video_id' => $lastinsertid, 'cat_id' => $cat]);
+            }
+        }    
         $path = substr($file->contenthash, 0, 2) . "/" . substr($file->contenthash, 2, 2) . "/";
         copy($CFG->dataroot . "/filedir/" . $path . $file->contenthash, $dirs['uploaddir'] . $lastinsertid);
     }

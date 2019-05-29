@@ -140,7 +140,18 @@ function local_video_directory_get_videos_by_tags($list, $tagid=0, $start = null
     global $USER, $DB, $SESSION;
     $settings = get_settings();
     $params = [];
-        
+
+    if (count($SESSION->categories)) {
+        foreach ($SESSION->categories as $key => $value) {
+            $c[]=$value['id'];
+        }
+        list($insql, $catsparams) = $DB->get_in_or_equal($c);
+        $cats = ' cat_id ' . $insql;
+    } else {
+        $cats = '';
+        $catsparams = [];
+    }
+    
     if (count($SESSION->groups)) {
         foreach ($SESSION->groups as $key => $value) {
             $g[]=$value['name'];
@@ -176,16 +187,21 @@ function local_video_directory_get_videos_by_tags($list, $tagid=0, $start = null
         }
         $where = " WHERE " . $match;
         $whereor = " AND " . $match;
-	    $params = array_merge($params, ["%$search%", "%$search%", "%$search%", "%$search%", "%$search%"], $groupsparams);
+	    $params = array_merge($params, ["%$search%", "%$search%", "%$search%", "%$search%", "%$search%"], $groupsparams, $catsparams);
     } else {
         if ($groups != '') {
             $where = " WHERE (" . $groups . ") ";
             $whereor = " AND (" . $groups . ") ";
-        } else {
-            $where = "";
-            $whereor = "";
         }
-        $params = array_merge($params,$groupsparams);
+        if (($cats != '') && ($groups == '')) {
+            $where = " WHERE (" . $cats . ") ";
+            $whereor = " AND (" . $cats . ") ";
+        } 
+        if (($cats != '') && ($groups != '')) {
+            $where = $whereor .= " AND (" . $cats . ") ";
+
+        }
+        $params = array_merge($groupsparams, $catsparams);
     }
 
 
@@ -236,6 +252,17 @@ function local_video_directory_get_videos($order = 0, $start = null, $length = n
 
 	$params = null;
     
+    if (count($SESSION->categories)) {
+        foreach ($SESSION->categories as $key => $value) {
+            $c[]=$value['id'];
+        }
+        list($insql, $catsparams) = $DB->get_in_or_equal($c);
+        $cats = ' cat_id ' . $insql;
+    } else {
+        $cats = '';
+        $catsparams = [];
+    }
+
     if (count($SESSION->groups)) {
         foreach ($SESSION->groups as $key => $value) {
             $g[]=$value['name'];
@@ -252,34 +279,62 @@ function local_video_directory_get_videos($order = 0, $start = null, $length = n
         if ($groups != '') {
             $match .= " AND (" . $groups . ") ";
         }
+        if ($cats != '') {
+            $match .= " AND (" . $cats . ") ";
+        }
+        
         $where = " WHERE " . $match;
         $whereor = " AND " . $match;
-		$params = array_merge(["%$search%", "%$search%", "%$search%", "%$search%", "%$search%"], $groupsparams);
+		$params = array_merge(["%$search%", "%$search%", "%$search%", "%$search%", "%$search%"], $groupsparams, $catsparams);
     } else {
+        $where = "";
+        $whereor = "";
         if ($groups != '') {
             $where = " WHERE (" . $groups . ") ";
             $whereor = " AND (" . $groups . ") ";
-        } else {
-            $where = "";
-            $whereor = "";
         }
-        $params = $groupsparams;
+        if (($cats != '') && ($groups == '')) {
+            $where = " WHERE (" . $cats . ") ";
+            $whereor = " AND (" . $cats . ") ";
+        } 
+        if (($cats != '') && ($groups != '')) {
+            $where = $whereor .= " AND (" . $cats . ") ";
+
+        }
+        $params = array_merge($groupsparams, $catsparams);
     }
 
     if (is_video_admin()) {
         $videos = $DB->get_records_sql('SELECT v.*, ' . $DB->sql_concat_join("' '", array("firstname", "lastname")) .
-                                    ' AS name FROM {local_video_directory} v
-                                    LEFT JOIN {user} u on v.owner_id = u.id' . $where . $orderby, $params, $start, $length);
+                                    ' AS name, 
+                                    (SELECT GROUP_CONCAT(cat_name, " ") from {local_video_directory_catvid} cv 
+                                        LEFT JOIN {local_video_directory_cats} c ON cv.cat_id = c.id
+                                        WHERE cv.video_id = v.id
+                                        GROUP BY cv.video_id) as categories
+                                    FROM {local_video_directory} v
+                                    LEFT JOIN {user} u on v.owner_id = u.id
+                                    LEFT JOIN {local_video_directory_catvid} c ON c.video_id = v.id' .
+                                    $where . $orderby, $params, $start, $length);
     } else {
         if (($settings->group == "institution") || ($settings->group == "department")) {
             $videos = $DB->get_records_sql('SELECT v.*, ' . $DB->sql_concat_join("' '", array("firstname", "lastname")) .
-                ' AS name FROM {local_video_directory} v
+                ' AS name,
+                (SELECT GROUP_CONCAT(cat_name, " ") from {local_video_directory_catvid} cv 
+                                        LEFT JOIN {local_video_directory_cats} c ON cv.cat_id = c.id
+                                        WHERE cv.video_id = v.id
+                                        GROUP BY cv.video_id) as categories
+                FROM {local_video_directory} v
                 LEFT JOIN {user} u on v.owner_id = u.id WHERE (owner_id =' . $USER->id .
                 ' OR (private IS NULL OR private = 0) OR (usergroup = \'' . $USER->{$settings->group} . '\'))' . $whereor . $orderby, $params, $start, $length);
 
         } else {
             $videos = $DB->get_records_sql('SELECT v.*, ' . $DB->sql_concat_join("' '", array("firstname", "lastname")) .
-                                            ' AS name FROM {local_video_directory} v
+                                            ' AS name, 
+                                            (SELECT GROUP_CONCAT(cat_name, " ") from {local_video_directory_catvid} cv 
+                                                LEFT JOIN {local_video_directory_cats} c ON cv.cat_id = c.id
+                                                WHERE cv.video_id = v.id
+                                                GROUP BY cv.video_id) as categories
+                                            FROM {local_video_directory} v
                                     LEFT JOIN {user} u on v.owner_id = u.id WHERE (owner_id =' . $USER->id .
                                     ' OR (private IS NULL OR private = 0))' . $whereor . $orderby, $params, $start, $length);
         }

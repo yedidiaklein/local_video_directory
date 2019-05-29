@@ -2,8 +2,37 @@
     <button id="datatable_ajax_reload" class="btn btn-default"> {{#str}}reload, local_video_directory{{/str}}</button>
     <button id="datatable_ajax_clear_tags" class="btn btn-default"> {{#str}}show_all, local_video_directory{{/str}} </button>
 
-{{#showgroupcloud}}
+    {{#showcatscloud}}
     <div class="local_video_directory_existing_tags"> {{#str}}categories, local_video_directory{{/str}}:
+        <span class="tag_list hideoverlimit local_video_directory_videos">
+            <ul class="inline-list">
+                {{#categories}}
+                    <li>
+                        <a href="{{wwwroot}}/local/video_directory/list.php?tag={{tags}}&action=addcategory&category={{id}}" class="label label-info red">+ {{cat_name}} </a>
+                    </li>
+                {{/categories}}
+
+            </ul>
+        </span>
+    </div>
+        {{#existselectedcats}}
+        <div class="local_video_directory_selected_tags">{{#str}}selected_cats, local_video_directory{{/str}}:
+            <span class="tag_list hideoverlimit local_video_directory_videos">
+                <ul class="inline-list">
+                    {{#selectedcats}}
+                    <li>
+                        <a href=" {{wwwroot}}/local/video_directory/list.php?action=removecategory&category={{id}}" class="label label-info red"> &times; {{name}}</a>
+                    </li>
+                    {{/selectedcats}}
+                </ul>
+            </span>
+        </div>
+        {{/existselectedcats}}
+    {{/showcatscloud}}
+
+
+    {{#showgroupcloud}}
+    <div class="local_video_directory_existing_tags"> {{#str}}groups, moodle{{/str}}:
         <span class="tag_list hideoverlimit local_video_directory_videos">
             <ul class="inline-list">
                 {{#groups}}
@@ -16,19 +45,19 @@
         </span>
     </div>
         {{#existselectedgroups}}
-        <div class="local_video_directory_selected_tags">{{#str}}selected_cats, local_video_directory{{/str}}:
+        <div class="local_video_directory_selected_tags">{{#str}}selected_groups, local_video_directory{{/str}}:
             <span class="tag_list hideoverlimit local_video_directory_videos">
                 <ul class="inline-list">
                     {{#selectedgroups}}
                     <li>
-                        <a href=" {{wwwroot}}/local/video_directory/list.php?action=removegroup&group={{name}}" class="label label-info brown"> &times;{{name}}</a>
+                        <a href=" {{wwwroot}}/local/video_directory/list.php?action=removegroup&group={{name}}" class="label label-info brown"> &times; {{name}}</a>
                     </li>
                     {{/selectedgroups}}
                 </ul>
             </span>
         </div>
         {{/existselectedgroups}}
-{{/showgroupcloud}}
+    {{/showgroupcloud}}
 
     <div class="local_video_directory_existing_tags"> {{#str}}existing_tags, local_video_directory{{/str}}:
         <span class="tag_list hideoverlimit local_video_directory_videos">

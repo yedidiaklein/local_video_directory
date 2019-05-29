@@ -1,0 +1,35 @@
+<h2>{{#str}}categories,local_video_directory{{/str}}</h2>
+<br><br>
+
+<table width="500px" class="local_video_directory_categories">
+    <tr>
+        <th>{{#str}}idnumber{{/str}}</th>
+        <th>{{#str}}category{{/str}}</th>
+        <th>{{#str}}father, local_video_directory{{/str}}</th>
+        <th>{{#str}}inuse, local_video_directory{{/str}}</th>
+    </tr>
+
+    {{#categories}}
+    <tr>
+        <td>
+            {{id}}
+        </td>
+        <td>
+            {{cat_name}}
+        </td>
+        <td>
+            {{father_name}}
+        </td>
+        <td>
+            {{#times}}
+                {{times}}
+            {{/times}}
+            {{^times}}
+                <a href='categories.php?delete={{id}}' alt='{{#str}}delete{{/str}}' title='{{#str}}delete{{/str}}'>X</a>
+            {{/times}}
+
+        </td>
+    </tr>
+    {{/categories}}
+
+</table>

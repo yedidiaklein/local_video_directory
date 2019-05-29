@@ -269,6 +269,20 @@ if ($hassiteconfig) {
         '0'
     ));
 
+    $settings->add( new admin_setting_configcheckbox(
+        'local_video_directory/categories',
+        get_string('categories', 'local_video_directory'),
+        get_string('categoriesdesc', 'local_video_directory'),
+        '0'
+    ));
+
+    $settings->add( new admin_setting_configcheckbox(
+        'local_video_directory/catscloud',
+        get_string('catscloud', 'local_video_directory'),
+        get_string('catsclouddesc', 'local_video_directory'),
+        '0'
+    ));
+
     $settings->add( new admin_setting_configtext(
         'local_video_directory/fieldorder',
         get_string('fieldorder', 'local_video_directory'),

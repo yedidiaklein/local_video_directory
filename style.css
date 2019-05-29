@@ -295,6 +295,10 @@ input.hidden_input:hover {
     background-color: brown;
 }
 
+.red, .red[href]:hover {
+    background-color: red;
+}
+
 .local_video_directory_actions {
     min-width:215px;
 }

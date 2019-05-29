@@ -96,7 +96,22 @@ class edit_form extends moodleform {
             }
 
             $select = $mform->addElement('select', 'usergroup', get_string('group', 'moodle'), $g, $option);
-            $select->setSelected($usergroup);
+            $select->setSelected($usergroup); 
+        }
+
+        if ($settings->categories) {
+            $allcats = $DB->get_records('local_video_directory_cats',[]);
+            foreach ($allcats as $cat) {
+                $c[$cat->id] = $cat->cat_name;
+            }
+            $mform->addElement('select', 'category', '<a href="categories.php">' . get_string('categories', 'local_video_directory') . '</a>', $c);
+            $mform->getElement('category')->setMultiple(true);
+            $multicats = $DB->get_records('local_video_directory_catvid',['video_id' => $id]);
+            $catselected = array();
+            foreach ($multicats as $cat) {
+                $catselected[] = $cat->cat_id;
+            }
+            $mform->getElement('category')->setSelected($catselected);
         }
 
         $mform->addElement('hidden', 'id', $id);
@@ -143,10 +158,17 @@ if ($mform->is_cancelled()) {
 
     // Check that user has rights to edit this video.
     local_video_edit_right($fromform->id);
-
+    if (isset($fromform->category)) {
+        // Delete all multi groups records
+        $DB->delete_records('local_video_directory_catvid', ['video_id' => $fromform->id]);
+        foreach ($fromform->category as $cat) {
+            $DB->insert_record('local_video_directory_catvid', ['video_id' => $fromform->id, 'cat_id' => $cat]);
+        }
+    }
     $record = array("id" => $fromform->id, 
                     "orig_filename" => $fromform->origfilename,
                     "usergroup" => $fromform->usergroup);
+    
     if ((isset($_POST['owner'])) && (is_video_admin($USER))) { //only admins updates owners
         $record['owner_id'] = $_POST['owner'];
     }

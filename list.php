@@ -42,9 +42,14 @@ $tags = optional_param('tag', 0, PARAM_RAW);
 $tc = optional_param('tc', 0, PARAM_INT);
 $action = optional_param('action', 0, PARAM_RAW);
 $group = optional_param('group', 0, PARAM_RAW);
+$category = optional_param('category', 0, PARAM_RAW);
 
 if (!property_exists($SESSION,'groups')) {
     $SESSION->groups = [];
+}
+
+if (!property_exists($SESSION,'categories')) {
+    $SESSION->categories = [];
 }
 
 if ($action) {
@@ -52,7 +57,11 @@ if ($action) {
         $SESSION->groups[$group] = ['name' => $group];
     } else if ($action == "removegroup") {
         unset($SESSION->groups[$group]);
-    }
+    } else if ($action == "addcategory") {
+        $SESSION->categories[$category] = ['id' => $category];
+    } else if ($action == "removecategory") {
+        unset($SESSION->categories[$category]);
+    } 
 }
 
 if ($tc == 1) {
@@ -142,12 +151,23 @@ if ($groups) {
     }
 }
 
+$cats = $DB->get_records('local_video_directory_cats', [], 'id', 'id, cat_name');
+foreach ($cats as $cat) {
+    $allcats[$cat->id] = $cat->cat_name;
+}
+$selectedcats = array();
+foreach ($SESSION->categories as $cat) {
+    $selectedcats[$cat['id']] = ['id' => $cat['id'] ,'name' => $allcats[$cat['id']]];
+} 
+
 echo $OUTPUT->render_from_template('local_video_directory/list',
  ['wwwroot' => $CFG->wwwroot, 'alltags' => $alltagsurl, 'existvideotags' => is_array($SESSION->video_tags),
  'videotags' => $selectedtags, 'liststrings' => $liststrings, 
  'lang' => current_language(), 'fields' => array_values($fieldsv),
  'showgroupcloud' => $settings->groupcloud, 'groups' => array_values($g),
  'existselectedgroups' => count($SESSION->groups), 'selectedgroups' => array_values($SESSION->groups),
+ 'showcatscloud' => $settings->catscloud, 'categories' => array_values($cats),
+ 'existselectedcats' => count($SESSION->categories), 'selectedcats' => array_values($selectedcats),
  'tags' => $tags
  ]);
 echo $OUTPUT->render_from_template('local_video_directory/player', []);
