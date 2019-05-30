@@ -28,16 +28,6 @@ require_once('locallib.php');
 
 $settings = get_settings();
 
-if (!CLI_SCRIPT) {
-    require_login();
-    // Check if user have permissionss.
-    $context = context_system::instance();
-
-    if (!has_capability('local/video_directory:video', $context) && !is_video_admin($USER)) {
-        die("Access Denied. You must be a member of the designated cohort. Please see your site admin.");
-    }
-}
-
 $id = required_param('video_id', PARAM_INT);
 $download = optional_param('download', 0, PARAM_INT);
 $language = optional_param('language', 0, PARAM_RAW);
