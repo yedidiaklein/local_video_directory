@@ -297,8 +297,24 @@ input.hidden_input:hover {
 
 .red, .red[href]:hover {
     background-color: red;
+    color: white !important;
 }
 
 .local_video_directory_actions {
     min-width:215px;
+}
+
+.local_video_directory_categories .tag-info {
+    background-color: red;
+    color: white !important;
+}
+
+.local_video_directory_categories span {
+    background-color: red;
+    color: white;
+    margin-right: 5px;
+    margin-left: 5px;
+    padding: 3px;
+    font-size: small;
+    font-weight: bold;
 }

@@ -304,6 +304,11 @@ class local_video_directory_external extends external_api {
                                          . "</p><input type='text' class='hidden_input ajax_edit' id='orig_filename_" .
                 $video->id . "' value='" . htmlspecialchars($video->orig_filename, ENT_QUOTES) . "'>";
             }
+            if ($video->categories != '') {
+                $video->categories = "<div class='local_video_directory_categories'>
+                                    <span>" . str_replace(",", "</span><span>", $video->categories) . "</span>
+                                  </div>";
+            }
             $video->total = $total;
         } // end of foreach of all videos.
         return json_encode( array_values($videos),

@@ -32,6 +32,7 @@ if (!is_video_admin($USER)) {
     die("Access Denied");
 }
 
+$add = optional_param('add', 0, PARAM_INT);
 $delete = optional_param('delete', 0, PARAM_INT);
 if ($delete) {
     $haschilds = $DB->get_records('local_video_directory_catvid', ['cat_id' => $delete]);
@@ -81,13 +82,14 @@ class category_form extends moodleform {
 
         $mform->addElement('text', 'cat_name', get_string('category'));
         $mform->setType('cat_name', PARAM_RAW);
+        $mform->setDefault('cat_name', ''); // Default value.
 
         $all = $DB->get_records('local_video_directory_cats', []);
         $g[0] = ' - '; 
         foreach ($all as $cat) {
             $g[$cat->id] = $cat->cat_name;
         }
-        $select = $mform->addElement('select', 'father', get_string('father', 'local_video_directory'), $g);
+        $mform->addElement('select', 'father', get_string('father', 'local_video_directory'), $g);
 
         $buttonarray = array();
         $buttonarray[] =& $mform->createElement('submit', 'submitbutton', get_string('savechanges'));
@@ -114,9 +116,12 @@ $mform = new category_form();
         }
     }
 
-
-echo '<h2>' . get_string('new_category', 'local_video_directory') . '</h2>';
-$mform->display();
+if ($add) {
+    echo '<h2>' . get_string('new_category', 'local_video_directory') . '</h2>';
+    $mform->display();
+} else {
+    echo '<a href="?add=1"><h3>' . get_string('new_category', 'local_video_directory') . '</h3></a>';
+}
 
 //$categories = $DB->get_records('local_video_directory_cats', array());
 $categories = $DB->get_records_sql('select c1.id,c1.cat_name,c2.cat_name as father_name,

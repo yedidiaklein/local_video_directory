@@ -104,7 +104,8 @@ class edit_form extends moodleform {
             foreach ($allcats as $cat) {
                 $c[$cat->id] = $cat->cat_name;
             }
-            $mform->addElement('select', 'category', '<a href="categories.php">' . get_string('categories', 'local_video_directory') . '</a>', $c);
+            $mform->addElement('autocomplete', 'category', '<a href="categories.php">' . get_string('categories', 'local_video_directory') . '</a>',
+                                $c, ['class' => 'local_video_directory_categories']);
             $mform->getElement('category')->setMultiple(true);
             $multicats = $DB->get_records('local_video_directory_catvid',['video_id' => $id]);
             $catselected = array();
