@@ -319,7 +319,7 @@ function local_video_directory_get_videos($order = 0, $start = null, $length = n
     }
 
     if (is_video_admin()) {
-        $videos = $DB->get_records_sql('SELECT v.*, ' . $DB->sql_concat_join("' '", array("firstname", "lastname")) .
+        $videos = $DB->get_records_sql('SELECT DISTINCT v.*, ' . $DB->sql_concat_join("' '", array("firstname", "lastname")) .
                                     ' AS name, 
                                     (SELECT GROUP_CONCAT(cat_name, " ") from {local_video_directory_catvid} cv 
                                         LEFT JOIN {local_video_directory_cats} c ON cv.cat_id = c.id
@@ -331,7 +331,7 @@ function local_video_directory_get_videos($order = 0, $start = null, $length = n
                                     $where . $orderby, $params, $start, $length);
     } else {
         if (($settings->group == "institution") || ($settings->group == "department")) {
-            $videos = $DB->get_records_sql('SELECT v.*, ' . $DB->sql_concat_join("' '", array("firstname", "lastname")) .
+            $videos = $DB->get_records_sql('SELECT DISTINCT v.*, ' . $DB->sql_concat_join("' '", array("firstname", "lastname")) .
                 ' AS name,
                 (SELECT GROUP_CONCAT(cat_name, " ") from {local_video_directory_catvid} cv 
                                         LEFT JOIN {local_video_directory_cats} c ON cv.cat_id = c.id
@@ -342,7 +342,7 @@ function local_video_directory_get_videos($order = 0, $start = null, $length = n
                 ' OR (private IS NULL OR private = 0) OR (usergroup = \'' . $USER->{$settings->group} . '\'))' . $whereor . $orderby, $params, $start, $length);
 
         } else {
-            $videos = $DB->get_records_sql('SELECT v.*, ' . $DB->sql_concat_join("' '", array("firstname", "lastname")) .
+            $videos = $DB->get_records_sql('SELECT DISTINCT v.*, ' . $DB->sql_concat_join("' '", array("firstname", "lastname")) .
                                             ' AS name, 
                                             (SELECT GROUP_CONCAT(cat_name, " ") from {local_video_directory_catvid} cv 
                                                 LEFT JOIN {local_video_directory_cats} c ON cv.cat_id = c.id
