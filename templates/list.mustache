@@ -135,7 +135,7 @@ require(['jquery', 'jqueryui', 'datatables', 'core/ajax'], function($, jqueryui,
                     return data;
                 }
             },
-            "order": [[2, "desc"]],
+            "order": [[{{order}}, "desc"]],
             "columns": [
                 {{#fields}}
                 {"data": "{{name}}"},

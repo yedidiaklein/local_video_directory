@@ -133,7 +133,11 @@ $fields = $settings->fieldorder;
 $fields = explode(",", $fields);
 $fieldsv = [];
 $liststrings = [];
+$order=2;
 foreach ($fields as $key => $value) {
+    if (trim($value) == 'id') {
+        $order = $key;
+    }
     if (!(
         ($settings->group == 'none' && trim($value) == 'usergroup') || 
         ($settings->embedcolumn == 0 && trim($value) == 'streaming_url')
@@ -168,7 +172,7 @@ echo $OUTPUT->render_from_template('local_video_directory/list',
  'existselectedgroups' => count($SESSION->groups), 'selectedgroups' => array_values($SESSION->groups),
  'showcatscloud' => $settings->catscloud, 'categories' => array_values($cats),
  'existselectedcats' => count($SESSION->categories), 'selectedcats' => array_values($selectedcats),
- 'tags' => $tags
+ 'tags' => $tags, 'order' => $order
  ]);
 echo $OUTPUT->render_from_template('local_video_directory/player', []);
 echo $OUTPUT->footer();
