@@ -296,8 +296,8 @@ input.hidden_input:hover {
     background-color: brown;
 }
 
-.red, .red[href]:hover {
-    background-color: red;
+.local_video_directory_cats, .local_video_directory_cats[href]:hover {
+    background-color: #77933c;
     color: white !important;
 }
 
@@ -306,12 +306,12 @@ input.hidden_input:hover {
 }
 
 .local_video_directory_categories .tag-info {
-    background-color: red;
+    background-color: #77933c;
     color: white !important;
 }
 
 .local_video_directory_categories span {
-    background-color: red;
+    background-color: #77933c;
     color: white;
     margin-right: 5px;
     margin-left: 5px;
