@@ -30,7 +30,6 @@ function local_video_directory_extend_settings_navigation($settingsnav, $context
         $settingsnav->add(get_string('pluginname', 'local_video_directory'), new moodle_url('/local/video_directory/'));
     }
 
-
     if ($settingnode = $settingsnav->find('courseadmin', navigation_node::TYPE_COURSE)) {
         $settings = get_config('local_video_directory');
 
@@ -184,22 +183,23 @@ function local_video_directory_get_hls_url($videoid) {
     foreach ($parts as $key => $value) {
         $hlsurl .= "," . $value[1];
     }
-    $hlsurl .= "," . ".mp4".$nginxmulti."/master.m3u8";
+    $hlsurl .= "," . ".mp4" . $nginxmulti . "/master.m3u8";
 
     return $hlsurl;
 }
 
-// Adding icon to top
+// Adding icon to top.
 function local_video_directory_render_navbar_output(\renderer_base $renderer) {
     global $CFG, $USER;
-    // Check if the user has access to the video directory
+    // Check if the user has access to the video directory.
     $context = context_system::instance();
     if (has_capability('local/video_directory:video', $context) || is_video_admin($USER)) {
         return '<div style="float:right; padding-top: 7px;" class="popover-region nav-link">
-                            <i class="icon fa fa-video-camera fa-fw " 
-                               title="Video Directory" 
-                               aria-label="Video Directory" OnClick="location.href = \' ' . $CFG->wwwroot . '/local/video_directory/' . '\';">
-                            </i>
+                    <i class="icon fa fa-video-camera fa-fw "
+                               title="Video Directory"
+                               aria-label="Video Directory"
+                               OnClick="location.href = \' ' . $CFG->wwwroot . '/local/video_directory/' . '\';">
+                    </i>
                 </div>';
     } else {
         return;

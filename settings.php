@@ -138,14 +138,14 @@ if ($hassiteconfig) {
         PARAM_TEXT
      ));
 
-     $settings->add( new admin_setting_configcheckbox(
+    $settings->add( new admin_setting_configcheckbox(
         'local_video_directory/showwhere',
         get_string('showwhere', 'local_video_directory'),
         get_string('showwheredesc', 'local_video_directory'),
         '0'
     ));
 
-     $settings->add( new admin_setting_configcheckbox(
+    $settings->add( new admin_setting_configcheckbox(
         'local_video_directory/showqr',
         get_string('showqr', 'local_video_directory'),
         get_string('showqrdesc', 'local_video_directory'),
@@ -159,7 +159,7 @@ if ($hassiteconfig) {
         '0'
     ));
 
-     $settings->add( new admin_setting_configcheckbox(
+    $settings->add( new admin_setting_configcheckbox(
         'local_video_directory/showembed',
         get_string('showembed', 'local_video_directory'),
         get_string('showembeddesc', 'local_video_directory'),
@@ -178,7 +178,6 @@ if ($hassiteconfig) {
         'style="width: 99vw; height: 56vw; max-width: 1280px; max-height: 720px;" frameBorder="0" allowfullscreen="true" webkitallowfullscreen="true" mozallowfullscreen="true"',
          PARAM_TEXT
     ));
-    
 
     $settings->add( new admin_setting_configcheckbox(
         'local_video_directory/allowanonymousembed',
@@ -241,17 +240,17 @@ if ($hassiteconfig) {
         PARAM_TEXT
     ));
 
-    $ar_group = array("none" => get_string('none', 'moodle'),
-            "department" => get_string('department', 'moodle'), 
-            "institution" => get_string('institution', 'moodle'), 
+    $argroup = array("none" => get_string('none', 'moodle'),
+            "department" => get_string('department', 'moodle'),
+            "institution" => get_string('institution', 'moodle'),
             "custom" => get_string('customgroup', 'local_video_directory'));
     $locals = $DB->get_records('user_info_field', ['datatype' => 'text'], 'name');
     foreach ($locals as $local) {
-        $ar_group['local_' . $local->shortname] = $local->name;
+        $argroup['local_' . $local->shortname] = $local->name;
     }
     $settings->add(
         new admin_setting_configselect('local_video_directory/group',
-        get_string('group', 'moodle'), '', '', $ar_group
+        get_string('group', 'moodle'), '', '', $argroup
     ));
 
     $settings->add( new admin_setting_configtext(
@@ -290,7 +289,7 @@ if ($hassiteconfig) {
         'actions, thumb, id, name, usergroup, orig_filename, length, convert_status, private, streaming_url, tags',
         PARAM_TEXT
     ));
- 
+
     // Create.
     $ADMIN->add( 'localplugins', $settings );
 

@@ -44,11 +44,11 @@ $action = optional_param('action', 0, PARAM_RAW);
 $group = optional_param('group', 0, PARAM_RAW);
 $category = optional_param('category', 0, PARAM_RAW);
 
-if (!property_exists($SESSION,'groups')) {
+if (!property_exists($SESSION, 'groups')) {
     $SESSION->groups = [];
 }
 
-if (!property_exists($SESSION,'categories')) {
+if (!property_exists($SESSION, 'categories')) {
     $SESSION->categories = [];
 }
 
@@ -61,7 +61,7 @@ if ($action) {
         $SESSION->categories[$category] = ['id' => $category];
     } else if ($action == "removecategory") {
         unset($SESSION->categories[$category]);
-    } 
+    }
 }
 
 if ($tc == 1) {
@@ -133,19 +133,19 @@ $fields = $settings->fieldorder;
 $fields = explode(",", $fields);
 $fieldsv = [];
 $liststrings = [];
-$order=2;
+$order = 2;
 foreach ($fields as $key => $value) {
     if (trim($value) == 'id') {
         $order = $key;
     }
     if (!(
-        ($settings->group == 'none' && trim($value) == 'usergroup') || 
+        ($settings->group == 'none' && trim($value) == 'usergroup') ||
         ($settings->embedcolumn == 0 && trim($value) == 'streaming_url')
         )) {
             $fieldsv[$key]['name'] = trim($value);
-            array_push($liststrings, get_string(trim($value), 'local_video_directory'));            
-        }
-} 
+            array_push($liststrings, get_string(trim($value), 'local_video_directory'));
+    }
+}
 
 $groups = local_video_get_groups($settings);
 $g = [];
@@ -161,12 +161,12 @@ foreach ($cats as $cat) {
 }
 $selectedcats = array();
 foreach ($SESSION->categories as $cat) {
-    $selectedcats[$cat['id']] = ['id' => $cat['id'] ,'name' => $allcats[$cat['id']]];
-} 
+    $selectedcats[$cat['id']] = ['id' => $cat['id'], 'name' => $allcats[$cat['id']]];
+}
 
 echo $OUTPUT->render_from_template('local_video_directory/list',
  ['wwwroot' => $CFG->wwwroot, 'alltags' => $alltagsurl, 'existvideotags' => is_array($SESSION->video_tags),
- 'videotags' => $selectedtags, 'liststrings' => $liststrings, 
+ 'videotags' => $selectedtags, 'liststrings' => $liststrings,
  'lang' => current_language(), 'fields' => array_values($fieldsv),
  'showgroupcloud' => $settings->groupcloud, 'groups' => array_values($g),
  'existselectedgroups' => count($SESSION->groups), 'selectedgroups' => array_values($SESSION->groups),
