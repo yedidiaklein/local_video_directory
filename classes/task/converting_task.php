@@ -43,10 +43,10 @@ class converting_task extends \core\task\scheduled_task {
         $dirs = get_directories();
 
         $settings = get_settings();
-        $streamingurl = $settings->streaming.'/';
+        $streamingurl = $settings->streaming . '/';
         $ffmpeg = $settings->ffmpeg;
         $ffprobe = $settings->ffprobe;
-        $ffmpegsettings = $settings->ffmpeg_settings;
+        $ffmpegsettings = '-strict -2 -c:v libx264 -crf 22 -c:a aac -movflags faststart -vf "scale=trunc(iw/2)*2:trunc(ih/2)*2"';
         $thumbnailseconds = $settings->thumbnail_seconds;
         $php = $settings->php;
         $multiresolution = $settings->multiresolution;

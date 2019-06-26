@@ -38,12 +38,11 @@ if ($hassiteconfig) {
         ));
     }
 
-    $settings->add( new admin_setting_configtext(
+    $settings->add( new admin_setting_configexecutable(
         'local_video_directory/ffmpeg',
         get_string('ffmpegpath', 'local_video_directory'),
         get_string('ffmpegpathdesc', 'local_video_directory'),
-        $iswin ? '/ffmpeg/bin/ffmpeg.exe' : $CFG->dirroot . '/local/video_directory/ffmpeg_static_linux/ffmpeg',
-        PARAM_PATH
+        $iswin ? '/ffmpeg/bin/ffmpeg.exe' : $CFG->dirroot . '/local/video_directory/ffmpeg_static_linux/ffmpeg'
     ));
 
     if ($iswin) {
@@ -56,12 +55,11 @@ if ($hassiteconfig) {
         ));
     }
 
-    $settings->add( new admin_setting_configtext(
+    $settings->add( new admin_setting_configexecutable(
         'local_video_directory/ffprobe',
         get_string('ffprobepath', 'local_video_directory'),
         get_string('ffprobepathdesc', 'local_video_directory'),
-        $iswin ? '/ffmpeg/bin/ffprobe.exe' : $CFG->dirroot . '/local/video_directory/ffmpeg_static_linux/ffprobe',
-        PARAM_PATH
+        $iswin ? '/ffmpeg/bin/ffprobe.exe' : $CFG->dirroot . '/local/video_directory/ffmpeg_static_linux/ffprobe'
     ));
 
     if ($iswin) {
@@ -74,20 +72,18 @@ if ($hassiteconfig) {
         ));
     }
 
-    $settings->add( new admin_setting_configtext(
+    $settings->add( new admin_setting_configexecutable(
         'local_video_directory/php',
         get_string('phppath', 'local_video_directory'),
         get_string('phppathdesc', 'local_video_directory') . ($iswin ? get_string('xampplink', 'local_video_directory') : ''),
-        $iswin ? '/php/php' : '/usr/bin/php',
-        PARAM_PATH
+        $iswin ? '/php/php' : '/usr/bin/php'
     ));
 
-    $settings->add( new admin_setting_configtext(
+    $settings->add( new admin_setting_configexecutable(
         'local_video_directory/youtubedl',
         get_string('youtube-dlpath', 'local_video_directory'),
         get_string('youtube-dldesc', 'local_video_directory'),
-        $iswin ? '/bin/youtube-dl.exe' : '/usr/bin/youtube-dl',
-        PARAM_PATH
+        $iswin ? '/bin/youtube-dl.exe' : '/usr/bin/youtube-dl'
     ));
 
     $settings->add( new admin_setting_configtext(
@@ -98,14 +94,6 @@ if ($hassiteconfig) {
         PARAM_URL
 
     ));
-
-    $settings->add( new admin_setting_configtext(
-        'local_video_directory/ffmpeg_settings',
-        get_string('ffmpegparameters', 'local_video_directory'),
-        get_string('ffmpegparametersdesc', 'local_video_directory'),
-        '-strict -2 -c:v libx264 -crf 22 -c:a aac -movflags faststart -vf "scale=trunc(iw/2)*2:trunc(ih/2)*2"',
-        PARAM_TEXT
-     ));
 
     $settings->add( new admin_setting_configtext(
         'local_video_directory/thumbnail_seconds',
@@ -175,7 +163,8 @@ if ($hassiteconfig) {
         'local_video_directory/embedoptions',
         get_string('embed', 'local_video_directory'),
         '',
-        'style="width: 99vw; height: 56vw; max-width: 1280px; max-height: 720px;" frameBorder="0" allowfullscreen="true" webkitallowfullscreen="true" mozallowfullscreen="true"',
+        'style="width: 99vw; height: 56vw; max-width: 1280px; max-height: 720px;" frameBorder="0" allowfullscreen="true"'
+        .' webkitallowfullscreen="true" mozallowfullscreen="true"',
          PARAM_TEXT
     ));
 
