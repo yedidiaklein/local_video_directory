@@ -182,7 +182,6 @@ class converting_task extends \core\task\scheduled_task {
                     echo "Downloading $wget->url to" . $dirs['wgetdir'];
                     echo "Filename is $filename";
                     file_put_contents($dirs['wgetdir'] . $filename, fopen($wget->url, 'r'));
-                
 
                     // Move to mass directory once downloaded.
                     if (copy($dirs['wgetdir'] . $filename, $dirs['massdir'] . $filename)) {
