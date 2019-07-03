@@ -209,7 +209,7 @@ function local_video_directory_get_videos_by_tags($list, $tagid=0, $start = null
     if (($CFG->dbtype == 'mariadb' || $cfg->dbtype == 'mysql')) {
         $aggregate = ' GROUP_CONCAT(cat_name, " ") ';
     } else if (($CFG->dbtype == 'mssql' || $cfg->dbtype == 'sqlsrv')) {
-        $aggregate = ' STRING_AGG(cat_name, ", ") ';
+        $aggregate = " STRING_AGG(cat_name, ', ') ";
     }
     if (is_video_admin()) {
         $videos = $DB->get_records_sql('SELECT DISTINCT v.*, ' . $DB->sql_concat_join("' '", array("firstname", "lastname"))
@@ -223,7 +223,8 @@ function local_video_directory_get_videos_by_tags($list, $tagid=0, $start = null
                                                 LEFT JOIN {tag_instance} ti on v.id=ti.itemid
                                                 LEFT JOIN {tag} t on ti.tagid=t.id
                                                 LEFT JOIN {local_video_directory_catvid} c ON c.video_id = v.id
-                                                WHERE ti.itemtype = \'local_video_directory\' ' . $and . $whereor . $orderby, $params, $start, $length);
+                                                WHERE ti.itemtype = \'local_video_directory\' ' .
+                                                $and . $whereor . $orderby, $params, $start, $length);
     } else {
         if (($settings->group == "institution") || ($settings->group == "department")) {
             $videos = $DB->get_records_sql('SELECT DISTINCT v.*, ' . $DB->sql_concat_join("' '", array("firstname", "lastname"))
@@ -238,7 +239,8 @@ function local_video_directory_get_videos_by_tags($list, $tagid=0, $start = null
                 LEFT JOIN {tag} t on ti.tagid=t.id
                 LEFT JOIN {local_video_directory_catvid} c ON c.video_id = v.id
                 WHERE ti.itemtype = \'local_video_directory\' ' . $and . $whereor .
-                'AND (owner_id =' . $USER->id . ' OR (private IS NULL OR private = 0) OR (usergroup = \'' . $USER->{$settings->group} . '\'))
+                'AND (owner_id =' . $USER->id . ' OR (private IS NULL OR private = 0)
+                OR (usergroup = \'' . $USER->{$settings->group} . '\'))
                 ' . $orderby, $params, $start, $length);
         } else {
             $videos = $DB->get_records_sql('SELECT DISTINCT v.*, ' . $DB->sql_concat_join("' '", array("firstname", "lastname"))
@@ -289,7 +291,7 @@ function local_video_directory_get_videos($order = 0, $start = null, $length = n
 
     if (count($SESSION->groups)) {
         foreach ($SESSION->groups as $key => $value) {
-            $g[]=$value['name'];
+            $g[] = $value['name'];
         }
         list($insql, $groupsparams) = $DB->get_in_or_equal($g);
         $groups = ' usergroup ' . $insql;
@@ -322,7 +324,7 @@ function local_video_directory_get_videos($order = 0, $start = null, $length = n
         if (($cats != '') && ($groups == '')) {
             $where = " WHERE (" . $cats . ") ";
             $whereor = " AND (" . $cats . ") ";
-        } 
+        }
         if (($cats != '') && ($groups != '')) {
             $where = $whereor .= " AND (" . $cats . ") ";
 
@@ -333,7 +335,7 @@ function local_video_directory_get_videos($order = 0, $start = null, $length = n
     if (($CFG->dbtype == 'mariadb' || $cfg->dbtype == 'mysql')) {
         $aggregate = ' GROUP_CONCAT(cat_name, " ") ';
     } else if (($CFG->dbtype == 'mssql' || $cfg->dbtype == 'sqlsrv')) {
-        $aggregate = ' STRING_AGG(cat_name, ", ") ';
+        $aggregate = " STRING_AGG(cat_name, ', ') ";
     }
 
     if (is_video_admin()) {
@@ -362,7 +364,8 @@ function local_video_directory_get_videos($order = 0, $start = null, $length = n
                 LEFT JOIN {tag_instance} ti on v.id=ti.itemid
                 LEFT JOIN {tag} t on ti.tagid=t.id
                 WHERE (owner_id =' . $USER->id .
-                ' OR (private IS NULL OR private = 0) OR (usergroup = \'' . $USER->{$settings->group} . '\'))' . $whereor . $orderby, $params, $start, $length);
+                ' OR (private IS NULL OR private = 0) OR (usergroup = \'' . $USER->{$settings->group} . '\'))' .
+                $whereor . $orderby, $params, $start, $length);
 
         } else {
             $videos = $DB->get_records_sql('SELECT DISTINCT v.*, ' . $DB->sql_concat_join("' '", array("firstname", "lastname")) .
@@ -416,21 +419,17 @@ function local_video_get_thumbnail_url($thumb, $videoid, $clean=0) {
 
 function local_video_directory_check_android_version($version = '4.5.0') {
 
-	if(strstr($_SERVER['HTTP_USER_AGENT'], 'Android')){
-		
-		preg_match('/Android (\d+(?:\.\d+)+)[;)]/', $_SERVER['HTTP_USER_AGENT'], $matches);
-
-		return version_compare($matches[1], $version, '<=');
-
-	}
-
+    if (strstr($_SERVER['HTTP_USER_AGENT'], 'Android')) {
+        preg_match('/Android (\d+(?:\.\d+)+)[;)]/', $_SERVER['HTTP_USER_AGENT'], $matches);
+        return version_compare($matches[1], $version, '<=');
+    }
 }
 
 function local_video_directory_studio_tasks($id, $table, $metadata) {
     global $DB, $USER;
-    $datas = $DB->get_records('local_video_directory_' . $table, ['user_id' => $USER->id, 'video_id' => $id]);   
+    $datas = $DB->get_records('local_video_directory_' . $table, ['user_id' => $USER->id, 'video_id' => $id]);
     $tasks = [];
-    foreach ($datas as $data) { // startx starty endx endy
+    foreach ($datas as $data) { // Startx starty endx endy.
         $metacat = "";
         foreach ($metadata as $metdat) {
             $metacat .= $data->$metdat . " ";
@@ -445,103 +444,107 @@ function local_video_directory_studio_tasks($id, $table, $metadata) {
 }
 
 function local_video_directory_studio_action($data, $type) {
-  global $DB;
-  $dirs = get_directories();
-  $settings = get_settings();
-  $ffmpeg = $settings->ffmpeg;
-  $origdir = $dirs['uploaddir'];
-  $streamingdir = $dirs['converted'];
+    global $DB;
+    $dirs = get_directories();
+    $settings = get_settings();
+    $ffmpeg = $settings->ffmpeg;
+    $origdir = $dirs['uploaddir'];
+    $streamingdir = $dirs['converted'];
 
-  foreach ($data as $dat) {
-    // first of all set state to 1
-    $DB->update_record('local_video_directory_' . $type, ['id' => $dat->id, 'state' => 1]);
-    if ($type == "crop") {
-        if ($dat->startx < $dat->endx) {
-            $startx = $dat->startx;
-        } else {
-            $startx = $dat->endx;
+    foreach ($data as $dat) {
+        // First of all set state to 1.
+        $DB->update_record('local_video_directory_' . $type, ['id' => $dat->id, 'state' => 1]);
+        if ($type == "crop") {
+            if ($dat->startx < $dat->endx) {
+                $startx = $dat->startx;
+            } else {
+                $startx = $dat->endx;
+            }
+
+            if ($dat->starty < $dat->endy) {
+                $starty = $dat->starty;
+            } else {
+                $starty = $dat->endy;
+            }
+
+            $width = abs($dat->endx - $dat->startx);
+            $height = abs($dat->endy - $dat->starty);
         }
 
-        if ($dat->starty < $dat->endy) {
-            $starty = $dat->starty;
-        } else {
-            $starty = $dat->endy;
-        }
-    
-        $width = abs($dat->endx - $dat->startx);
-        $height = abs($dat->endy - $dat->starty);
-    }
-
-    if ($dat->save == "new") {
-        $name = $DB->get_field('local_video_directory', 'orig_filename', ['id' => $dat->video_id]);
-        $record = array('orig_filename' => $type . ' ' . $name,
+        if ($dat->save == "new") {
+            $name = $DB->get_field('local_video_directory', 'orig_filename', ['id' => $dat->video_id]);
+            $record = array('orig_filename' => $type . ' ' . $name,
                     'owner_id' => $dat->user_id,
                     'private' => 1,
                     'uniqid' => uniqid('', true));
-        $newid = $DB->insert_record('local_video_directory' , $record);
-    } else { // version 
-        $record = array('id' => $dat->video_id,
+            $newid = $DB->insert_record('local_video_directory' , $record);
+        } else { // Version.
+            $record = array('id' => $dat->video_id,
                         'convert_status' => 1);
-        $DB->update_record('local_video_directory' , $record);
-        $newid = $dat->video_id;
+            $DB->update_record('local_video_directory' , $record);
+            $newid = $dat->video_id;
+        }
+        if ($type == "crop") {
+            $cmd[] = $ffmpeg . " -i " . $streamingdir . "/" . $dat->video_id .
+                ".mp4 -filter:v \"crop=$width:$height:$startx:$starty\" " . $origdir . "/" . $newid . ".mp4";
+        } else if ($type == "cat") {
+            $cmd[] = $ffmpeg . " -i " . $streamingdir . "/" . $dat->video_id .
+                ".mp4 -c copy -bsf:v h264_mp4toannexb -f mpegts /tmp/intermediate1.ts";
+            $cmd[] = $ffmpeg . " -i " . $streamingdir . "/" . $dat->video_id_cat .
+                ".mp4 -c copy -bsf:v h264_mp4toannexb -f mpegts /tmp/intermediate2.ts";
+            $cmd[] = $ffmpeg . ' -i "concat:/tmp/intermediate1.ts|/tmp/intermediate2.ts" -c copy -bsf:a aac_adtstoasc ' .
+                $origdir . "/" . $newid . ".mp4";
+        } else if ($type == "cut") {
+            $start = gmdate("H:i:s", $dat->secbefore);
+            $length = $DB->get_field('local_video_directory', 'length', ['id' => $dat->video_id]);
+            $time = strtotime($length);
+            $newlength = date("H:i:s", $time - $dat->secafter);
+            $cmd[] = $ffmpeg . " -ss " . $start .  " -i " . $streamingdir . "/" . $dat->video_id .
+                ".mp4 -to $newlength -c copy -copyts " . $origdir . "/" . $newid . ".mp4";
+        } else if ($type == "merge") {
+            $cmd[] = $ffmpeg . " -i " . $streamingdir . "/" . $dat->video_id . ".mp4 -i " . $dirs['multidir'] .
+                $dat->video_id_small . "_" . $dat->height . ".mp4 -map 0:0 -map " . $dat->audio . ":1" .
+                ' -strict -2 -vf "movie='. $dirs['multidir'] . $dat->video_id_small . "_" . $dat->height . ".mp4" .
+                '[inner]; [in][inner] overlay=' . $dat->border . ':' . $dat->border . '[out]" ' .
+                $origdir . "/" . $newid . ".mp4";
+        } else if ($type == "speed") {
+            $double = ($dat->speed / 100);
+            $half = 1 / $double;
+            $cmd[] = $ffmpeg . " -i " . $streamingdir . "/" . $dat->video_id .
+            '.mp4 -filter_complex "[0:v]setpts=' . $half . '*PTS[v];[0:a]atempo=' . $double . '[a]" -map "[v]" -map "[a]" ' .
+            $origdir . "/" . $newid . ".mp4";
+        }
 
+        foreach ($cmd as $cm) {
+            echo "CMD: $cm";
+            exec($cm);
+        }
+        copy($origdir . "/" . $newid . ".mp4", $origdir . "/" . $newid);
+        unlink($origdir . "/" . $newid . ".mp4");
+        if ($type == "cat") {
+            unlink("/tmp/intermediate1.ts");
+            unlink("/tmp/intermediate2.ts");
+        }
+        $DB->update_record('local_video_directory_' . $type, ['id' => $dat->id, 'state' => 2]);
     }
-    if ($type == "crop") {
-        $cmd[] = $ffmpeg . " -i " . $streamingdir . "/" . $dat->video_id . ".mp4 -filter:v \"crop=$width:$height:$startx:$starty\" " . $origdir . "/" . $newid . ".mp4";
-    } elseif ($type == "cat") {
-        $cmd[] = $ffmpeg . " -i " . $streamingdir . "/" . $dat->video_id . ".mp4 -c copy -bsf:v h264_mp4toannexb -f mpegts /tmp/intermediate1.ts";
-        $cmd[] = $ffmpeg . " -i " . $streamingdir . "/" . $dat->video_id_cat . ".mp4 -c copy -bsf:v h264_mp4toannexb -f mpegts /tmp/intermediate2.ts";
-        $cmd[] = $ffmpeg . ' -i "concat:/tmp/intermediate1.ts|/tmp/intermediate2.ts" -c copy -bsf:a aac_adtstoasc ' . $origdir . "/" . $newid . ".mp4"; 
-    } elseif ($type == "cut") {
-        $start = gmdate("H:i:s", $dat->secbefore);
-        $length = $DB->get_field('local_video_directory', 'length', ['id' => $dat->video_id]); //"00:05:32";
-        $time = strtotime($length);
-        $newlength = date("H:i:s", $time - $dat->secafter);
-        $cmd[] = $ffmpeg . " -ss " . $start .  " -i " . $streamingdir . "/" . $dat->video_id . ".mp4 -to $newlength -c copy -copyts " . $origdir . "/" . $newid . ".mp4";
-    } elseif ($type == "merge") {
-        $cmd[] = $ffmpeg . " -i " . $streamingdir . "/" . $dat->video_id . ".mp4 -i " . $dirs['multidir'] . $dat->video_id_small . "_" . $dat->height . ".mp4 -map 0:0 -map " . $dat->audio . ":1" .
-        ' -strict -2 -vf "movie='. $dirs['multidir'] . $dat->video_id_small . "_" . $dat->height . ".mp4" .'[inner]; [in][inner] overlay=' . $dat->border . ':' . $dat->border . '[out]" ' .
-        $origdir . "/" . $newid . ".mp4";
-    } elseif ($type == "speed") {
-        $double = ($dat->speed / 100);
-        $half = 1 / $double;
-        $cmd[] = $ffmpeg . " -i " . $streamingdir . "/" . $dat->video_id .
-        '.mp4 -filter_complex "[0:v]setpts=' . $half . '*PTS[v];[0:a]atempo=' . $double . '[a]" -map "[v]" -map "[a]" ' .
-        $origdir . "/" . $newid . ".mp4";  
-    }
-
-
-
-    foreach ($cmd as $cm) {
-        echo "CMD: $cm";
-        exec($cm);
-    }
-    copy($origdir . "/" . $newid . ".mp4", $origdir . "/" . $newid);
-    unlink($origdir . "/" . $newid . ".mp4");
-    if ($type == "cat") {
-        unlink("/tmp/intermediate1.ts");
-        unlink("/tmp/intermediate2.ts");
-    }
-    $DB->update_record('local_video_directory_' . $type, ['id' => $dat->id, 'state' => 2]);
-  }
 }
 
 function is_video_admin($user = '') {
     global $USER;
     if (is_siteadmin($USER)) {
-        return TRUE;
+        return true;
     }
 
-    // Check if user is video admin
+    // Check if user is video admin.
     $context = context_system::instance();
-    $roles = get_user_roles($context, $USER->id, TRUE);
+    $roles = get_user_roles($context, $USER->id, true);
     $keys = array_keys($roles);
     foreach ($keys as $key) {
         if ($roles[$key]->shortname == 'local_video_directory_admin') {
-            return TRUE;
+            return true;
         }
     }
-    return FALSE;
+    return false;
 }
 
 function local_video_get_groups($settings) {
@@ -549,26 +552,24 @@ function local_video_get_groups($settings) {
     if ($settings->group == "none") {
         return;
     }
-    if (substr($settings->group,0,6) == 'local_') {
-        $local = substr($settings->group,6);
+    if (substr($settings->group, 0, 6) == 'local_') {
+        $local = substr($settings->group, 6);
         $group = $DB->get_records_sql("SELECT DISTINCT data FROM {user_info_data} uid
-                                        LEFT JOIN {user_info_field} uif ON uid.fieldid = uif.id 
+                                        LEFT JOIN {user_info_field} uif ON uid.fieldid = uif.id
                                         WHERE shortname = '$local'");
-        foreach ($group as $k=>$v) {
+        foreach ($group as $k => $v) {
             $g[$v->data] = $v->data;
         }
     } else if ($settings->group != "custom") {
         $group = $DB->get_records_sql("SELECT DISTINCT $settings->group from {user} ORDER BY $settings->group");
-        foreach ($group as $k=>$v) {
+        foreach ($group as $k => $v) {
             $g[$v->{$settings->group}] = $v->{$settings->group};
         }
     } else {
         $group = explode(",", $settings->customgroup);
-        foreach ($group as $k=>$v) {
+        foreach ($group as $k => $v) {
             $g[trim($v)] = trim($v);
         }
     }
     return $g;
 }
-
-
