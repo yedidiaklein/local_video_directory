@@ -73,7 +73,7 @@ class converting_task extends \core\task\scheduled_task {
                 array_map('unlink', glob($streamingdir . $video->id . "*.png"));
                 // Delete Multi resolutions.
                 array_map('unlink', glob($dirs['multidir'] . $video->id . "_*.mp4"));
-                // Delete from multi table
+                // Delete from multi table.
                 $DB->execute('DELETE FROM {local_video_directory_multi} WHERE video_id = ?', [$video->id]);
                 // Write to version table.
                 $record = array('datecreated' => $time, 'file_id' => $video->id, 'filename' => $newfilename);
@@ -167,10 +167,12 @@ class converting_task extends \core\task\scheduled_task {
                 if ((strstr($wget->url, 'youtube')) || (strstr($fromform->url, 'youtu.be'))) {
                     $uniqid = uniqid('', true);
                     mkdir($dirs['wgetdir'] . "/" . $uniqid);
-                    exec($settings->youtubedl . " -q -o " . $dirs['wgetdir'] . "/" . $uniqid . "/'%(title)s.%(ext)s' " . $wget->url);
+                    exec($settings->youtubedl . " -q -o " . $dirs['wgetdir'] . "/" . $uniqid . "/'%(title)s.%(ext)s' "
+                        . $wget->url);
                     $files = scandir($dirs['wgetdir'] . "/" . $uniqid, 1);
                     $filename = $files[0];
-                    $record = array('orig_filename' => $filename, 'owner_id' => $wget->owner_id, 'uniqid' => uniqid('', true), 'private' => 1);
+                    $record = array('orig_filename' => $filename, 'owner_id' => $wget->owner_id, 'uniqid' => uniqid('', true),
+                        'private' => 1);
                     $lastinsertid = $DB->insert_record('local_video_directory', $record);
                     if (copy($dirs['wgetdir'] . "/" . $uniqid . "/" . $filename, $dirs['uploaddir'] . $lastinsertid)) {
                         unlink($dirs['wgetdir'] . "/" . $uniqid . "/" . $filename);
@@ -201,19 +203,19 @@ class converting_task extends \core\task\scheduled_task {
                 local_video_directory_create_dash($video->id, $dirs['converted'], $dirs['multidir'], $ffmpeg, $resolutions);
             }
         }
-        // CROPs
+        // CROPs.
         $crops = $DB->get_records("local_video_directory_crop", array('state' => 0));
         local_video_directory_studio_action($crops, "crop");
-        // Merge
+        // Merge.
         $merge = $DB->get_records("local_video_directory_merge", array('state' => 0));
         local_video_directory_studio_action($merge, "merge");
-        // Cut
+        // Cut.
         $cut = $DB->get_records("local_video_directory_cut", array('state' => 0));
         local_video_directory_studio_action($cut, "cut");
-        // Cat
+        // Cat.
         $cat = $DB->get_records("local_video_directory_cat", array('state' => 0));
         local_video_directory_studio_action($cat, "cat");
-        // Speed
+        // Speed.
         $speed = $DB->get_records("local_video_directory_speed", array('state' => 0));
         local_video_directory_studio_action($speed, "speed");
     }

@@ -26,6 +26,8 @@ require_login();
 defined('MOODLE_INTERNAL') || die();
 require_once('locallib.php');
 
+$subsize = 10;
+
 $settings = get_settings();
 
 $id = required_param('video_id', PARAM_INT);
@@ -36,4 +38,27 @@ if ($download) {
     header('Content-Disposition: attachment; filename="' . $id . '.vtt"');
 }
 $dirs = get_directories();
-readfile($dirs['subsdir'] . $id . ($language ? "-" . $language : '') . ".vtt");
+if (file_exists($dirs['subsdir'] . $id . ($language ? "-" . $language : '') . ".vtt")) {
+    readfile($dirs['subsdir'] . $id . ($language ? "-" . $language : '') . ".vtt");
+} else {
+    // Do we have words from google in this movie.
+    $words = $DB->get_records('local_video_directory_words', ['video_id' => $id]);
+    if ($words) {
+        echo "WEBVTT\n\n";
+        $counter = 0;
+        $sentence = "";
+        foreach ($words as $word) {
+            $counter++;
+            if ($counter == 1) {
+                $start = gmdate("H:i:s", substr($word->start, 0 , -1)) . '.000';
+            }
+            $sentence .= $word->word . ' ';
+            if ($counter == $subsize) {
+                $counter = 0;
+                echo $start . ' --> ' . gmdate("H:i:s", substr($word->end, 0, -1)) . '.000' . "\n";
+                echo $sentence . "\n\n";
+                $sentence = '';
+            }
+        }
+    }
+}

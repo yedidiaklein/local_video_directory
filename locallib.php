@@ -213,11 +213,7 @@ function local_video_directory_get_videos_by_tags($list, $tagid=0, $start = null
     }
     if (is_video_admin()) {
         $videos = $DB->get_records_sql('SELECT DISTINCT v.*, ' . $DB->sql_concat_join("' '", array("firstname", "lastname"))
-                                                . ' AS name,
-                                                (SELECT ' . $aggregate . ' from {local_video_directory_catvid} cv
-                                                    LEFT JOIN {local_video_directory_cats} c ON cv.cat_id = c.id
-                                                    WHERE cv.video_id = v.id
-                                                    GROUP BY cv.video_id) as categories
+                                                . ' AS name
                                                 FROM {local_video_directory} v
                                                 LEFT JOIN {user} u on v.owner_id = u.id
                                                 LEFT JOIN {tag_instance} ti on v.id=ti.itemid
@@ -228,11 +224,7 @@ function local_video_directory_get_videos_by_tags($list, $tagid=0, $start = null
     } else {
         if (($settings->group == "institution") || ($settings->group == "department")) {
             $videos = $DB->get_records_sql('SELECT DISTINCT v.*, ' . $DB->sql_concat_join("' '", array("firstname", "lastname"))
-            . ' AS name,
-            (SELECT ' . $aggregate . ' from {local_video_directory_catvid} cv
-                    LEFT JOIN {local_video_directory_cats} c ON cv.cat_id = c.id
-                    WHERE cv.video_id = v.id
-                    GROUP BY cv.video_id) as categories
+                . ' AS name
                 FROM {local_video_directory} v
                 LEFT JOIN {user} u on v.owner_id = u.id
                 LEFT JOIN {tag_instance} ti on v.id=ti.itemid
@@ -244,11 +236,7 @@ function local_video_directory_get_videos_by_tags($list, $tagid=0, $start = null
                 ' . $orderby, $params, $start, $length);
         } else {
             $videos = $DB->get_records_sql('SELECT DISTINCT v.*, ' . $DB->sql_concat_join("' '", array("firstname", "lastname"))
-            . ' AS name,
-                                                (SELECT ' . $aggregate . ' from {local_video_directory_catvid} cv
-                                                    LEFT JOIN {local_video_directory_cats} c ON cv.cat_id = c.id
-                                                    WHERE cv.video_id = v.id
-                                                    GROUP BY cv.video_id) as categories
+                                                . ' AS name
                                                 FROM {local_video_directory} v
                                                 LEFT JOIN {user} u on v.owner_id = u.id
                                                 LEFT JOIN {tag_instance} ti on v.id=ti.itemid
@@ -332,19 +320,9 @@ function local_video_directory_get_videos($order = 0, $start = null, $length = n
         $params = array_merge($groupsparams, $catsparams);
     }
 
-    if (($CFG->dbtype == 'mariadb' || $cfg->dbtype == 'mysql')) {
-        $aggregate = ' GROUP_CONCAT(cat_name, " ") ';
-    } else if (($CFG->dbtype == 'mssql' || $cfg->dbtype == 'sqlsrv')) {
-        $aggregate = " STRING_AGG(cat_name, ', ') ";
-    }
-
     if (is_video_admin()) {
         $videos = $DB->get_records_sql('SELECT DISTINCT v.*, ' . $DB->sql_concat_join("' '", array("firstname", "lastname")) .
-                                    ' AS name,
-                                    (SELECT ' . $aggregate . ' from {local_video_directory_catvid} cv
-                                        LEFT JOIN {local_video_directory_cats} c ON cv.cat_id = c.id
-                                        WHERE cv.video_id = v.id
-                                        GROUP BY cv.video_id) as categories
+                                    ' AS name
                                     FROM {local_video_directory} v
                                     LEFT JOIN {tag_instance} ti on v.id=ti.itemid
                                     LEFT JOIN {tag} t on ti.tagid=t.id
@@ -354,11 +332,7 @@ function local_video_directory_get_videos($order = 0, $start = null, $length = n
     } else {
         if (($settings->group == "institution") || ($settings->group == "department")) {
             $videos = $DB->get_records_sql('SELECT DISTINCT v.*, ' . $DB->sql_concat_join("' '", array("firstname", "lastname")) .
-                ' AS name,
-                (SELECT ' . $aggregate . ' from {local_video_directory_catvid} cv
-                                        LEFT JOIN {local_video_directory_cats} c ON cv.cat_id = c.id
-                                        WHERE cv.video_id = v.id
-                                        GROUP BY cv.video_id) as categories
+                ' AS name
                 FROM {local_video_directory} v
                 LEFT JOIN {user} u on v.owner_id = u.id
                 LEFT JOIN {tag_instance} ti on v.id=ti.itemid
@@ -369,11 +343,7 @@ function local_video_directory_get_videos($order = 0, $start = null, $length = n
 
         } else {
             $videos = $DB->get_records_sql('SELECT DISTINCT v.*, ' . $DB->sql_concat_join("' '", array("firstname", "lastname")) .
-                                            ' AS name,
-                                            (SELECT ' . $aggregate . ' from {local_video_directory_catvid} cv
-                                                LEFT JOIN {local_video_directory_cats} c ON cv.cat_id = c.id
-                                                WHERE cv.video_id = v.id
-                                                GROUP BY cv.video_id) as categories
+                                            ' AS name
                                             FROM {local_video_directory} v
                                             LEFT JOIN {tag_instance} ti on v.id=ti.itemid
                                                 LEFT JOIN {tag} t on ti.tagid=t.id

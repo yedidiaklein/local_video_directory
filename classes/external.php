@@ -1,4 +1,4 @@
-                                                                                                        <?php
+<?php
 // This file is part of Moodle - http://moodle.org/
 //
 // Moodle is free software: you can redistribute it and/or modify
@@ -209,23 +209,23 @@ class local_video_directory_external extends external_api {
             $total = count(local_video_directory_get_videos_by_tags($list, 0, null, null, $search));
             $videos = local_video_directory_get_videos_by_tags($list, 0, $videodata->start, $videodata->length, $search, $order);
         } else {
-            $total = count(local_video_directory_get_videos(0,null,null,$search));
+            $total = count(local_video_directory_get_videos(0, null, null, $search));
             $videos = local_video_directory_get_videos($order, $videodata->start, $videodata->length, $search);
         }
-        //check if mod_videostream is enabled
-        $isvideostream = $DB->get_record('modules',['name'=>'videostream']);
+        // Check if mod_videostream is enabled.
+        $isvideostream = $DB->get_record('modules', ['name' => 'videostream']);
 
         foreach ($videos as $video) {
             // Do not show filename.
             unset($video->filename);
             if (is_numeric($video->convert_status)) {
-                $video->convert_status = get_string('state_' . $video->convert_status, 'local_video_directory') ;
+                $video->convert_status = get_string('state_' . $video->convert_status, 'local_video_directory');
                 if (($settings->showwhere != 0) && ($isvideostream)) {
-                    $used = $DB->get_records_sql('SELECT v.course,c.fullname FROM {videostream} v 
-                                                                             LEFT JOIN {course} c ON v.course=c.id 
-                                                  WHERE videoid=?',[$video->id]);
+                    $used = $DB->get_records_sql('SELECT v.course,c.fullname FROM {videostream} v
+                                                                             LEFT JOIN {course} c ON v.course=c.id
+                                                  WHERE videoid = ?', [$video->id]);
                     if ($used) {
-                        $video->convert_status .= "<br>" . get_string('course','moodle') . ": ";
+                        $video->convert_status .= "<br>" . get_string('course', 'moodle') . ": ";
                         foreach ($used as $singlecourse) {
                             $video->convert_status .= "<a title='" . $singlecourse->fullname . "' href='" . $CFG->wwwroot
                             . "/course/view.php?id=" . $singlecourse->course . "'>" . $singlecourse->course . "</a> ";
@@ -276,12 +276,12 @@ class local_video_directory_external extends external_api {
                                         . get_streaming_server_url() . '/' . $video->id . '.mp4</a><br>';
             }
             $embedurl = $CFG->wwwroot . '/local/video_directory/embed.php?id=' . $video->uniqid;
-            //embed
+            // Embed.
             if ($settings->showembed != 0) {
                 $video->streaming_url .= '<div style="direction:ltr">&lt;iframe src="' . $embedurl
                     . '" ' . $settings->embedoptions . ' >&lt;/iframe></div>';
             }
-            //QR
+            // QR.
             if ($settings->showqr != 0) {
                 $video->streaming_url .= '<a href=' . $CFG->wwwroot . '/local/video_directory/qr.php?id=' . $video->id
                     . ' target="_blank">QR</a>';
@@ -293,7 +293,6 @@ class local_video_directory_external extends external_api {
                 $checked = "";
             }
 
-            //  && ($video->usergroup != $USER->{$settings->group})
             // Do not allow non owner to edit privacy and title.
             if (($video->owner_id != $USER->id) && !is_video_admin($USER)) {
                  $video->private = '';
@@ -304,13 +303,21 @@ class local_video_directory_external extends external_api {
                                          . "</p><input type='text' class='hidden_input ajax_edit' id='orig_filename_" .
                 $video->id . "' value='" . htmlspecialchars($video->orig_filename, ENT_QUOTES) . "'>";
             }
-            if ($video->categories != '') {
-                $video->categories = "<div class='local_video_directory_categories'>
-                                    <span>" . str_replace(",", "</span><span>", $video->categories) . "</span>
-                                  </div>";
+            $catq = "SELECT cat_name from {local_video_directory_catvid} cv
+                        LEFT JOIN {local_video_directory_cats} c ON cv.cat_id = c.id
+                        WHERE cv.video_id = ?";
+            $cats = $DB->get_records_sql($catq, [$video->id]);
+            if ($cats) {
+                $video->categories = '<div class="local_video_directory_categories">';
+                foreach ($cats as $cat) {
+                    $video->categories .= '<span>' . $cat->cat_name . '</span>';
+                }
+                $video->categories .= '</div>';
+            } else {
+                $video->categories = '';
             }
             $video->total = $total;
-        } // end of foreach of all videos.
+        } // End of foreach of all videos.
         return json_encode( array_values($videos),
                             JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
     }
@@ -323,7 +330,7 @@ class local_video_directory_external extends external_api {
     }
 
 
-//userslist
+    // Userslist.
     /**
      * Returns description of method parameters
      * @return external_function_parameters
@@ -353,8 +360,10 @@ class local_video_directory_external extends external_api {
             throw new moodle_exception('accessdenied');
         }
         $search = json_decode($data);
-        $users = $DB->get_records_select('user', "firstname LIKE ? OR lastname LIKE ?", [ '%' . $search->term . '%', '%' . $search->term . '%'], 'lastname', 'id, concat(firstname, " " ,lastname) as text', 0, 20);
-        return json_encode(array_values($users),JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE);
+        $users = $DB->get_records_select('user', "firstname LIKE ? OR lastname LIKE ?",
+            [ '%' . $search->term . '%', '%' . $search->term . '%'], 'lastname',
+            'id, concat(firstname, " " ,lastname) as text', 0, 20);
+        return json_encode(array_values($users), JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE);
     }
 
     /**

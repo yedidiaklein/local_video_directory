@@ -1,6 +1,7 @@
 <div class="video_float">
     <video  width="655" controls preload="auto"
             poster="{{wwwroot}}/local/video_directory/thumb.php?id={{thumb}}">
-            <source src="{{streaming}}" type="video/mp4"">
+            <source src="{{streaming}}" type="video/mp4">
+            <track label="English" kind="subtitles" srclang="en" src="{{wwwroot}}/local/video_directory/subs.php?video_id={{id}}" default>
     </video>
 </div>
