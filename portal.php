@@ -147,11 +147,13 @@ if ($mform->is_cancelled()) {
                 foreach ($words as $word) {
                     $word->start = str_replace("s", "", $word->start);
                     $fulltext->wordscontent .= "<span title='" . get_string('playthisword', 'local_video_directory') .
-                                " data-video-url='$streaming/$fulltext->video_id.mp4#t=$word->start'>" . $word->word . "</span> ";
+                            "' data-video-url='$streaming/$fulltext->video_id.mp4#t=$word->start' data-id='$fulltext->video_id'>"
+                            . $word->word . "</span> ";
                 }
 
                 $videos[$fulltext->video_id]->content .= "<a href=#>
-                                                          <p data-video-url='$streaming/$fulltext->video_id.mp4#t=$startsec[0]'>"
+                                                          <p data-video-url='$streaming/$fulltext->video_id.mp4#t=$startsec[0]'
+                                                          data-id='$fulltext->video_id'>"
                                                         . $fulltext->start . " - " . $fulltext->end .
                                                         "</p></a>" . $fulltext->wordscontent . "<hr>";
             }
