@@ -54,7 +54,6 @@ class portal_form extends moodleform {
             $mform->setDefault('search', $search);
         }
 
-
         $buttonarray = array();
         $buttonarray[] =& $mform->createElement('submit', 'submitbutton', get_string('search'));
         $buttonarray[] =& $mform->createElement('cancel', 'cancel', get_string('cancel'));
@@ -82,10 +81,6 @@ if ($mform->is_cancelled()) {
     // Menu.
     require('menu.php');
 
-    //echo '<p class="local_video_directory_backtolist">
-    //      <a href="list.php" alt ="' . get_string('list', 'local_video_directory') . '">' . get_string('list', 'local_video_directory') . '</a>
-    //      </p>';
-
     $mform->display();
 
     $search = optional_param('search', 0, PARAM_TEXT);
@@ -96,57 +91,69 @@ if ($mform->is_cancelled()) {
         $videos = $DB->get_records_sql('SELECT DISTINCT v.* FROM {local_video_directory} v
                                         LEFT JOIN {local_video_directory_txtsec} t
                                         ON v.id = t.video_id
-                                        WHERE (' . $DB->sql_like('t.content', ':content',0)
-                                        . ' OR ' . $DB->sql_like('v.orig_filename', ':name',0)
+                                        WHERE (' . $DB->sql_like('t.content', ':content', 0)
+                                        . ' OR ' . $DB->sql_like('v.orig_filename', ':name', 0)
                                         . ') AND (v.owner_id = :id OR v.private = 0 OR 1 = :admin)'
-                                        , [ 'content' => '%' . $search . '%', 'id' => $USER->id, 'admin' => $admin, 'name' => '%' . $search . '%' ]);
+                                        , [ 'content' => '%' . $search . '%',
+                                            'id' => $USER->id,
+                                            'admin' => $admin,
+                                            'name' => '%' . $search . '%' ]);
         $total = count($videos);
         $perpage = 6;
         $currentpage = optional_param('currentpage', 0, PARAM_INT);
-        $pagination = local_video_directory_pagination($total,$perpage,$currentpage,"&search=" . $search);
+        $pagination = local_video_directory_pagination($total, $perpage, $currentpage, "&search=" . $search);
         echo $pagination;
         $start = $currentpage * $perpage;
 
         $videos = $DB->get_records_sql('SELECT DISTINCT v.* FROM {local_video_directory} v
                                         LEFT JOIN {local_video_directory_txtsec} t
                                         ON v.id = t.video_id
-                                        WHERE (' . $DB->sql_like('t.content', ':content',0)
-                                        . ' OR ' . $DB->sql_like('v.orig_filename', ':name',0)
+                                        WHERE (' . $DB->sql_like('t.content', ':content', 0)
+                                        . ' OR ' . $DB->sql_like('v.orig_filename', ':name', 0)
                                         . ') AND (v.owner_id = :id OR v.private = 0 OR 1 = :admin)'
-                                        , [ 'content' => '%' . $search . '%', 'id' => $USER->id, 'admin' => $admin, 'name' => '%' . $search . '%' ]
+                                        , [ 'content' => '%' . $search . '%',
+                                            'id' => $USER->id,
+                                            'admin' => $admin,
+                                            'name' => '%' . $search . '%' ]
                                         , $start, $perpage);
 
         if ($videos) {
-        
             foreach ($videos as $video) {
                 $items[] = $video->id;
             }
 
-            $in = "(" . implode(",",$items) . ")";
+            $in = "(" . implode(",", $items) . ")";
 
             $fulltexts = $DB->get_records_sql('SELECT t.id, t.video_id, t.content, t.start, t.end FROM {local_video_directory} v
                                         LEFT JOIN {local_video_directory_txtsec} t
                                         ON v.id = t.video_id
-                                        WHERE ' . $DB->sql_like('t.content', ':content',0)
+                                        WHERE ' . $DB->sql_like('t.content', ':content', 0)
                                         . ' AND (v.owner_id = :id OR v.private = 0 OR 1 = :admin) '
                                         . ' AND v.id IN ' . $in
                                         , [ 'content' => '%' . $search . '%', 'id' => $USER->id, 'admin' => $admin ]);
             foreach ($fulltexts as $fulltext) {
-                $fulltext->content = preg_replace('!(' . $search . ')!i', '<font style="color:red; font-weight:bold;">$1</font>', $fulltext->content);
+                $fulltext->content = preg_replace('!(' . $search . ')!i', '<font style="color:red; font-weight:bold;">$1</font>',
+                                                    $fulltext->content);
                 if (!isset($videos[$fulltext->video_id]->content)) {
                     $videos[$fulltext->video_id]->content = '';
                 }
                 $startsec = explode(".", $fulltext->start);
-                $startsec[0] = str_replace("s", "", $startsec[0]); 
-                $words = $DB->get_records('local_video_directory_words', ['video_id' => $fulltext->video_id, 'section_id' => $fulltext->id], 'orderby');
+                $startsec[0] = str_replace("s", "", $startsec[0]);
+                $words = $DB->get_records('local_video_directory_words',
+                                          ['video_id' => $fulltext->video_id,
+                                          'section_id' => $fulltext->id],
+                                          'orderby');
                 $fulltext->wordscontent = '';
                 foreach ($words as $word) {
                     $word->start = str_replace("s", "", $word->start);
-                    $fulltext->wordscontent .= "<span title='" . get_string('playthisword', 'local_video_directory') . "' data-video-url='$streaming/$fulltext->video_id.mp4#t=$word->start'>" . $word->word . "</span> ";
+                    $fulltext->wordscontent .= "<span title='" . get_string('playthisword', 'local_video_directory') .
+                                " data-video-url='$streaming/$fulltext->video_id.mp4#t=$word->start'>" . $word->word . "</span> ";
                 }
-                
-                $videos[$fulltext->video_id]->content .= "<a href=#><p data-video-url='$streaming/$fulltext->video_id.mp4#t=$startsec[0]'>" . $fulltext->start . " - " . $fulltext->end
-                                                    . "</p></a>" . $fulltext->wordscontent . "<hr>"; 
+
+                $videos[$fulltext->video_id]->content .= "<a href=#>
+                                                          <p data-video-url='$streaming/$fulltext->video_id.mp4#t=$startsec[0]'>"
+                                                        . $fulltext->start . " - " . $fulltext->end .
+                                                        "</p></a>" . $fulltext->wordscontent . "<hr>";
             }
         }
     } else {
@@ -154,16 +161,17 @@ if ($mform->is_cancelled()) {
         $total = count(local_video_directory_get_videos('views'));
         $perpage = 12;
         $currentpage = optional_param('currentpage', 0, PARAM_INT);
-        $pagination = local_video_directory_pagination($total,$perpage,$currentpage);
+        $pagination = local_video_directory_pagination($total, $perpage, $currentpage);
         echo $pagination;
         $start = $currentpage * $perpage;
         $videos = local_video_directory_get_videos('views', $start, $perpage);
     }
-    
+
     foreach ($videos as $video) {
         $video->thumbnail = local_video_get_thumbnail_url($video->thumb, $video->id, 1);
         if ($search) {
-            $video->orig_filename = preg_replace('!(' . $search . ')!i', '<font style="color:red; font-weight:bold;">$1</font>', $video->orig_filename);
+            $video->orig_filename = preg_replace('!(' . $search . ')!i', '<font style="color:red; font-weight:bold;">$1</font>',
+                                                $video->orig_filename);
         }
     }
 
@@ -171,7 +179,7 @@ if ($mform->is_cancelled()) {
         echo $OUTPUT->render_from_template("local_video_directory/portal_search",
                 array('videos' => array_values($videos), 'streaming' => $streaming));
     } else {
-    echo $OUTPUT->render_from_template("local_video_directory/portal",
+        echo $OUTPUT->render_from_template("local_video_directory/portal",
                 array('videos' => array_values($videos), 'streaming' => $streaming));
     }
     echo $OUTPUT->render_from_template('local_video_directory/player', []);
@@ -193,7 +201,7 @@ function local_video_directory_pagination($total, $perpage, $currentpage, $url =
         $pagination .= "<a href='?currentpage=$previous" . $url . "'> << </a>";
     }
     $pagination .= "<a href='?currentpage=0" . $url . "'> " . get_string('first') . "</a> .. ";
-    for ($i=0; $i < $pages; $i++) {
+    for ($i = 0; $i < $pages; $i++) {
         $pagination .= " <a href='?currentpage=$i" . $url . "'> ";
         if ($i == $currentpage) {
             $pagination .= "<b> $i </b>";

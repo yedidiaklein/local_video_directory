@@ -218,7 +218,8 @@ input.hidden_input:hover {
 
 .local_video_directory_pagination {
     text-align: center;
-    display: inline-block;
+    display: flow-root;
+    width: 100%
 }
 
 .select2-container {
