@@ -9,7 +9,7 @@
 require(['jquery', 'local_video_directory/player'], function($, P) {
     $(function(){
         $('.local_video_directory_video-table').on('click', '[data-video-url]', function(){
-            P.play($(this).data('video-url'), $('#player-{{uniqid}}'));
+            P.play($(this).data('video-url'), $('#player-{{uniqid}}'), $(this).data('id'));
         });
         $('.local_video_directory_video-player .close').click(function(){
            P.closePlayer($(this).closest('.local_video_directory_video-player'));

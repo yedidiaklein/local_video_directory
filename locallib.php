@@ -367,10 +367,10 @@ function local_video_get_thumbnail_url($thumb, $videoid, $clean=0) {
             alt="' . get_string('play', 'local_video_directory') . '"';
         if (get_streaming_server_url()) {
             $playbutton = ' data-video-url="' . htmlspecialchars(get_streaming_server_url()) . "/" .
-                        $videoid . '.mp4"';
+                        $videoid . '.mp4" data-id="' . $videoid . '"';
         } else {
             $playbutton = ' data-video-url="play.php?video_id=' .
-            $videoid . '"';
+            $videoid . '" data-id="' . $videoid . '"';
         }
     } else {
         $playbutton = '';
