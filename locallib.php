@@ -74,14 +74,24 @@ function local_video_edit_right($videoid) {
     }
 }
 
-// Check if streaming server and symlink or settings exists and work.
+// Return streaming server url.
 function get_streaming_server_url() {
     global $DB;
     $settings = get_settings();
+
+    return $settings->streaming;
+}
+
+// Check if streaming server and symlink or settings exists and work.
+// This function is not in use at all, and could be integrated in settings page.
+function check_streaming_server_url() {
+    global $DB;
+    $settings = get_settings();
+
     $firstvideo = $DB->get_records('local_video_directory', array());
 
     if ($firstvideo) {
-        $url = $settings->streaming.'/'.current($firstvideo)->id.'.mp4';
+        $url = $settings->streaming . '/' . current($firstvideo)->id . '.mp4';
         $headers = get_headers($url);
         if (strstr($headers[0] , "200")) {
             $streamingurl = $settings->streaming;
