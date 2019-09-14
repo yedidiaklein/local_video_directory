@@ -27,7 +27,6 @@ defined('MOODLE_INTERNAL') || die();
 require_once('locallib.php');
 require_once("$CFG->libdir/formslib.php");
 
-//$settings = get_settings();
 if (!is_video_admin($USER)) {
     die("Access Denied");
 }
@@ -85,7 +84,7 @@ class category_form extends moodleform {
         $mform->setDefault('cat_name', ''); // Default value.
 
         $all = $DB->get_records('local_video_directory_cats', []);
-        $g[0] = ' - '; 
+        $g[0] = ' - ';
         foreach ($all as $cat) {
             $g[$cat->id] = $cat->cat_name;
         }
@@ -104,17 +103,16 @@ class category_form extends moodleform {
 
 $mform = new category_form();
 
-// TODO : Find a way to insert before populating the form
-//        for getting new entries in form.
-    if ($mform->is_cancelled()) {
-        redirect($CFG->wwwroot . '/local/video_directory/categories.php');
-    } else if ($fromform = $mform->get_data()) {
-        $record = ['cat_name' => $fromform->cat_name,
-                   'father_id' => $fromform->father];
-        if ($id = $DB->insert_record('local_video_directory_cats', $record)) {
-            echo "Inserted, ID is: " . $id . "<br>";
-        }
+// TODO : Find a way to insert before populating the form for getting new entries in form.
+if ($mform->is_cancelled()) {
+    redirect($CFG->wwwroot . '/local/video_directory/categories.php');
+} else if ($fromform = $mform->get_data()) {
+    $record = ['cat_name' => $fromform->cat_name,
+                  'father_id' => $fromform->father];
+    if ($id = $DB->insert_record('local_video_directory_cats', $record)) {
+        echo "Inserted, ID is: " . $id . "<br>";
     }
+}
 
 if ($add) {
     echo '<h2>' . get_string('new_category', 'local_video_directory') . '</h2>';
@@ -123,10 +121,9 @@ if ($add) {
     echo '<a href="?add=1"><h3>' . get_string('new_category', 'local_video_directory') . '</h3></a>';
 }
 
-//$categories = $DB->get_records('local_video_directory_cats', array());
 $categories = $DB->get_records_sql('select c1.id,c1.cat_name,c2.cat_name as father_name,
                                     (SELECT count(*) FROM mdl_local_video_directory_catvid WHERE cat_id = c1.id) as times
-                                    from {local_video_directory_cats} c1 
+                                    from {local_video_directory_cats} c1
                                     left join {local_video_directory_cats} c2 on c1.father_id = c2.id
                                     ');
 

@@ -102,7 +102,7 @@ if ($mform->is_cancelled()) {
             $srt = file_get_contents($dirs['subsdir'] . $fromform->id . ".srt");
             // Convert to vtt.
             $vtt = srt2vtt($srt);
-            file_put_contents($dirs['subsdir'].$fromform->id.".vtt", $vtt);
+            file_put_contents($dirs['subsdir'] . local_video_directory_get_filename($fromform->id) . ".vtt", $vtt);
             // Delete uploaded file.
             unlink($dirs['subsdir'].$fromform->id.".srt");
         } else {

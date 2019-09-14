@@ -52,7 +52,6 @@ $PAGE->set_pagelayout('standard');
 
 $PAGE->requires->css('/local/video_directory/style.css');
 
-//$PAGE->requires->js('/local/video_directory/js/edit.js');
 $PAGE->requires->css('/local/video_directory/styles/select2.min.css');
 
 
@@ -76,7 +75,7 @@ class edit_form extends moodleform {
             $origfilename = "";
             $owner = 0;
             $usergroup = "";
-            $length =0;
+            $length = 0;
             $timecreated = 0;
         }
         $mform = $this->_form;
@@ -96,18 +95,19 @@ class edit_form extends moodleform {
             }
 
             $select = $mform->addElement('select', 'usergroup', get_string('group', 'moodle'), $g, $option);
-            $select->setSelected($usergroup); 
+            $select->setSelected($usergroup);
         }
 
         if ($settings->categories) {
-            $allcats = $DB->get_records('local_video_directory_cats',[]);
+            $allcats = $DB->get_records('local_video_directory_cats', []);
             foreach ($allcats as $cat) {
                 $c[$cat->id] = $cat->cat_name;
             }
-            $mform->addElement('autocomplete', 'category', '<a href="categories.php">' . get_string('categories', 'local_video_directory') . '</a>',
+            $mform->addElement('autocomplete', 'category', '<a href="categories.php">' .
+                                get_string('categories', 'local_video_directory') . '</a>',
                                 $c, ['class' => 'local_video_directory_categories']);
             $mform->getElement('category')->setMultiple(true);
-            $multicats = $DB->get_records('local_video_directory_catvid',['video_id' => $id]);
+            $multicats = $DB->get_records('local_video_directory_catvid', ['video_id' => $id]);
             $catselected = array();
             foreach ($multicats as $cat) {
                 $catselected[] = $cat->cat_id;
@@ -127,8 +127,8 @@ class edit_form extends moodleform {
         }
 
         if (is_video_admin($USER) && (is_array($owner))) {
-            $owneruser = $DB->get_record('user',['id'=>$video->owner_id]);
-            $owner[$video->owner_id] = $owneruser->firstname . " " . $owneruser->lastname; 
+            $owneruser = $DB->get_record('user', ['id' => $video->owner_id]);
+            $owner[$video->owner_id] = $owneruser->firstname . " " . $owneruser->lastname;
             $mform->addElement('select', 'owner', get_string('owner', 'local_video_directory'), $owner);
         }
 
@@ -160,17 +160,17 @@ if ($mform->is_cancelled()) {
     // Check that user has rights to edit this video.
     local_video_edit_right($fromform->id);
     if (isset($fromform->category)) {
-        // Delete all multi groups records
+        // Delete all multi groups records.
         $DB->delete_records('local_video_directory_catvid', ['video_id' => $fromform->id]);
         foreach ($fromform->category as $cat) {
             $DB->insert_record('local_video_directory_catvid', ['video_id' => $fromform->id, 'cat_id' => $cat]);
         }
     }
-    $record = array("id" => $fromform->id, 
+    $record = array("id" => $fromform->id,
                     "orig_filename" => $fromform->origfilename,
                     "usergroup" => $fromform->usergroup);
-    
-    if ((isset($_POST['owner'])) && (is_video_admin($USER))) { //only admins updates owners
+
+    if ((isset($_POST['owner'])) && (is_video_admin($USER))) { // Only admins updates owners.
         $record['owner_id'] = $_POST['owner'];
     }
     $update = $DB->update_record("local_video_directory", $record);
@@ -182,10 +182,17 @@ if ($mform->is_cancelled()) {
 
     $video = $DB->get_record('local_video_directory', array("id" => $id));
     $versions = $DB->get_records("local_video_directory_vers", array("file_id" => $id));
-    $streaming = get_streaming_server_url() . "/" . $id . ".mp4";
+
+    if ($video->filename != $id . '.mp4') {
+        $filename = $video->filename;
+    } else {
+        $filename = $id;
+    }
+
+    $streaming = get_streaming_server_url() . "/" . $filename . ".mp4";
 
     echo $OUTPUT->render_from_template('local_video_directory/edit',
-    [   'wwwroot' => $CFG->wwwroot, 
+    [   'wwwroot' => $CFG->wwwroot,
         'versions' => $versions,
         'id' => $id,
         'thumb' => str_replace("-", "&second=", $video->thumb),
@@ -199,7 +206,6 @@ if ($mform->is_cancelled()) {
     echo '<div class="video_embed"><h2>' . get_string('embeding', 'local_video_directory') . '</h2>&lt;iframe src="' . $embedurl
             . '" ' . $settings->embedoptions . ' >&lt;/iframe><br>'
             . "<a href='$streaming'> $streaming </a> </div>";
-             
 }
 
 echo $OUTPUT->footer();

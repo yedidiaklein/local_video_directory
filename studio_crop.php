@@ -55,7 +55,8 @@ $PAGE->requires->css('/local/video_directory/style.css');
 $PAGE->requires->js('/local/video_directory/js/crop.js');
 
 $PAGE->navbar->add(get_string('pluginname', 'local_video_directory'), new moodle_url('/local/video_directory/'));
-$PAGE->navbar->add(get_string('studio', 'local_video_directory'), new moodle_url('/local/video_directory/studio.php?video_id=' . $id));
+$PAGE->navbar->add(get_string('studio', 'local_video_directory'),
+            new moodle_url('/local/video_directory/studio.php?video_id=' . $id));
 $PAGE->navbar->add(get_string('crop', 'local_video_directory'));
 
 class crop_form extends moodleform {
@@ -64,24 +65,14 @@ class crop_form extends moodleform {
 
         $id = optional_param('video_id', 0, PARAM_INT);
 
-/*        if ($id != 0) {
-            $video = $DB->get_record('local_video_directory', array("id" => $id));
-        } else {
-            $origfilename = "";
-            $owner = 0;
-        }
-        */
         $mform = $this->_form;
-
-        
         $mform->addElement('hidden', 'id', $id);
         $mform->setType('id', PARAM_INT);
 
         $mform->addElement('html', '<div id="rectangleData"></div><br><br>');
 
-
         $mform->addElement('select', 'save', get_string('save', 'moodle'),
-            [ 'version' => get_string('newversion', 'local_video_directory'), 
+            [ 'version' => get_string('newversion', 'local_video_directory'),
               'new' => get_string('newvideo', 'local_video_directory')
             ]);
 
@@ -98,7 +89,7 @@ class crop_form extends moodleform {
 
 $mform = new crop_form();
 
-$width = 640; // default width, very important for crop calculation
+$width = 640; // Default width, very important for crop calculation.
 
 if ($mform->is_cancelled()) {
     redirect($CFG->wwwroot . '/local/video_directory/list.php');
@@ -136,11 +127,11 @@ if ($mform->is_cancelled()) {
     }
 
     echo $OUTPUT->render_from_template('local_video_directory/studio_crop',
-    ['wwwroot' => $CFG->wwwroot, 
+    ['wwwroot' => $CFG->wwwroot,
      'url' => $url,
-     'id' => $id, 
-     'thumb' => str_replace("-", "&second=", $video->thumb), 
-     'height' => $height, 
+     'id' => $id,
+     'thumb' => str_replace("-", "&second=", $video->thumb),
+     'height' => $height,
      'width' => $width]);
 
 

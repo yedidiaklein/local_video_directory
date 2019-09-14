@@ -93,7 +93,7 @@ class upload_form extends moodleform {
         }
 
         if (is_video_admin($USER)) {
-            $owner[0] = $USER->firstname . " " . $USER->lastname; 
+            $owner[0] = $USER->firstname . " " . $USER->lastname;
             $mform->addElement('select', 'owner', get_string('owner', 'local_video_directory'), $owner);
         }
 
@@ -107,8 +107,8 @@ class upload_form extends moodleform {
 
             $select = $mform->addElement('select', 'usergroup', get_string('group', 'moodle'), $g, $option);
             if ($settings->group != "custom") {
-                if (substr($settings->group,0,6) == 'local_') {
-                    $local = substr($settings->group,6);
+                if (substr($settings->group, 0, 6) == 'local_') {
+                    $local = substr($settings->group, 6);
                     $select->setSelected($USER->profile[$local]);
                 } else {
                     $select->setSelected($USER->{$settings->group});
@@ -117,11 +117,11 @@ class upload_form extends moodleform {
         }
 
         if ($settings->categories) {
-            $allcats = $DB->get_records('local_video_directory_cats',[]);
+            $allcats = $DB->get_records('local_video_directory_cats', []);
             foreach ($allcats as $cat) {
                 $c[$cat->id] = $cat->cat_name;
             }
-            $mform->addElement('autocomplete', 'category', get_string('category', 'moodle'), $c,['class' => 'local_video_directory_categories']);
+            $mform->addElement('autocomplete', 'category', get_string('category', 'moodle'), $c, ['class' => 'local_video_directory_categories']);
             $mform->getElement('category')->setMultiple(true);
         }
 
@@ -173,7 +173,7 @@ if ($mform->is_cancelled()) {
         } else {
             $owner = $USER->id;
         }
-        
+
         if ($fromform->origfilename != '') {
             $name = $fromform->origfilename;
             if ($counter != 0) {
@@ -183,7 +183,10 @@ if ($mform->is_cancelled()) {
             $name = $file->filename;
         }
         $counter++;
-        $record = array('orig_filename' => $name, 'owner_id' => $owner, 'uniqid' => uniqid('', true), 'usergroup' =>  $fromform->usergroup);
+        $record = array(    'orig_filename' => $name,
+                            'owner_id' => $owner,
+                            'uniqid' => uniqid('', true),
+                            'usergroup' => $fromform->usergroup);
         if ((isset($fromform->private)) && ($fromform->private)) {
             $record['private'] = 1;
         }
@@ -206,14 +209,14 @@ if ($mform->is_cancelled()) {
             $DB->update_record('local_video_directory', $record);
             core_tag_tag::set_item_tags('local_video_directory', 'local_video_directory', $lastinsertid, $context, $fromform->tags);
         }
-        //categories
+        // Categories.
         if (isset($fromform->category)) {
-            // Delete all multi groups records
+            // Delete all multi groups records.
             $DB->delete_records('local_video_directory_catvid', ['video_id' => $lastinsertid]);
             foreach ($fromform->category as $cat) {
                 $DB->insert_record('local_video_directory_catvid', ['video_id' => $lastinsertid, 'cat_id' => $cat]);
             }
-        }    
+        }
         $path = substr($file->contenthash, 0, 2) . "/" . substr($file->contenthash, 2, 2) . "/";
         copy($CFG->dataroot . "/filedir/" . $path . $file->contenthash, $dirs['uploaddir'] . $lastinsertid);
     }

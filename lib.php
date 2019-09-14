@@ -90,18 +90,31 @@ function local_video_directory_create_dash($id, $converted, $dashdir, $ffmpeg, $
     $DB->update_record("local_video_directory", array('id' => $id, 'convert_status' => 6));
 
     $video = $DB->get_record("local_video_directory", array('id' => $id));
+    if ($video->filename != $id . '.mp4') {
+        $filename = $video->filename;
+        $directory = substr($filename, 0, 2);
+        if (!is_dir($dashdir . $directory)) {
+            mkdir($dashdir . $directory);
+        }
+    } else {
+        $filename = $id;
+    }
 
     // Multi resolutions for dash-ing.
     // first take care of current resolution.
-    $cmd = " -y -i " . escapeshellarg($converted . $id . ".mp4") .
+    $cmd = " -y -i " . escapeshellarg($converted . $filename . ".mp4") .
         " -strict -2 -c:v libx264 -crf 22 -c:a aac -movflags faststart -x264opts "
         . escapeshellarg("keyint=24:min-keyint=24:no-scenecut") .
-        " " . escapeshellarg($dashdir . $id . "_" . $video->height . ".mp4");
+        " " . escapeshellarg($dashdir . $filename . "_" . $video->height . ".mp4");
 
-    exec($ffmpeg . $cmd);
+    // Check if already exist before encoding.
+    if (!is_file($dashdir . $filename . "_" . $video->height . ".mp4")) {
+        exec($ffmpeg . $cmd);
+    }
+
     $record = array("video_id" => $id,
                   "height" => $video->height,
-                  "filename" => $id . "_" . $video->height . ".mp4",
+                  "filename" => $filename . "_" . $video->height . ".mp4",
                   "datecreated" => time(),
                   "datemodified" => time());
     $DB->insert_record("local_video_directory_multi", $record);
@@ -110,14 +123,18 @@ function local_video_directory_create_dash($id, $converted, $dashdir, $ffmpeg, $
 
     foreach ($resolutions as $resolution) {
         if (($resolution < $video->height) && (is_numeric($resolution))) {
-            $cmd = " -y -i " . escapeshellarg($converted . $id . ".mp4") .
+            $cmd = " -y -i " . escapeshellarg($converted . $filename . ".mp4") .
             " -strict -2 -c:v libx264 -crf 22 -c:a aac -movflags faststart -x264opts "
             . escapeshellarg("keyint=24:min-keyint=24:no-scenecut") .
-            " -vf " . escapeshellarg( "scale=-2:" . $resolution) ." " . escapeshellarg($dashdir . $id . "_" . $resolution . ".mp4");
-            exec($ffmpeg . $cmd);
+            " -vf " . escapeshellarg( "scale=-2:" . $resolution) ." " .
+            escapeshellarg($dashdir . $filename . "_" . $resolution . ".mp4");
+            // Check if already exist before encoding.
+            if (!is_file($dashdir . $filename . "_" . $resolution . ".mp4")) {
+                exec($ffmpeg . $cmd);
+            }
             $record = array("video_id" => $id,
                           "height" => $resolution,
-                          "filename" => $id . "_" . $resolution . ".mp4",
+                          "filename" => $filename . "_" . $resolution . ".mp4",
                           "datecreated" => time(),
                           "datemodified" => time());
             $DB->insert_record("local_video_directory_multi", $record);

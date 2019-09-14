@@ -65,18 +65,19 @@ class converting_task extends \core\task\scheduled_task {
             $record = array("id" => $video->id , "convert_status" => "2");
             $update = $DB->update_record("local_video_directory" , $record);
             // If we have a previous version - save the version before encoding.
-            if (file_exists($streamingdir . $video->id . ".mp4")) {
+            if (file_exists($streamingdir . local_video_directory_get_filename($video->id) . ".mp4")) {
                 $time = time();
-                $newfilename = $video->id . "_" . $time . ".mp4";
-                rename($streamingdir . $video->id . ".mp4", $streamingdir . $newfilename);
+                $newfilename = local_video_directory_get_filename($video->id) . "_" . $time . ".mp4";
+                rename($streamingdir . local_video_directory_get_filename($video->id) . ".mp4", $streamingdir . $newfilename);
                 // Delete Thumbs.
-                array_map('unlink', glob($streamingdir . $video->id . "*.png"));
+                array_map('unlink', glob($streamingdir . local_video_directory_get_filename($video->id) . "*.png"));
                 // Delete Multi resolutions.
-                array_map('unlink', glob($dirs['multidir'] . $video->id . "_*.mp4"));
+                array_map('unlink', glob($dirs['multidir'] . local_video_directory_get_filename($video->id) . "_*.mp4"));
                 // Delete from multi table.
                 $DB->execute('DELETE FROM {local_video_directory_multi} WHERE video_id = ?', [$video->id]);
                 // Write to version table.
                 $record = array('datecreated' => $time, 'file_id' => $video->id, 'filename' => $newfilename);
+                echo "[local_video_directory] Inserting version $time to local_video_directory_vers for id: $video->id \n";
                 $insert = $DB->insert_record('local_video_directory_vers', $record);
             }
             if (file_exists($ffmpeg)) {
@@ -84,11 +85,26 @@ class converting_task extends \core\task\scheduled_task {
                     . $ffmpegsettings . ' '
                     . escapeshellarg($streamingdir . $video->id . ".mp4");
                 exec($convert);
+                // Convert encoded file to hashed name and directory.
+                $contenthash = sha1_file($streamingdir . $video->id . ".mp4");
+                $hashdirectory = substr($contenthash, 0, 2);
+                if (!is_dir($streamingdir . $hashdirectory)) {
+                    mkdir($streamingdir . $hashdirectory);
+                }
+                $hashedfile = $streamingdir . $hashdirectory . '/' . $contenthash . '.mp4';
+                // If this video already exist - just delete the encoded file.
+                if (!is_file($hashedfile)) {
+                    if (copy($streamingdir . $video->id . ".mp4", $hashedfile)) {
+                        unlink($streamingdir . $video->id . ".mp4");
+                    }
+                } else {
+                    unlink($streamingdir . $video->id . ".mp4");
+                }
             } else {
                 echo "Ffmpeg is not configured well, No such file : " . $ffmpeg . "\n";
             }
             // Check if was converted.
-            if (file_exists($streamingdir . $video->id . ".mp4")) {
+            if (file_exists($hashedfile)) {
                 // Get Video Thumbnail.
                 if (is_numeric($thumbnailseconds)) {
                     $timing = gmdate("H:i:s", $thumbnailseconds);
@@ -99,10 +115,10 @@ class converting_task extends \core\task\scheduled_task {
                 if (file_exists($ffmpeg)) {
                     $thumb = '"' . $ffmpeg . '" -i ' . escapeshellarg($origdir . $video->id) .
                             " -ss " . escapeshellarg($timing) . " -vframes 1 " .
-                            escapeshellarg($streamingdir . $video->id . ".png");
+                            escapeshellarg($streamingdir . $hashdirectory . '/' . $contenthash . ".png");
                     $thumbmini = '"' . $ffmpeg . '" -i ' . escapeshellarg($origdir . $video->id) .
                             " -ss " . escapeshellarg($timing) . " -vframes 1 -vf scale=100:-1 " .
-                            escapeshellarg($streamingdir . $video->id . "-mini.png");
+                            escapeshellarg($streamingdir . $hashdirectory . '/' . $contenthash . "-mini.png");
 
                     exec($thumb);
                     exec($thumbmini);
@@ -112,7 +128,7 @@ class converting_task extends \core\task\scheduled_task {
                 if (file_exists($ffprobe)) {
                     // Get video length.
                     $lengthcmd = $ffprobe ." -v error -show_entries format=duration -sexagesimal -of default=noprint_wrappers=1" .
-                        ":nokey=1 " . escapeshellarg($streamingdir . $video->id . ".mp4");
+                        ":nokey=1 " . escapeshellarg($hashedfile);
                     $lengthoutput = exec( $lengthcmd );
                     // Remove data after .
                     $arraylength = explode(".", $lengthoutput);
@@ -124,14 +140,14 @@ class converting_task extends \core\task\scheduled_task {
                 $metafields = array("height" => "stream=height", "width" => "stream=width", "size" => "format=size");
                 foreach ($metafields as $key => $value) {
                     $metadata[$key] = exec($ffprobe . " -v error -show_entries " . $value .
-                        " -of default=noprint_wrappers=1:nokey=1 " . $streamingdir . $video->id . ".mp4");
+                        " -of default=noprint_wrappers=1:nokey=1 " . $hashedfile);
                 }
 
                 // Update that converted and streaming URL.
                 $record = array("id" => $video->id,
                                 "convert_status" => "3",
                                 "streamingurl" => $streamingurl . $video->id . ".mp4",
-                                "filename" => $video->id . ".mp4",
+                                "filename" => $hashdirectory . '/' . $contenthash,
                                 "thumb" => $video->id,
                                 "length" => $length,
                                 "height" => $metadata['height'],

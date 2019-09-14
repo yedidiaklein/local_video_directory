@@ -75,11 +75,18 @@ $DB->update_record('local_video_directory', array('id' => $video->id, 'views' =>
 
 echo $OUTPUT->header();
 
-//check for old android and give simple mp4 in that case
+if ($video->filename != $videoid . '.mp4') {
+    $filename = $video->filename;
+} else {
+    $filename = $videoid;
+}
+
+// Check for old android and give simple mp4 in that case.
 if (local_video_directory_check_android_version() || $nostreaming) {
     $streamingurl = get_settings()->streaming;
     echo $OUTPUT->render_from_template("local_video_directory/embed_mp4",
     array(  'videoid' => $videoid,
+            'filename' => $filename,
             'wwwroot' => $CFG->wwwroot,
             'streamingurl' => $streamingurl));
 } else {

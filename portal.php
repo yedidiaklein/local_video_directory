@@ -120,9 +120,7 @@ if ($mform->is_cancelled()) {
         if ($videos) {
             foreach ($videos as $video) {
                 $items[] = $video->id;
-            }
-
-            $in = "(" . implode(",", $items) . ")";
+            }            $in = "(" . implode(",", $items) . ")";
 
             $fulltexts = $DB->get_records_sql('SELECT t.id, t.video_id, t.content, t.start, t.end FROM {local_video_directory} v
                                         LEFT JOIN {local_video_directory_txtsec} t
@@ -169,8 +167,12 @@ if ($mform->is_cancelled()) {
         $videos = local_video_directory_get_videos('views', $start, $perpage);
     }
 
-    foreach ($videos as $video) {
+    foreach ($videos as $key => $video) {
         $video->thumbnail = local_video_get_thumbnail_url($video->thumb, $video->id, 1);
+        if ($video->filename != $video->id . '.mp4') {
+            $videos[$key]->filename = $video->filename . '.mp4';
+        }
+
         if ($search) {
             $video->orig_filename = preg_replace('!(' . $search . ')!i', '<font style="color:red; font-weight:bold;">$1</font>',
                                                 $video->orig_filename);

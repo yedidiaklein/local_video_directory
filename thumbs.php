@@ -111,19 +111,26 @@ if ($mform->is_cancelled()) {
     $record = array("id" => $id, "thumb" => $id . "-" . $fromform->thumb);
     $update = $DB->update_record("local_video_directory", $record);
 
+    $video = $DB->get_record('local_video_directory', ['id' => $id]);
+    if ($video->filename != $id . '.mp4') {
+        $filename = $video->filename;
+    } else {
+        $filename = $id;
+    }
+
     // Generate the big thumb and rename the small one.
-    rename($streamingdir . $id . "-" . $fromform->thumb . ".png", $streamingdir . $id . "-" . $fromform->thumb . "-mini.png");
+    rename($streamingdir . $filename . "-" . $fromform->thumb . ".png", $streamingdir . $filename . "-" . $fromform->thumb . "-mini.png");
     $timing = gmdate("H:i:s", $fromform->thumb );
     // Check that $ffmpeg is a file.
     if (file_exists($ffmpeg)) {
-        $thumb = '"' . $ffmpeg . '" -i ' . escapeshellarg($streamingdir . $id . ".mp4") . " -ss " . escapeshellarg($timing)
-            . " -vframes 1 " . escapeshellarg($streamingdir . $id . "-" . $fromform->thumb . ".png") . " -y";
+        $thumb = '"' . $ffmpeg . '" -i ' . escapeshellarg($streamingdir . $filename . ".mp4") . " -ss " . escapeshellarg($timing)
+            . " -vframes 1 " . escapeshellarg($streamingdir . $filename . "-" . $fromform->thumb . ".png") . " -y";
         $output = exec($thumb);
     }
     // Delete all other thumbs...
     foreach ($seconds as $second) {
         if ($second != $fromform->thumb) {
-            $file = $dirs['converted'] . $id . "-" . $second . '.png';
+            $file = $dirs['converted'] . $filename . "-" . $second . '.png';
 
             if (file_exists($file)) {
                 unlink($file);
@@ -132,7 +139,7 @@ if ($mform->is_cancelled()) {
     }
 
     // Delete orig thumb.
-    $file = $dirs['converted'] . $id . '.png';
+    $file = $dirs['converted'] . $filename . '.png';
 
     if (file_exists($file)) {
         unlink($file);

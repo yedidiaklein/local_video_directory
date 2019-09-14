@@ -34,9 +34,19 @@ $streamingdir = $dirs['converted'];
 
 $video = $DB->get_record('local_video_directory', ['id' => $id]);
 $splitted = explode("-", $video->thumb);
-if (is_numeric($splitted[1])) {
-    $second = $splitted[1];
+if (count($splitted) > 1) {
+    if (is_numeric($splitted[1])) {
+        $second = $splitted[1];
+    }
+} else {
+    $second = '';
+}
+
+if ($video->filename != $id . '.mp4') {
+    $filename = $video->filename;
+} else {
+    $filename = $id;
 }
 
 header("Content-type: image/png");
-readfile($streamingdir . $id . ($second ? "-" . $second : '') . ".png");
+readfile($streamingdir . $filename . ($second ? "-" . $second : '') . ".png");

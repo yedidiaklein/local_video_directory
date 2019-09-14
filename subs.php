@@ -22,8 +22,6 @@
  */
 
 require_once( __DIR__ . '/../../config.php');
-require_login();
-defined('MOODLE_INTERNAL') || die();
 require_once('locallib.php');
 
 $subsize = 10;
@@ -38,8 +36,8 @@ if ($download) {
     header('Content-Disposition: attachment; filename="' . $id . '.vtt"');
 }
 $dirs = get_directories();
-if (file_exists($dirs['subsdir'] . $id . ($language ? "-" . $language : '') . ".vtt")) {
-    readfile($dirs['subsdir'] . $id . ($language ? "-" . $language : '') . ".vtt");
+if (file_exists($dirs['subsdir'] . local_video_directory_get_filename($id) . ($language ? "-" . $language : '') . ".vtt")) {
+    readfile($dirs['subsdir'] . local_video_directory_get_filename($id) . ($language ? "-" . $language : '') . ".vtt");
 } else {
     // Do we have words from google in this movie.
     $words = $DB->get_records('local_video_directory_words', ['video_id' => $id]);

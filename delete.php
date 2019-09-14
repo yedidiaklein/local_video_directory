@@ -89,9 +89,11 @@ if ($mform->is_cancelled()) {
     $where = array("id" => $fromform->id);
     $deleted = $DB->delete_records('local_video_directory', $where);
 
+    $filename = local_video_directory_get_filename($fromform->id);
+
     // Delete files.
     $thumb = str_replace($streamingurl, $dirs['converted'], $fromform->thumb);
-    $video = $dirs['converted'].$fromform->id.'.mp4';
+    $video = $dirs['converted'] . $filename . '.mp4';
     if (file_exists($thumb)) {
         unlink($thumb);
     }

@@ -103,7 +103,7 @@ class local_video_directory_external extends external_api {
      * @return string
      */
     public static function thumb($videoid, $seconds) {
-        global $CFG;
+        global $CFG, $DB;
         // Parameter validation.
         // REQUIRED.
         $params = self::validate_parameters(self::thumb_parameters(),
@@ -124,6 +124,13 @@ class local_video_directory_external extends external_api {
         $dirs = get_directories();
         $streamingdir = $dirs['converted'];
 
+        $video = $DB->get_record('local_video_directory', ['id' => $id]);
+        if ($video->filename != $id . '.mp4') {
+            $filename = $video->filename;
+        } else {
+            $filename = $id;
+        }
+
         if (is_numeric($seconds)) {
             $timing = gmdate("H:i:s", $seconds);
         } else {
@@ -132,12 +139,12 @@ class local_video_directory_external extends external_api {
         // Check that $ffmpeg is a file.
         if (file_exists($ffmpeg)) {
             // Added -y for windows during execution it will ask wheather to Overwite or not [y/n] -y make overwrite always.
-            $thumb = '"' . $ffmpeg . '" -y -i ' . escapeshellarg($streamingdir . $id . ".mp4")
+            $thumb = '"' . $ffmpeg . '" -y -i ' . escapeshellarg($streamingdir . $filename . ".mp4")
                 . " -ss " . escapeshellarg($timing) . " -vframes 1  -vf scale=100:-1 "
-                . escapeshellarg($streamingdir . $id . "-" . $seconds . ".png");
+                . escapeshellarg($streamingdir . $filename . "-" . $seconds . ".png");
             $output = exec( $thumb );
         }
-        if (file_exists($streamingdir . $id . "-" . $seconds . ".png")) {
+        if (file_exists($streamingdir . $filename . "-" . $seconds . ".png")) {
             return $CFG->wwwroot . '/local/video_directory/thumb.php?id=' . $id . "&second=" . $seconds;
         } else {
             return 'noimage';
@@ -216,8 +223,6 @@ class local_video_directory_external extends external_api {
         $isvideostream = $DB->get_record('modules', ['name' => 'videostream']);
 
         foreach ($videos as $video) {
-            // Do not show filename.
-            unset($video->filename);
             if (is_numeric($video->convert_status)) {
                 $video->convert_status = get_string('state_' . $video->convert_status, 'local_video_directory');
                 if (($settings->showwhere != 0) && ($isvideostream)) {
@@ -242,7 +247,8 @@ class local_video_directory_external extends external_api {
             $versions = $DB->get_records('local_video_directory_vers', array('file_id' => $video->id));
             $texts = $DB->get_records('local_video_directory_txtq', array('video_id' => $video->id, 'state' => 2));
 
-            if (!file_exists( $dirs['converted'] . $video->id . ".mp4")) {
+            if ((!file_exists( $dirs['converted'] . $video->filename . ".mp4"))
+                && (!file_exists( $dirs['converted'] . $video->filename))) {
                 $video->convert_status .= '<br>' . get_string('awaitingconversion', 'local_video_directory');
             }
 
@@ -272,8 +278,14 @@ class local_video_directory_external extends external_api {
             }
 
             if (get_streaming_server_url()) {
-                $video->streaming_url = '<a target="_blank" href="' . get_streaming_server_url() . '/' . $video->id . '.mp4">'
-                                        . get_streaming_server_url() . '/' . $video->id . '.mp4</a><br>';
+                if ($video->filename != $video->id . '.mp4') {
+                    $filename = $video->filename;
+                } else {
+                    $filename = $video->id;
+                }
+
+                $video->streaming_url = '<a target="_blank" href="' . get_streaming_server_url() . '/' . $filename . '.mp4">'
+                                        . get_streaming_server_url() . '/' . $filename . '.mp4</a><br>';
             }
             $embedurl = $CFG->wwwroot . '/local/video_directory/embed.php?id=' . $video->uniqid;
             // Embed.

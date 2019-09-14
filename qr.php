@@ -32,6 +32,6 @@ $uniqid = $DB->get_field('local_video_directory', 'uniqid', ['id' => $id]);
 $embedurl = $CFG->wwwroot . '/local/video_directory/embed.php?id=' . $uniqid;
 
 header('Content-Type: image/png');
-QRcode::png($embedurl); // creates code image and outputs it directly into browser
+QRcode::png($embedurl); // Creates code image and outputs it directly into browser.
 
 

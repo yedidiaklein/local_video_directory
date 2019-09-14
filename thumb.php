@@ -36,7 +36,7 @@ if (!CLI_SCRIPT) {
     $context = context_system::instance();
 
     if (!has_capability('local/video_directory:video', $context) && !is_video_admin($USER)) {
-        die("Access Denied. You must be a member of the designated cohort. Please see your site admin.");
+        die("Access Denied. You must be a member of the system role. Please see your site admin.");
     }
 
 }
@@ -46,9 +46,17 @@ $second = optional_param('second', 0, PARAM_INT);
 $mini = optional_param('mini', 0, PARAM_INT);
 $dirs = get_directories();
 $streamingdir = $dirs['converted'];
+
+$video = $DB->get_record('local_video_directory', ['id' => $id]);
+if ($video->filename != $id . '.mp4') {
+    $filename = $video->filename;
+} else {
+    $filename = $id;
+}
+
 header("Content-type: image/png");
 if ($mini) {
-    readfile($streamingdir . $id . ($second ? "-" . $second : '') . "-mini.png");
+    readfile($streamingdir . $filename . ($second ? "-" . $second : '') . "-mini.png");
 } else {
-    readfile($streamingdir . $id . ($second ? "-" . $second : '') . ".png");
+    readfile($streamingdir . $filename . ($second ? "-" . $second : '') . ".png");
 }
