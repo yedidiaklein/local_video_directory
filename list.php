@@ -103,6 +103,15 @@ echo $OUTPUT->header();
 // Menu.
 require('menu.php');
 
+// Check is streaming is set well.
+if (!check_streaming_server_url()) {
+    $dirs = get_directories();
+    $message = get_string('nostreaming', 'local_video_directory');
+    $message .= "<br><tt><b>ln -s " . $dirs['converted'] . ' ' . $CFG->dirroot . "/streaming</b></tt>";
+    \core\notification::warning($message);
+}
+
+
 // Find all movies tags.
 $alltags = $DB->get_records_sql('SELECT DISTINCT name
                                  FROM {tag_instance} ti

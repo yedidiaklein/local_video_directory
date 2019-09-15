@@ -83,15 +83,14 @@ function get_streaming_server_url() {
 }
 
 // Check if streaming server and symlink or settings exists and work.
-// This function is not in use at all, and could be integrated in settings page.
 function check_streaming_server_url() {
     global $DB;
     $settings = get_settings();
 
-    $firstvideo = $DB->get_records('local_video_directory', array());
+    $firstvideo = $DB->get_records('local_video_directory', [], '', '*', 0, 1);
 
     if ($firstvideo) {
-        $url = $settings->streaming . '/' . current($firstvideo)->id . '.mp4';
+        $url = $settings->streaming . '/' . local_video_directory_get_filename(current($firstvideo)->id) . '.mp4';
         $headers = get_headers($url);
         if (strstr($headers[0] , "200")) {
             $streamingurl = $settings->streaming;
@@ -572,7 +571,7 @@ function local_video_directory_get_filename ($id) {
     if ($video->filename != $id . '.mp4') {
         $filename = $video->filename;
     } else {
-        $filename = $fromform->id;
+        $filename = $id;
     }
     return $filename;
 }

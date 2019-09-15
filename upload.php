@@ -121,7 +121,8 @@ class upload_form extends moodleform {
             foreach ($allcats as $cat) {
                 $c[$cat->id] = $cat->cat_name;
             }
-            $mform->addElement('autocomplete', 'category', get_string('category', 'moodle'), $c, ['class' => 'local_video_directory_categories']);
+            $mform->addElement('autocomplete', 'category', get_string('category', 'moodle'), $c,
+                                ['class' => 'local_video_directory_categories']);
             $mform->getElement('category')->setMultiple(true);
         }
 

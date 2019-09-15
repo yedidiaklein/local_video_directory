@@ -201,3 +201,4 @@ $string['views'] = 'Views';
 $string['multigroup'] = 'Multi groups for each video';
 $string['multigroupdesc'] = 'While this option is enabled, you could set multiple groups to each video';
 $string['inuse'] = 'In Use';
+$string['nostreaming'] = 'Your streaming server is not set - You probably have to do this command :';
