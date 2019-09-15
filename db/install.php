@@ -34,11 +34,11 @@ if (empty($role)) {
 $role = $DB->get_record('role', array('shortname' => 'local_video_directory_admin'));
 if (empty($role)) {
     $roleid = create_role('local_video_directory_admin', 'local_video_directory_admin', 'video admin system role');
-        if (is_int($roleid)) {
-            $contextsids = array(CONTEXT_SYSTEM);
-            set_role_contextlevels($roleid, $contextsids);
-            role_change_permission( $roleid, context_system::instance(), 'local/video_directory:video', 1);
-        }
+    if (is_int($roleid)) {
+        $contextsids = array(CONTEXT_SYSTEM);
+        set_role_contextlevels($roleid, $contextsids);
+        role_change_permission( $roleid, context_system::instance(), 'local/video_directory:video', 1);
+    }
 }
 
 

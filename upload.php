@@ -183,10 +183,15 @@ if ($mform->is_cancelled()) {
             $name = $file->filename;
         }
         $counter++;
+        if (isset($fromform->usergroup)) {
+            $usergroup = $fromform->usergroup;
+        } else {
+            $usergroup = '';
+        }
         $record = array(    'orig_filename' => $name,
                             'owner_id' => $owner,
                             'uniqid' => uniqid('', true),
-                            'usergroup' => $fromform->usergroup);
+                            'usergroup' => $usergroup);
         if ((isset($fromform->private)) && ($fromform->private)) {
             $record['private'] = 1;
         }
