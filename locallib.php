@@ -275,7 +275,7 @@ function local_video_directory_get_videos($order = 0, $start = null, $length = n
 
     $params = null;
 
-    if (count($SESSION->categories)) {
+    if (isset($SESSION->categories) && count($SESSION->categories)) {
         foreach ($SESSION->categories as $key => $value) {
             $c[] = $value['id'];
         }
@@ -286,7 +286,7 @@ function local_video_directory_get_videos($order = 0, $start = null, $length = n
         $catsparams = [];
     }
 
-    if (count($SESSION->groups)) {
+    if (isset($SESSION->groups) && count($SESSION->groups)) {
         foreach ($SESSION->groups as $key => $value) {
             $g[] = $value['name'];
         }
