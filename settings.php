@@ -279,6 +279,14 @@ if ($hassiteconfig) {
         PARAM_TEXT
     ));
 
+    $settings->add( new admin_setting_configtext(
+        'local_video_directory/portalips',
+        get_string('portalips', 'local_video_directory'),
+        get_string('portalips', 'local_video_directory'),
+        '',
+        PARAM_TEXT
+    ));
+
     // Create.
     $ADMIN->add( 'localplugins', $settings );
 

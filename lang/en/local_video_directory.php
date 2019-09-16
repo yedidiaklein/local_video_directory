@@ -202,3 +202,4 @@ $string['multigroup'] = 'Multi groups for each video';
 $string['multigroupdesc'] = 'While this option is enabled, you could set multiple groups to each video';
 $string['inuse'] = 'In Use';
 $string['nostreaming'] = 'Your streaming server is not set - You probably have to do this command :';
+$string['portalips'] = 'Comma separated list of IPs that can get the portal without authentication.';

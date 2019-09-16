@@ -22,9 +22,28 @@
  */
 
 require_once( __DIR__ . '/../../config.php');
-require_login();
 defined('MOODLE_INTERNAL') || die();
 require_once('locallib.php');
+$settings = get_settings();
+
+
+if ($USER->id == 0) {
+    $open = false;
+    $auth = false;
+    if (trim($settings->portalips) == '') {
+        require_login();
+    } else {
+        $ips = explode(',', $settings->portalips);
+        foreach ($ips as $ip) {
+            if ($_SERVER['REMOTE_ADDR'] == trim($ip)) {
+                $open = true;
+            }
+        }
+    }
+} else {
+    $auth = true;
+}
+
 require_once("$CFG->libdir/formslib.php");
 
 $PAGE->set_context(context_system::instance());
@@ -79,7 +98,9 @@ if ($mform->is_cancelled()) {
     echo $OUTPUT->header();
 
     // Menu.
-    require('menu.php');
+    if ($auth) {
+        require('menu.php');
+    }
 
     $mform->display();
 
@@ -168,7 +189,7 @@ if ($mform->is_cancelled()) {
     }
 
     foreach ($videos as $key => $video) {
-        $video->thumbnail = local_video_get_thumbnail_url($video->thumb, $video->id, 1);
+        $video->thumbnail = 'poster.php?id=' . $video->id;
         if ($video->filename != $video->id . '.mp4') {
             $videos[$key]->filename = $video->filename . '.mp4';
         }
