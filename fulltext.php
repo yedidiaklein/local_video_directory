@@ -76,8 +76,11 @@ class text_form extends moodleform {
 
         $mform->addElement('checkbox', 'textit', get_string('fulltext', 'local_video_directory'));
 
-        $mform->addElement('select', 'lang', get_string('lang', 'editor'), 
-            [ 'he_IL' => get_string('heb','iso6392'), 'en_US' => get_string('eng','iso6392'), 'fr_FR' => get_string('fra', 'iso6392') ]);
+        $mform->addElement('select', 'lang', get_string('lang', 'editor'),
+            [ 'he_IL' => get_string('heb', 'iso6392'),
+              'en_US' => get_string('eng', 'iso6392'),
+              'sp_ES' => get_string('spa', 'iso6392'),
+              'fr_FR' => get_string('fra', 'iso6392') ]);
 
         $buttonarray = array();
         $buttonarray[] =& $mform->createElement('submit', 'submitbutton', get_string('savechanges'));
@@ -99,9 +102,13 @@ if ($mform->is_cancelled()) {
     // Check that user has rights to edit this video.
     local_video_edit_right($fromform->id);
 
-    $record = array("video_id" => $fromform->id, "user_id" => $USER->id, "state" => 0, "lang" => $fromform->lang, "datecreated" => time() );
+    $record = array("video_id" => $fromform->id,
+                    "user_id" => $USER->id,
+                    "state" => 0,
+                    "lang" => $fromform->lang,
+                    "datecreated" => time() );
     $insert = $DB->insert_record("local_video_directory_txtq", $record);
-    redirect($CFG->wwwroot . '/local/video_directory/list.php'); // TODO : add here a string that say something about speech2text
+    redirect($CFG->wwwroot . '/local/video_directory/list.php'); // TODO : add here a string that say something about speech2text.
 } else {
     echo $OUTPUT->header();
 
@@ -115,12 +122,12 @@ if ($mform->is_cancelled()) {
                 <th>" . get_string('lang', 'editor') . "</th>
                 <th>" . get_string('date') . "</th>
                 <th>" . get_string('convert_status', 'local_video_directory'). "</th></tr>";
-        foreach($state as $st) {
+        foreach ($state as $st) {
             echo "<tr>";
             echo "<td>" . $st->lang .
-                 "</td><td>" . strftime("%A, %d %B %Y %H:%M", $st->datecreated) . 
+                 "</td><td>" . strftime("%A, %d %B %Y %H:%M", $st->datecreated) .
                  "</td><td>" . get_string('textstate_' . $st->state, 'local_video_directory') .
-                 "</td></tr>"; 
+                 "</td></tr>";
         }
         echo "</table>";
     }

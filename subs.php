@@ -43,15 +43,19 @@ if (file_exists($dirs['subsdir'] . local_video_directory_get_filename($id) . ($l
     $words = $DB->get_records('local_video_directory_words', ['video_id' => $id]);
     if ($words) {
         echo "WEBVTT\n\n";
+        $total = count($words);
         $counter = 0;
         $sentence = "";
-        foreach ($words as $word) {
+        foreach ($words as $key => $word) {
+            if (!isset($firstkey)) {
+                $firstkey = $key;
+            }
             $counter++;
             if ($counter == 1) {
                 $start = gmdate("H:i:s", substr($word->start, 0 , -1)) . '.000';
             }
             $sentence .= $word->word . ' ';
-            if ($counter == $subsize) {
+            if (($counter == $subsize) || (($key - $firstkey) == ($total - 1))) {
                 $counter = 0;
                 echo $start . ' --> ' . gmdate("H:i:s", substr($word->end, 0, -1)) . '.000' . "\n";
                 echo $sentence . "\n\n";
