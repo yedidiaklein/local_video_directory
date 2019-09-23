@@ -41,46 +41,43 @@ if (!CLI_SCRIPT) {
 }
 
 require_once("$CFG->libdir/formslib.php");
-$streamingurl = get_settings()->streaming;
-$id = optional_param('video_id', 0, PARAM_INT);
+$videoid = optional_param('videoid', 0, PARAM_INT);
+$sectionid  = optional_param('sectionid', 0, PARAM_INT);
 
 // TODO:
 // Check that user is owner or admin!!
 
 $PAGE->set_context(context_system::instance());
-$PAGE->set_heading(get_string('fulltext', 'local_video_directory'));
-$PAGE->set_title(get_string('fulltext', 'local_video_directory'));
-$PAGE->set_url('/local/video_directory/fulltext.php');
+$PAGE->set_heading(get_string('fulltextedit', 'local_video_directory'));
+$PAGE->set_title(get_string('fulltextedit', 'local_video_directory'));
+$PAGE->set_url('/local/video_directory/fulltextedit.php?videoid=' . $videoid . '&sectionid=' . $sectionid);
 $PAGE->set_pagelayout('standard');
 
 $PAGE->navbar->add(get_string('pluginname', 'local_video_directory'), new moodle_url('/local/video_directory/'));
-$PAGE->navbar->add(get_string('fulltext', 'local_video_directory'));
+$PAGE->navbar->add(get_string('fulltextedit', 'local_video_directory'));
 
-class text_form extends moodleform {
+class textedit_form extends moodleform {
     public function definition() {
-        global $CFG, $DB;
+        global $CFG, $DB, $videoid, $sectionid;
 
-        $id = optional_param('video_id', 0, PARAM_INT);
-
-        if ($id != 0) {
-            $video = $DB->get_record('local_video_directory', array("id" => $id));
-            $origfilename = $video->orig_filename;
-        } else {
-            $origfilename = "";
+        if ($videoid != 0) {
+            $words = $DB->get_records('local_video_directory_words', ['video_id' => $videoid, 'section_id' => $sectionid]);
         }
 
         $mform = $this->_form;
 
-        $mform->addElement('hidden', 'id', $id);
-        $mform->setType('id', PARAM_INT);
+        $mform->addElement('hidden', 'sectionid', $sectionid);
+        $mform->setType('sectionid', PARAM_INT);
+        $mform->addElement('hidden', 'videoid', $videoid);
+        $mform->setType('videoid', PARAM_INT);
 
-        $mform->addElement('checkbox', 'textit', get_string('fulltext', 'local_video_directory'));
-
-        $mform->addElement('select', 'lang', get_string('lang', 'editor'),
-            [ 'he_IL' => get_string('heb', 'iso6392'),
-              'en_US' => get_string('eng', 'iso6392'),
-              'sp_ES' => get_string('spa', 'iso6392'),
-              'fr_FR' => get_string('fra', 'iso6392') ]);
+        if ($words) {
+            foreach ($words as $word) {
+                $mform->addElement('text', 'word_' . $word->id, $word->start . ' - ' . $word->end);
+                $mform->setType('word_' . $word->id, PARAM_RAW);
+                $mform->setDefault('word_' . $word->id, $word->word ); // Default value.
+            }
+        }
 
         $buttonarray = array();
         $buttonarray[] =& $mform->createElement('submit', 'submitbutton', get_string('savechanges'));
@@ -93,7 +90,7 @@ class text_form extends moodleform {
     }
 }
 
-$mform = new text_form();
+$mform = new textedit_form();
 
 if ($mform->is_cancelled()) {
     redirect($CFG->wwwroot . '/local/video_directory/list.php');
@@ -111,37 +108,7 @@ if ($mform->is_cancelled()) {
     redirect($CFG->wwwroot . '/local/video_directory/list.php'); // TODO : add here a string that say something about speech2text.
 } else {
     echo $OUTPUT->header();
-
-    $video = $DB->get_record('local_video_directory', array("id" => $id));
-    echo "<h2>" . $video->orig_filename . "</h2>";
-    echo local_video_get_thumbnail_url($video->thumb, $video->id);
-
-    $state = $DB->get_records('local_video_directory_txtq', ['video_id' => $id]);
-    if ($state) {
-        echo "<br><table border=1><tr>
-                <th>" . get_string('lang', 'editor') . "</th>
-                <th>" . get_string('date') . "</th>
-                <th>" . get_string('convert_status', 'local_video_directory'). "</th></tr>";
-        foreach ($state as $st) {
-            echo "<tr>";
-            echo "<td>" . $st->lang .
-                 "</td><td>" . strftime("%A, %d %B %Y %H:%M", $st->datecreated) .
-                 "</td><td>" . get_string('textstate_' . $st->state, 'local_video_directory') .
-                 "</td></tr>";
-        }
-        echo "</table>";
-    }
-
-    if ($video->convert_status < 3) {
-        echo get_string('state_' . $video->convert_status, 'local_video_directory');
-    } else {
-        $mform->display();
-    }
-
-    $sections = $DB->get_records("local_video_directory_txtsec", array("video_id" => $id));
-
-    echo $OUTPUT->render_from_template('local_video_directory/fulltext',
-    ['wwwroot' => $CFG->wwwroot, 'sections' => array_values($sections), 'videoid' => $id]);
+    $mform->display();
 
 }
 

@@ -203,3 +203,4 @@ $string['multigroupdesc'] = 'While this option is enabled, you could set multipl
 $string['inuse'] = 'In Use';
 $string['nostreaming'] = 'Your streaming server is not set - You probably have to do this command :';
 $string['portalips'] = 'Comma separated list of IPs that can get the portal without authentication.';
+$string['fulltextedit'] = 'Edit subtitles';

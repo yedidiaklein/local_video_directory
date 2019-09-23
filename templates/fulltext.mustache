@@ -1,8 +1,11 @@
 
 {{#sections}}
     {{start}}-{{end}}<br>
-    <textarea name={{id}} style='width:90%;height:100px;'>
+    <textarea name={{id}} style='width:80%;height:100px;'>
         {{content}}
     </textarea>
+    <a href='fulltextedit.php?videoid={{videoid}}&sectionid={{id}}'>
+        <i class="fa fa-pencil" aria-hidden="true"></i>
+    </a>
     <hr>
 {{/sections}}

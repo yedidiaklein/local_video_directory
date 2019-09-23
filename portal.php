@@ -35,7 +35,7 @@ if ($USER->id == 0) {
     } else {
         $ips = explode(',', $settings->portalips);
         foreach ($ips as $ip) {
-            if ($_SERVER['REMOTE_ADDR'] == trim($ip)) {
+            if (local_video_directory_ip_in_range($_SERVER['REMOTE_ADDR'], trim($ip))) {
                 $open = true;
             }
         }
