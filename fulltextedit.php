@@ -93,19 +93,28 @@ class textedit_form extends moodleform {
 $mform = new textedit_form();
 
 if ($mform->is_cancelled()) {
-    redirect($CFG->wwwroot . '/local/video_directory/list.php');
+    redirect($CFG->wwwroot . '/local/video_directory/fulltext.php?video_id=' . $videoid);
 } else if ($fromform = $mform->get_data()) {
 
     // Check that user has rights to edit this video.
-    local_video_edit_right($fromform->id);
+    local_video_edit_right($fromform->videoid);
 
-    $record = array("video_id" => $fromform->id,
-                    "user_id" => $USER->id,
-                    "state" => 0,
-                    "lang" => $fromform->lang,
-                    "datecreated" => time() );
-    $insert = $DB->insert_record("local_video_directory_txtq", $record);
-    redirect($CFG->wwwroot . '/local/video_directory/list.php'); // TODO : add here a string that say something about speech2text.
+    $section = '';
+    // Update words table.
+    foreach ($fromform as $key => $value) {
+        if (substr($key, 0, 5) == 'word_') {
+            $parts = explode("_", $key);
+            $record = [ 'id' => $parts[1], 'word' => $value];
+            $upd = $DB->update_record('local_video_directory_words', $record);
+            $section .= $value . ' ';
+        }
+    }
+
+    // Update section table.
+    $section = substr($section, 0, -1); // Delete last space.
+    $upd = $DB->update_record('local_video_directory_txtsec', ['id' => $fromform->sectionid, 'content' => $section]);
+
+    redirect($CFG->wwwroot . '/local/video_directory/fulltext.php?video_id=' . $videoid);
 } else {
     echo $OUTPUT->header();
     $mform->display();
