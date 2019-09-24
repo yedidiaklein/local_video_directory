@@ -44,6 +44,10 @@ if ($USER->id == 0) {
     $auth = true;
 }
 
+if (!$open) {
+    require_login();
+}
+
 require_once("$CFG->libdir/formslib.php");
 
 $PAGE->set_context(context_system::instance());
