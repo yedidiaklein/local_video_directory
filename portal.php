@@ -50,8 +50,12 @@ $PAGE->set_context(context_system::instance());
 $PAGE->set_heading(get_string('portal', 'local_video_directory'));
 $PAGE->set_title(get_string('portal', 'local_video_directory'));
 $PAGE->set_url('/local/video_directory/portal.php');
-$PAGE->navbar->add(get_string('pluginname', 'local_video_directory'), new moodle_url('/local/video_directory/'));
-$PAGE->navbar->add(get_string('portal', 'local_video_directory'));
+if ($open) {
+    $PAGE->navbar->add(get_string('portal', 'local_video_directory'), new moodle_url('/local/video_directory/portal.php'));
+} else {
+    $PAGE->navbar->add(get_string('pluginname', 'local_video_directory'), new moodle_url('/local/video_directory/'));
+    $PAGE->navbar->add(get_string('portal', 'local_video_directory'));
+}
 $PAGE->set_pagelayout('base');
 $PAGE->requires->css('/local/video_directory/style.css');
 
