@@ -56,6 +56,7 @@ $PAGE->set_title(get_string('portal', 'local_video_directory'));
 $PAGE->set_url('/local/video_directory/portal.php');
 if ($open) {
     $PAGE->navbar->add(get_string('portal', 'local_video_directory'), new moodle_url('/local/video_directory/portal.php'));
+    $PAGE->requires->css('/local/video_directory/styles/hidetop.css');
 } else {
     $PAGE->navbar->add(get_string('pluginname', 'local_video_directory'), new moodle_url('/local/video_directory/'));
     $PAGE->navbar->add(get_string('portal', 'local_video_directory'));

@@ -1,0 +1,7 @@
+.fixed-top {
+    display: none;
+}
+
+.breadcrumb-item:first-of-type {
+    display: none;
+}
