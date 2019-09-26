@@ -26,10 +26,10 @@ defined('MOODLE_INTERNAL') || die();
 require_once('locallib.php');
 $settings = get_settings();
 
+$open = false;
+$auth = false;
 
 if ($USER->id == 0) {
-    $open = false;
-    $auth = false;
     if (trim($settings->portalips) == '') {
         require_login();
     } else {
