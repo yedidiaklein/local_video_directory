@@ -1,13 +1,11 @@
 <div class='local_video_directory_video-table'>
 {{#videos}}
-    <span class="local_video_portal_video">
-        <img src="{{thumbnail}}" class="local_video_portal_thumb" data-video-url='{{streaming}}/{{filename}}' data-id='{{id}}'>
-        <div class="local_video_portal_name">
-            {{orig_filename}}
-        </div>
-        <div class="local_video_portal_length">
-            {{length}}
-        </div>
-    </span>
+<article class="video">
+  <figure>
+        <img src="{{thumbnail}}" class="videoThumb" data-video-url='{{streaming}}/{{filename}}' data-id='{{id}}'>
+  </figure>
+  <h3 class="videoTitle">{{orig_filename}}</h3>
+  <p>{{length}}</p>
+</article>
 {{/videos}}
 </div>

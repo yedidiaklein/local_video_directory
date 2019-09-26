@@ -63,6 +63,8 @@ if ($open) {
 }
 $PAGE->set_pagelayout('base');
 $PAGE->requires->css('/local/video_directory/style.css');
+$PAGE->requires->css('/local/video_directory/styles/portal.css');
+
 
 // Include font awesome in case of moodle 32 and older.
 if ($CFG->branch < 33) {
