@@ -18,6 +18,12 @@ img {
     margin: 1%;
     float: left;
   }
+
+  .local_video_direcotry_float_portal {
+    float: left;
+    width: 50%;
+    padding-top: 1%;
+  }
   
   /* 
   These styles keep the height of each video thumbnail consistent between YouTube and Vimeo. 
@@ -44,11 +50,20 @@ img {
     .video {
       width: 31.333%; /* Thumbnails 3 across */
     }
+    .local_video_direcotry_float_portal {
+      float: left;
+      width: 66%;
+      padding-top: 12px;
+    }
   }
   
   @media (max-width: 600px) {
     .video {
       width: 48%; /* Thumbnails 2 across */
+    }
+    .local_video_direcotry_float_portal {
+      float: left;
+      width: 92%;
     }
   }
   
@@ -57,6 +72,10 @@ img {
       display: block;
       width: 96%; /* Single column view. */
       margin: 2%; /* The smaller the screen, the smaller the percentage actually is. */
+      float: none;
+    }
+    .local_video_direcotry_float_portal {
+      width: 100%;
       float: none;
     }
   }
@@ -79,3 +98,4 @@ img {
     white-space: nowrap;
     overflow: hidden;
   }
+

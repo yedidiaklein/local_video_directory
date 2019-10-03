@@ -1,8 +1,21 @@
+{{#player}}
+<br>
+<div class="local_video_direcotry_float_portal">
+    <video  width="100%" controls preload="auto"
+            poster="{{wwwroot}}/local/video_directory/poster.php?id={{player_id}}">
+            <source src="{{player_streaming}}" type="video/mp4">
+            <track label="English" kind="subtitles" srclang="en" src="{{wwwroot}}/local/video_directory/subs.php?video_id={{player_id}}" default>
+    </video>
+    <h2>{{player_title}}</h2>
+</div>
+{{/player}}
 <div class='local_video_directory_video-table'>
 {{#videos}}
 <article class="video">
   <figure>
-        <img src="{{thumbnail}}" class="videoThumb" data-video-url='{{streaming}}/{{filename}}' data-id='{{id}}'>
+    <a href='?player={{uniqid}}'>
+        <img src="{{thumbnail}}" class="videoThumb">
+    </a>
   </figure>
   <h3 class="videoTitle">{{orig_filename}}</h3>
   <p>{{length}}</p>
