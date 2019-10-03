@@ -216,13 +216,21 @@ if ($mform->is_cancelled()) {
                 array('videos' => array_values($videos), 'streaming' => $streaming));
     } else {
         $player = optional_param('player', 0, PARAM_RAW);
-        $playervideo = $DB->get_record('local_video_directory', ['uniqid' => $player]);
-        $filename = local_video_directory_get_filename($playervideo->id);
-        $playerstr = $streaming . '/' . $filename . '.mp4';
+        if ($player) {
+            $playervideo = $DB->get_record('local_video_directory', ['uniqid' => $player]);
+            $filename = local_video_directory_get_filename($playervideo->id);
+            $playerstr = $streaming . '/' . $filename . '.mp4';
+            $playerid = $playervideo->id;
+            $playertitle = $playervideo->orig_filename;
+        } else {
+            $playerid = '';
+            $playertitle = '';
+            $playerstr = '';
+        }
         echo $OUTPUT->render_from_template("local_video_directory/portal",
                 array(  'videos' => array_values($videos), 'streaming' => $streaming, 'player' => $player,
-                        'player_id' => $playervideo->id, 'player_streaming' => $playerstr, 'wwwroot' => $CFG->wwwroot,
-                        'player_title' => $playervideo->orig_filename));
+                        'player_id' => $playerid, 'player_streaming' => $playerstr, 'wwwroot' => $CFG->wwwroot,
+                        'player_title' => $playertitle));
     }
 }
 if (isset($pagination)) {
