@@ -99,3 +99,13 @@ img {
     overflow: hidden;
   }
 
+  #mform1 {
+    width: 33%;
+    float: left;
+  }
+
+  .portal_tags {
+    margin-top: -15px;
+    float: left;
+    width: 60%;
+  }

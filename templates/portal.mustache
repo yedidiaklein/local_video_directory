@@ -17,8 +17,11 @@
         <img src="{{thumbnail}}" class="videoThumb">
     </a>
   </figure>
-  <h3 class="videoTitle">{{orig_filename}}</h3>
+  <h3 class="videoTitle" title="{{orig_filename}}">{{{orig_filename}}}</h3>
   <p>{{length}}</p>
+  {{#content}}
+  {{#str}}result_content, local_video_directory{{/str}}
+  {{/content}}
 </article>
 {{/videos}}
 </div>

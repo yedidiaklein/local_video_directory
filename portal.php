@@ -25,9 +25,10 @@ require_once( __DIR__ . '/../../config.php');
 defined('MOODLE_INTERNAL') || die();
 require_once('locallib.php');
 $settings = get_settings();
-
+$perpage = 12;
 $open = false;
 $auth = false;
+$currentpage = optional_param('currentpage', 0, PARAM_INT);
 
 if ($USER->id == 0) {
     if (trim($settings->portalips) == '') {
@@ -77,14 +78,13 @@ class portal_form extends moodleform {
 
         $mform = $this->_form;
 
-        $mform->addElement('text', 'search', get_string('search'));
+        $buttonarray = array();
+        $buttonarray[] =& $mform->createElement('text', 'search', get_string('search'));
         $mform->setType('search', PARAM_TEXT);
         $search = optional_param('search', 0, PARAM_TEXT);
         if ($search) {
             $mform->setDefault('search', $search);
         }
-
-        $buttonarray = array();
         $buttonarray[] =& $mform->createElement('submit', 'submitbutton', get_string('search'));
         $buttonarray[] =& $mform->createElement('cancel', 'cancel', get_string('cancel'));
         $mform->addGroup($buttonarray, 'buttonar', '', array(' '), false);
@@ -113,8 +113,39 @@ if ($mform->is_cancelled()) {
         require('menu.php');
     }
 
+    echo '<div class="portal_header">';
     $mform->display();
 
+    // Find all movies tags.
+    $alltags = $DB->get_records_sql('SELECT DISTINCT name
+                                        FROM {tag_instance} ti
+                                        LEFT JOIN {tag} t
+                                        ON ti.tagid=t.id
+                                        WHERE itemtype = \'local_video_directory\'
+                                        ORDER BY name');
+
+    $alltagsurl = array();
+
+    foreach ($alltags as $key => $value) {
+        array_push($alltagsurl, array('name' => $key, 'url' => urlencode($key)));
+    }
+    $selectedtags = array();
+    if (!isset($SESSION->video_tags)) {
+        $SESSION->video_tags = array();
+    }
+
+    if (is_array($SESSION->video_tags)) {
+        if ((count($SESSION->video_tags) > 0)) {
+            foreach ($SESSION->video_tags as $key => $value) {
+                array_push($selectedtags, array('name' => $value, 'url' => urlencode($value)));
+            }
+        }
+    }
+    echo $OUTPUT->render_from_template("local_video_directory/portal_tags",
+        array('wwwroot' => $CFG->wwwroot, 'alltags' => $alltagsurl, 'existvideotags' => count($selectedtags),
+        'videotags' => $selectedtags));
+
+    echo '</div>';
     $search = optional_param('search', 0, PARAM_TEXT);
     $streaming = get_streaming_server_url();
 
@@ -191,13 +222,21 @@ if ($mform->is_cancelled()) {
     } else {
         // No search.
         $total = count(local_video_directory_get_videos('views'));
-        $perpage = 12;
-        $currentpage = optional_param('currentpage', 0, PARAM_INT);
         $pagination = local_video_directory_pagination($total, $perpage, $currentpage);
         echo $pagination;
         $start = $currentpage * $perpage;
         $videos = local_video_directory_get_videos('views', $start, $perpage);
     }
+
+    // Tags.
+    if (count($selectedtags)) {
+        $total = count(local_video_directory_get_videos_by_tags($SESSION->video_tags));
+        $pagination = local_video_directory_pagination($total, $perpage, $currentpage);
+        echo $pagination;
+        $start = $currentpage * $perpage;
+        $videos = local_video_directory_get_videos_by_tags($SESSION->video_tags, 0, $start, $perpage, $search, 'views');
+    }
+
 
     foreach ($videos as $key => $video) {
         $video->thumbnail = 'poster.php?id=' . $video->id;
@@ -211,27 +250,23 @@ if ($mform->is_cancelled()) {
         }
     }
 
-    if ($search) {
-        echo $OUTPUT->render_from_template("local_video_directory/portal_search",
-                array('videos' => array_values($videos), 'streaming' => $streaming));
+    $player = optional_param('player', 0, PARAM_RAW);
+    if ($player) {
+        $playervideo = $DB->get_record('local_video_directory', ['uniqid' => $player]);
+        $filename = local_video_directory_get_filename($playervideo->id);
+        $playerstr = $streaming . '/' . $filename . '.mp4';
+        $playerid = $playervideo->id;
+        $playertitle = $playervideo->orig_filename;
     } else {
-        $player = optional_param('player', 0, PARAM_RAW);
-        if ($player) {
-            $playervideo = $DB->get_record('local_video_directory', ['uniqid' => $player]);
-            $filename = local_video_directory_get_filename($playervideo->id);
-            $playerstr = $streaming . '/' . $filename . '.mp4';
-            $playerid = $playervideo->id;
-            $playertitle = $playervideo->orig_filename;
-        } else {
-            $playerid = '';
-            $playertitle = '';
-            $playerstr = '';
-        }
-        echo $OUTPUT->render_from_template("local_video_directory/portal",
+        $playerid = '';
+        $playertitle = '';
+        $playerstr = '';
+    }
+
+    echo $OUTPUT->render_from_template("local_video_directory/portal",
                 array(  'videos' => array_values($videos), 'streaming' => $streaming, 'player' => $player,
                         'player_id' => $playerid, 'player_streaming' => $playerstr, 'wwwroot' => $CFG->wwwroot,
-                        'player_title' => $playertitle));
-    }
+                        'player_title' => $playertitle, 'showcatscloud' => 1));
 }
 if (isset($pagination)) {
     echo $pagination;

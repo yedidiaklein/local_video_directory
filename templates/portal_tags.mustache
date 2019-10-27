@@ -1,0 +1,28 @@
+<div class="portal_tags">
+    <div class="local_video_directory_existing_tags"> {{#str}}existing_tags, local_video_directory{{/str}}:
+        <span class="tag_list hideoverlimit local_video_directory_videos">
+            <ul class="inline-list">
+                {{#alltags}}
+                    <li>
+                        <a href="{{wwwroot}}/local/video_directory/tag.php?action=add&tag={{url}}&from=portal" class="label label-info ">+ {{name}} </a>
+                    </li>
+                {{/alltags}}
+
+            </ul>
+        </span>
+    </div>
+
+    {{#existvideotags}}
+        <div class="local_video_directory_selected_tags">{{#str}}selected_tags, local_video_directory{{/str}}:
+            <span class="tag_list hideoverlimit local_video_directory_videos">
+                <ul class="inline-list">
+                    {{#videotags}}
+                    <li>
+                        <a href=" {{wwwroot}}/local/video_directory/tag.php?action=remove&tag={{url}}&from=portal" class="label label-info "> &times;{{name}}</a>
+                    </li>
+                    {{/videotags}}
+                </ul>
+            </span>
+        </div>
+    {{/existvideotags}}
+</div>

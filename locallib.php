@@ -149,6 +149,7 @@ function local_video_directory_get_videos_by_tags($list, $tagid=0, $start = null
     global $USER, $DB, $SESSION, $CFG;
     $settings = get_settings();
     $params = [];
+    $whereor = '';
 
     if (count($SESSION->categories)) {
         foreach ($SESSION->categories as $key => $value) {
