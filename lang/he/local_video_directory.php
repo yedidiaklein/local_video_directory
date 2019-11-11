@@ -197,6 +197,7 @@ $string['new_category'] = "קטגוריה חדשה";
 $string['catscloud'] = 'הצגת ענן קטגוריות מעל לענן התגיות';
 $string['catsclouddesc'] = 'אם תסומן אפשרות זו תהיה תצוגה של ענן קטגוריות מעל לענן התגיות';
 $string['selected_cats'] = 'קטגוריות שנבחרו';
+$string['manage_cats'] = 'ניהול קטגוריות';
 $string['views'] = 'צפיות';
 $string['multigroup'] = 'ריבוי קבוצות לסרטון';
 $string['multigroupdesc'] = 'כאשר אפשרות זו מסומנת, ניתן לבחור כמה קבוצות לכל סרטון';

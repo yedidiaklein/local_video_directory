@@ -320,7 +320,7 @@ class local_video_directory_external extends external_api {
                         WHERE cv.video_id = ?";
             $cats = $DB->get_records_sql($catq, [$video->id]);
             if ($cats) {
-                $video->categories = '<div class="local_video_directory_categories">';
+                $video->categories = '<div class="local_video_directory_categories_table">';
                 foreach ($cats as $cat) {
                     $video->categories .= '<span>' . $cat->cat_name . '</span>';
                 }

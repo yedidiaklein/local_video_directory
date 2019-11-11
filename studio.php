@@ -44,7 +44,7 @@ if (!has_capability('local/video_directory:video', $context) && !is_video_admin(
 $videoname = $DB->get_field('local_video_directory', 'orig_filename', ['id' => $id]);
 echo $OUTPUT->header();
 
-echo $OUTPUT->heading("<font color='red'>*** BETA ***</font> " . get_string('studio', 'local_video_directory') .
+echo $OUTPUT->heading(get_string('studio', 'local_video_directory') .
                         ' - <span class="videoname">' . $videoname . '</span>');
 
 $tools = [ 

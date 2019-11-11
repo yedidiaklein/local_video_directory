@@ -195,6 +195,7 @@ $string['categoriesdesc'] = 'Enable the categories setting to videos';
 $string['catscloud'] = 'Show cloud of categories';
 $string['catsclouddesc'] = 'If this option is set, there will be a cloud of categories';
 $string['selected_cats'] = 'Selected Categories';
+$string['manage_cats'] = 'Manage Categories';
 $string['father'] = 'Father';
 $string['new_category'] = "New category";
 $string['views'] = 'Views';

@@ -20,9 +20,9 @@ img {
   }
 
   .local_video_direcotry_float_portal {
-    float: left;
+    float: right;
     width: 50%;
-    padding-top: 1%;
+    padding-top: 2.4%;
   }
   
   /* 
@@ -97,6 +97,11 @@ img {
     /* Required for text-overflow to do anything */
     white-space: nowrap;
     overflow: hidden;
+    padding-left: 5px;
+  }
+
+  .videoTitle p {
+    padding-left: 5px;
   }
 
   #mform1 {

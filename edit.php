@@ -103,6 +103,7 @@ class edit_form extends moodleform {
             foreach ($allcats as $cat) {
                 $c[$cat->id] = $cat->cat_name;
             }
+            // $mform->addElement('html', '<div class = local_video_directory_cats_wrapper>');
             $mform->addElement('autocomplete', 'category', '<a href="categories.php">' .
                                 get_string('categories', 'local_video_directory') . '</a>',
                                 $c, ['class' => 'local_video_directory_categories']);
@@ -113,6 +114,14 @@ class edit_form extends moodleform {
                 $catselected[] = $cat->cat_id;
             }
             $mform->getElement('category')->setSelected($catselected);
+            if (is_video_admin($USER)) {    
+                $mform->addElement('html', '<div>
+                                            <a href="categories.php" class="local_video_directory_cats_manage">' .
+                                                get_string('manage_cats', 'local_video_directory')
+                                            . '</a>
+                                        </div>');
+            }
+
         }
 
         $mform->addElement('hidden', 'id', $id);

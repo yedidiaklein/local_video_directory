@@ -4,6 +4,10 @@
     min-width: 460px;
 }
 
+.local_video_directory_video-table {
+    padding-top: 3vw;
+}
+
 .local_video_directory_video-table tr td:first-child {
     white-space: nowrap;
 }
@@ -311,7 +315,7 @@ input.hidden_input:hover {
     color: white !important;
 }
 
-.local_video_directory_categories span {
+.local_video_directory_categories_table span {
     background-color: #77933c;
     color: white;
     margin-right: 5px;
@@ -334,4 +338,12 @@ input.hidden_input:hover {
 
 .local_video_directory_categories .tag span {
     padding: 0;
+}
+
+.dir-ltr .local_video_directory_cats_manage {
+    padding-left: 28vw;
+}
+
+.dir-rtl .local_video_directory_cats_manage {
+    padding-right: 28vw;
 }
