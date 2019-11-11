@@ -277,8 +277,9 @@ input.hidden_input:hover {
     padding: 3px;
 }
 
-.video_float {
+.local_video_directory_float {
     float: left;
+    margin: 20px;
 }
 
 .video_embed {
