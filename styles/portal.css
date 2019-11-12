@@ -22,7 +22,7 @@ img {
   .local_video_direcotry_float_portal {
     float: right;
     width: 50%;
-    padding-top: 2.4%;
+    padding-top: 1%;
   }
   
   /* 
@@ -112,5 +112,5 @@ img {
   .portal_tags {
     margin-top: -15px;
     float: left;
-    width: 60%;
+    width: 100%;
   }
