@@ -348,3 +348,7 @@ input.hidden_input:hover {
 .dir-rtl .local_video_directory_cats_manage {
     padding-right: 28vw;
 }
+
+#page-local-video_directory-edit .col-md-3 {
+    padding-left: 12%;
+}

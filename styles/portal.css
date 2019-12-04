@@ -14,7 +14,7 @@ img {
     background: #ebebeb;
     /* padding-bottom: 20px;*/
     box-shadow: 0 1px 1px rgba(0, 0, 0, 0.15);
-    width: 23%; /* Thumbnails 4 across */
+    width: 13%; /* Thumbnails 4 across */
     margin: 1%;
     float: left;
   }
