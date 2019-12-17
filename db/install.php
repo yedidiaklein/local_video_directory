@@ -24,21 +24,11 @@ require_once($CFG->dirroot . '/lib/accesslib.php');
 $role = $DB->get_record('role', array('shortname' => 'local_video_directory'));
 if (empty($role)) {
     $roleid = create_role('local_video_directory', 'local_video_directory', 'video system role');
-    if (is_int($roleid)) {
-        $contextsids = array(CONTEXT_SYSTEM);
-        set_role_contextlevels($roleid, $contextsids);
-        role_change_permission( $roleid, context_system::instance(), 'local/video_directory:video', 1);
-    }
 }
 
 $role = $DB->get_record('role', array('shortname' => 'local_video_directory_admin'));
 if (empty($role)) {
     $roleid = create_role('local_video_directory_admin', 'local_video_directory_admin', 'video admin system role');
-    if (is_int($roleid)) {
-        $contextsids = array(CONTEXT_SYSTEM);
-        set_role_contextlevels($roleid, $contextsids);
-        role_change_permission( $roleid, context_system::instance(), 'local/video_directory:video', 1);
-    }
 }
 
 
