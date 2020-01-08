@@ -109,3 +109,13 @@ img {
     float: left;
     width: 100%;
   }
+
+  #id_tags_fieldset .row ,#id_cats_fieldset .row {
+    float: left;
+    min-width: 150px;
+  }
+
+  .dir-rtl #id_tags_fieldset .row ,.dir-rtl #id_cats_fieldset .row {
+    float: right;
+  }
+  

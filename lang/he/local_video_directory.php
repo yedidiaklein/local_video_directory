@@ -206,3 +206,5 @@ $string['nostreaming'] = 'שרת ההזרמה אינו מוגדר כדבעי.. �
 $string['portalips'] = 'רשימה מופרדת בפסיקים של כתובות IP היכולות לגשת לפורטל ללא הזדהות';
 $string['fulltextedit'] = 'עריכת כתוביות';
 $string['result_content'] = 'נמצא בתוכן הסרטון';
+$string['portalimagesbeforesearch'] = 'הצגת תמונות סרטים לפני חיפוש בפורטל';
+$string['portalimagesbeforesearchdesc'] = 'אפשרות זו מגדירה האם יוצגו תמונות של סרטונים לפני ביצוע חיפוש בפורטל';

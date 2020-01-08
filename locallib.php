@@ -150,6 +150,13 @@ function local_video_directory_get_videos_by_tags($list, $tagid=0, $start = null
     $settings = get_settings();
     $params = [];
     $whereor = '';
+    $and = '';
+
+    if (count($list) > 0) {
+        $intags = " ti.itemtype = 'local_video_directory' ";
+    } else {
+        $intags = ' 1 = 1 ';
+    }
 
     if (count($SESSION->categories)) {
         foreach ($SESSION->categories as $key => $value) {
@@ -162,7 +169,7 @@ function local_video_directory_get_videos_by_tags($list, $tagid=0, $start = null
         $catsparams = [];
     }
 
-    if (count($SESSION->groups)) {
+    if (@count($SESSION->groups)) {
         foreach ($SESSION->groups as $key => $value) {
             $g[] = $value['name'];
         }
@@ -179,10 +186,10 @@ function local_video_directory_get_videos_by_tags($list, $tagid=0, $start = null
         $orderby = "";
     }
 
-    if ($list != "") {
+    if ($list != "" && $list != []) {
         list($insql, $params) = $DB->get_in_or_equal($list);
         $and = ' AND t.name ' . $insql;
-    } else if (is_numeric($tagid)) {
+    } else if (is_numeric($tagid) && ($tagid != 0)) {
         $and = ' AND t.id =' . $tagid . ' ';
     }
 
@@ -222,15 +229,16 @@ function local_video_directory_get_videos_by_tags($list, $tagid=0, $start = null
         $aggregate = " STRING_AGG(cat_name, ', ') ";
     }
     if (is_video_admin()) {
-        $videos = $DB->get_records_sql('SELECT DISTINCT v.*, ' . $DB->sql_concat_join("' '", array("firstname", "lastname"))
+        $sql = 'SELECT DISTINCT v.*, ' . $DB->sql_concat_join("' '", array("firstname", "lastname"))
                                                 . ' AS name
                                                 FROM {local_video_directory} v
                                                 LEFT JOIN {user} u on v.owner_id = u.id
                                                 LEFT JOIN {tag_instance} ti on v.id=ti.itemid
                                                 LEFT JOIN {tag} t on ti.tagid=t.id
                                                 LEFT JOIN {local_video_directory_catvid} c ON c.video_id = v.id
-                                                WHERE ti.itemtype = \'local_video_directory\' ' .
-                                                $and . $whereor . $orderby, $params, $start, $length);
+                                                WHERE ' . $intags .
+                                                $and . $whereor . $orderby;
+        $videos = $DB->get_records_sql($sql, $params, $start, $length);
     } else {
         if (($settings->group == "institution") || ($settings->group == "department")) {
             $videos = $DB->get_records_sql('SELECT DISTINCT v.*, ' . $DB->sql_concat_join("' '", array("firstname", "lastname"))
@@ -240,7 +248,7 @@ function local_video_directory_get_videos_by_tags($list, $tagid=0, $start = null
                 LEFT JOIN {tag_instance} ti on v.id=ti.itemid
                 LEFT JOIN {tag} t on ti.tagid=t.id
                 LEFT JOIN {local_video_directory_catvid} c ON c.video_id = v.id
-                WHERE ti.itemtype = \'local_video_directory\' ' . $and . $whereor .
+                WHERE ' . $intags . $and . $whereor .
                 'AND (owner_id =' . $USER->id . ' OR (private IS NULL OR private = 0)
                 OR (usergroup = \'' . $USER->{$settings->group} . '\'))
                 ' . $orderby, $params, $start, $length);
@@ -252,7 +260,7 @@ function local_video_directory_get_videos_by_tags($list, $tagid=0, $start = null
                                                 LEFT JOIN {tag_instance} ti on v.id=ti.itemid
                                                 LEFT JOIN {tag} t on ti.tagid=t.id
                                                 LEFT JOIN {local_video_directory_catvid} c ON c.video_id = v.id
-                                                WHERE ti.itemtype = \'local_video_directory\' ' . $and . $whereor .
+                                                WHERE ' . $intags . $and . $whereor .
                                                 'AND (owner_id =' . $USER->id . ' OR (private IS NULL OR private = 0))
                                                 ' . $orderby, $params, $start, $length);
 

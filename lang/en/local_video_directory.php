@@ -206,3 +206,5 @@ $string['nostreaming'] = 'Your streaming server is not set - You probably have t
 $string['portalips'] = 'Comma separated list of IPs that can get the portal without authentication.';
 $string['fulltextedit'] = 'Edit subtitles';
 $string['result_content'] = 'Found in text content';
+$string['portalimagesbeforesearch'] = 'Show images of video in portal before search';
+$string['portalimagesbeforesearchdesc'] = 'This option set whether images of videos will be shown before any search in portal';

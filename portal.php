@@ -74,20 +74,56 @@ if ($CFG->branch < 33) {
 
 class portal_form extends moodleform {
     public function definition() {
-        global $CFG, $DB, $USER;
+        global $CFG, $DB, $USER, $settings, $SESSION;
 
         $mform = $this->_form;
 
-        $buttonarray = array();
         $buttonarray[] =& $mform->createElement('text', 'search', get_string('search'));
         $mform->setType('search', PARAM_TEXT);
         $search = optional_param('search', 0, PARAM_TEXT);
-        if ($search) {
-            $mform->setDefault('search', $search);
-        }
         $buttonarray[] =& $mform->createElement('submit', 'submitbutton', get_string('search'));
         $buttonarray[] =& $mform->createElement('cancel', 'cancel', get_string('cancel'));
         $mform->addGroup($buttonarray, 'buttonar', '', array(' '), false);
+
+        if ($search) {
+            $mform->setDefault('search', $search);
+        }
+        if ($settings->categories) {
+            $mform->addElement('header',
+                                'cats_fieldset',
+                                get_string('categories', 'local_video_directory'));
+
+            $allcats = $DB->get_records('local_video_directory_cats', []);
+            foreach ($allcats as $cat) {
+                $mform->addElement('checkbox', 'cat[' . $cat->id . ']', $cat->cat_name);
+                if (isset($SESSION->categories[$cat->id])) {
+                    $mform->setDefault('cat[' . $cat->id . ']', true);
+                }
+            }
+        }
+
+        $mform->addElement('header',
+                            'tags_fieldset',
+                            get_string('tags'));
+
+        // Find all movies tags.
+        $alltags = $DB->get_records_sql('SELECT DISTINCT tagid,name
+                                        FROM {tag_instance} ti
+                                        LEFT JOIN {tag} t
+                                        ON ti.tagid=t.id
+                                        WHERE itemtype = \'local_video_directory\'
+                                        ORDER BY name');
+        if (!@is_array($SESSION->video_tags)) {
+            $SESSION->video_tags = [];
+        }
+        foreach ($alltags as $tag) {
+            $mform->addElement('checkbox', 'tag[' . urlencode($tag->name) . ']', $tag->name, '', 'checked="checked"');
+            if (is_numeric(array_search(urlencode($tag->name), $SESSION->video_tags))) {
+                $mform->setDefault('tag[' . urlencode($tag->name) . ']', true);
+            }
+        }
+        $mform->setExpanded('cats_fieldset', false);
+        $mform->setExpanded('tags_fieldset', false);
     }
 
     public function validation($data, $files) {
@@ -100,14 +136,25 @@ $mform = new portal_form();
 if ($mform->is_cancelled()) {
     redirect($CFG->wwwroot . '/local/video_directory/portal.php');
 } else if ($fromform = $mform->get_data()) {
+    // Tags.
+    $SESSION->video_tags = [];
+    if (isset($fromform->tag)) {
+        foreach ($fromform->tag as $tag => $val) {
+            $SESSION->video_tags[] = $tag;
+        }
+    }
+    // Categories.
+    $SESSION->categories = [];
+    if (isset($fromform->cat)) {
+        foreach ($fromform->cat as $cat => $val) {
+            $SESSION->categories[$cat] = ['id' => $cat];
+        }
+    }
 
     redirect($CFG->wwwroot . '/local/video_directory/portal.php?search=' . $fromform->search);
 
 } else {
-
-
     echo $OUTPUT->header();
-
     // Menu.
     if ($auth) {
         require('menu.php');
@@ -115,36 +162,6 @@ if ($mform->is_cancelled()) {
 
     echo '<div class="portal_header">';
     $mform->display();
-
-    // Find all movies tags.
-    $alltags = $DB->get_records_sql('SELECT DISTINCT name
-                                        FROM {tag_instance} ti
-                                        LEFT JOIN {tag} t
-                                        ON ti.tagid=t.id
-                                        WHERE itemtype = \'local_video_directory\'
-                                        ORDER BY name');
-
-    $alltagsurl = array();
-
-    foreach ($alltags as $key => $value) {
-        array_push($alltagsurl, array('name' => $key, 'url' => urlencode($key)));
-    }
-    $selectedtags = array();
-    if (!isset($SESSION->video_tags)) {
-        $SESSION->video_tags = array();
-    }
-
-    if (is_array($SESSION->video_tags)) {
-        if ((count($SESSION->video_tags) > 0)) {
-            foreach ($SESSION->video_tags as $key => $value) {
-                array_push($selectedtags, array('name' => $value, 'url' => urlencode($value)));
-            }
-        }
-    }
-    echo $OUTPUT->render_from_template("local_video_directory/portal_tags",
-        array('wwwroot' => $CFG->wwwroot, 'alltags' => $alltagsurl, 'existvideotags' => count($selectedtags),
-        'videotags' => $selectedtags));
-
     echo '</div>';
     $search = optional_param('search', 0, PARAM_TEXT);
     $streaming = get_streaming_server_url();
@@ -221,22 +238,25 @@ if ($mform->is_cancelled()) {
         }
     } else {
         // No search.
-        $total = count(local_video_directory_get_videos('views'));
-        $pagination = local_video_directory_pagination($total, $perpage, $currentpage);
-        echo $pagination;
-        $start = $currentpage * $perpage;
-        $videos = local_video_directory_get_videos('views', $start, $perpage);
+        if ($settings->portalimagesbeforesearch) {
+            $total = count(local_video_directory_get_videos('views'));
+            $pagination = local_video_directory_pagination($total, $perpage, $currentpage);
+            echo $pagination;
+            $start = $currentpage * $perpage;
+            $videos = local_video_directory_get_videos('views', $start, $perpage);
+        } else {
+            $videos = [];
+        }
     }
 
     // Tags.
-    if (count($selectedtags)) {
+    if ((count($SESSION->video_tags) > 0) || (@count($SESSION->categories) > 0)) {
         $total = count(local_video_directory_get_videos_by_tags($SESSION->video_tags));
         $pagination = local_video_directory_pagination($total, $perpage, $currentpage);
         echo $pagination;
         $start = $currentpage * $perpage;
         $videos = local_video_directory_get_videos_by_tags($SESSION->video_tags, 0, $start, $perpage, $search, 'views');
     }
-
 
     foreach ($videos as $key => $video) {
         $video->thumbnail = 'poster.php?id=' . $video->id;

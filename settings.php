@@ -287,6 +287,13 @@ if ($hassiteconfig) {
         PARAM_TEXT
     ));
 
+    $settings->add( new admin_setting_configcheckbox(
+        'local_video_directory/portalimagesbeforesearch',
+        get_string('portalimagesbeforesearch', 'local_video_directory'),
+        get_string('portalimagesbeforesearchdesc', 'local_video_directory'),
+        '0'
+    ));
+
     // Create.
     $ADMIN->add( 'localplugins', $settings );
 
