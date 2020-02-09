@@ -259,7 +259,7 @@ if ($mform->is_cancelled()) {
     }
 
     foreach ($videos as $key => $video) {
-        $video->thumbnail = 'poster.php?id=' . $video->id;
+        $video->thumbnail = 'thumb.php?mini=1&id=' . $video->id;
         if ($video->filename != $video->id . '.mp4') {
             $videos[$key]->filename = $video->filename . '.mp4';
         }
