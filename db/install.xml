@@ -24,6 +24,7 @@
         <FIELD NAME="views" TYPE="int" LENGTH="13" NOTNULL="true" DEFAULT="0" SEQUENCE="false"/>
         <FIELD NAME="subs" TYPE="int" LENGTH="1" NOTNULL="true" DEFAULT="0" SEQUENCE="false"/>
         <FIELD NAME="uniqid" TYPE="char" LENGTH="23" NOTNULL="false" SEQUENCE="false"/>
+        <FIELD NAME="description" TYPE="char" LENGTH="500" NOTNULL="true" SEQUENCE="false" COMMENT="description"/>
       </FIELDS>
       <KEYS>
         <KEY NAME="primary" TYPE="primary" FIELDS="id"/>

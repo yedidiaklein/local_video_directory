@@ -71,18 +71,24 @@ class edit_form extends moodleform {
             $owner = array();
             $length = $video->length;
             $timecreated = strftime("%A, %d %B %Y %H:%M", $video->timecreated);
+            $description = $video->description;
         } else {
             $origfilename = "";
             $owner = 0;
             $usergroup = "";
             $length = 0;
             $timecreated = 0;
+            $description = "";
         }
         $mform = $this->_form;
 
         $mform->addElement('text', 'origfilename', get_string('orig_filename', 'local_video_directory'));
         $mform->setType('origfilename', PARAM_RAW);
         $mform->setDefault('origfilename', $origfilename ); // Default value.
+
+        $mform->addElement('textarea', 'description', get_string('description', 'local_video_directory'));
+        $mform->setType('description', PARAM_RAW);
+        $mform->setDefault('description', $description ); // Default value.
 
         $settings = get_settings();
 
@@ -176,6 +182,7 @@ if ($mform->is_cancelled()) {
     }
     $record = array("id" => $fromform->id,
                     "orig_filename" => $fromform->origfilename,
+                    "description" => $fromform->description,
                     "usergroup" => $fromform->usergroup);
 
     if ((isset($_POST['owner'])) && (is_video_admin($USER))) { // Only admins updates owners.
