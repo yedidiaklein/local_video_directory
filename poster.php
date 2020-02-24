@@ -28,6 +28,7 @@ require_once('locallib.php');
 $settings = get_settings();
 
 $id = required_param('id', PARAM_INT);
+$mini = optional_param('mini', 0, PARAM_INT);
 
 $dirs = get_directories();
 $streamingdir = $dirs['converted'];
@@ -49,4 +50,8 @@ if ($video->filename != $id . '.mp4') {
 }
 
 header("Content-type: image/png");
-readfile($streamingdir . $filename . ($second ? "-" . $second : '') . ".png");
+if ($mini) {
+    readfile($streamingdir . $filename . ($second ? "-" . $second : '') . "-mini.png");
+} else {
+    readfile($streamingdir . $filename . ($second ? "-" . $second : '') . ".png");
+}

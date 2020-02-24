@@ -173,11 +173,13 @@ if ($mform->is_cancelled()) {
                                         ON v.id = t.video_id
                                         WHERE (' . $DB->sql_like('t.content', ':content', 0)
                                         . ' OR ' . $DB->sql_like('v.orig_filename', ':name', 0)
+                                        . ' OR ' . $DB->sql_like('v.description', ':desc', 0)
                                         . ') AND (v.owner_id = :id OR v.private = 0 OR 1 = :admin)'
                                         , [ 'content' => '%' . $search . '%',
                                             'id' => $USER->id,
                                             'admin' => $admin,
-                                            'name' => '%' . $search . '%' ]);
+                                            'name' => '%' . $search . '%',
+                                            'desc' => '%' . $search . '%' ]);
         $total = count($videos);
         $perpage = 6;
         $currentpage = optional_param('currentpage', 0, PARAM_INT);
@@ -190,11 +192,13 @@ if ($mform->is_cancelled()) {
                                         ON v.id = t.video_id
                                         WHERE (' . $DB->sql_like('t.content', ':content', 0)
                                         . ' OR ' . $DB->sql_like('v.orig_filename', ':name', 0)
+                                        . ' OR ' . $DB->sql_like('v.description', ':desc', 0)
                                         . ') AND (v.owner_id = :id OR v.private = 0 OR 1 = :admin)'
                                         , [ 'content' => '%' . $search . '%',
                                             'id' => $USER->id,
                                             'admin' => $admin,
-                                            'name' => '%' . $search . '%' ]
+                                            'name' => '%' . $search . '%',
+                                            'desc' => '%' . $search . '%' ]
                                         , $start, $perpage);
 
         if ($videos) {
@@ -259,7 +263,7 @@ if ($mform->is_cancelled()) {
     }
 
     foreach ($videos as $key => $video) {
-        $video->thumbnail = 'poster.php?id=' . $video->id;
+        $video->thumbnail = 'poster.php?mini=1&id=' . $video->id;
         if ($video->filename != $video->id . '.mp4') {
             $videos[$key]->filename = $video->filename . '.mp4';
         }
@@ -286,7 +290,7 @@ if ($mform->is_cancelled()) {
     echo $OUTPUT->render_from_template("local_video_directory/portal",
                 array(  'videos' => array_values($videos), 'streaming' => $streaming, 'player' => $player,
                         'player_id' => $playerid, 'player_streaming' => $playerstr, 'wwwroot' => $CFG->wwwroot,
-                        'player_title' => $playertitle, 'showcatscloud' => 1));
+                        'player_title' => $playertitle, 'showcatscloud' => $settings->categories, 'search' => $search));
 }
 if (isset($pagination)) {
     echo $pagination;
