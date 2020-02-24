@@ -56,10 +56,9 @@ $PAGE->set_title(get_string('categories', 'local_video_directory'));
 $PAGE->set_url('/local/video_directory/categories.php');
 $PAGE->navbar->add(get_string('pluginname', 'local_video_directory'), new moodle_url('/local/video_directory/'));
 $PAGE->navbar->add(get_string('categories', 'local_video_directory'));
-$PAGE->set_pagelayout('base');
 $PAGE->requires->css('/local/video_directory/style.css');
 $PAGE->set_context(context_system::instance());
-
+$PAGE->set_pagelayout('standard');
 // Include font awesome in case of moodle 32 and older.
 if ($CFG->branch < 33) {
     $PAGE->requires->css('/local/video_directory/font_awesome/css/all.min.css');

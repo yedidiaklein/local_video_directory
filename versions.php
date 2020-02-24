@@ -45,7 +45,7 @@ $PAGE->set_title(get_string('versions', 'local_video_directory'));
 $PAGE->set_url('/local/video_directory/versions.php?id='.$id);
 $PAGE->navbar->add(get_string('pluginname', 'local_video_directory'), new moodle_url('/local/video_directory/'));
 $PAGE->navbar->add(get_string('versions', 'local_video_directory'));
-$PAGE->set_pagelayout('base');
+$PAGE->set_pagelayout('standard');
 $PAGE->requires->css('/local/video_directory/style.css');
 $PAGE->set_context(context_system::instance());
 $context = context_user::instance($USER->id);

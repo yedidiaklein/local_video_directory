@@ -62,7 +62,7 @@ if ($open) {
     $PAGE->navbar->add(get_string('pluginname', 'local_video_directory'), new moodle_url('/local/video_directory/'));
     $PAGE->navbar->add(get_string('portal', 'local_video_directory'));
 }
-$PAGE->set_pagelayout('base');
+$PAGE->set_pagelayout('standard');
 $PAGE->requires->css('/local/video_directory/style.css');
 $PAGE->requires->css('/local/video_directory/styles/portal.css');
 
