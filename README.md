@@ -90,13 +90,13 @@ The intructions here are for linux. It should be similar in other OSes. It is as
 We will use nginx and kaltura vod plugin.
 
 ```
-wget http://nginx.org/download/nginx-1.14.0.tar.gz 
+wget http://nginx.org/download/nginx-1.16.1.tar.gz 
 
 git clone https://github.com/kaltura/nginx-vod-module.git
 
-cd nginx-1.14.2
+cd nginx-1.16.1
 
-./configure --add-module=../nginx-vod-module/ --with-file-aio --with-threads --with-cc-opt="-O3"
+./configure --add-module=../nginx-vod-module/ --with-file-aio --with-threads --with-cc-opt="-O3" --with-http_ssl_module
 
 make
 
